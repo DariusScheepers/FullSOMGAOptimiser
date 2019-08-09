@@ -16,7 +16,7 @@ class ReadInput
         vector<string> getFileContent(string fileName);
         vector<string> readKeysOfKeyValuePairs(vector<string>);
 
-		string absolutePathToMain = "C:/Users/bbdnet1882/Documents/Universiteit/COS700/Code/Visual Studios Test/FullSOMGAOptimiser/FullSOMGAOptimiser";
+		string absolutePathToMain = "C:/Users/bbdnet1882/Documents/Universiteit/COS700/Code/working/FullSOMGAOptimiser/FullSOMGAOptimiser";
     public:
         ReadInput(/* args */);
         ~ReadInput();
