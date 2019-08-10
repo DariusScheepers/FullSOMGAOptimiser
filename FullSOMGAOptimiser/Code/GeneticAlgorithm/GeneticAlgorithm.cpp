@@ -36,8 +36,8 @@ void GeneticAlgorithm::initialiseChromosomes()
 
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	runExperimentAndCalculateFitnessConcurrently();
-	// runExperimentAndCalculateFitnessLinear();
+	// runExperimentAndCalculateFitnessConcurrently();
+	runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
