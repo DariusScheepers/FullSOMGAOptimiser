@@ -12,7 +12,7 @@ CalculationHelper::~CalculationHelper()
 
 vector<float> CalculationHelper::differenceBetweenVectors(vector<float> vector1, vector<float> vector2)
 {
-    const auto vectorSize = vector1.size();
+    const size_t vectorSize = vector1.size();
     vector<float> result;
     for (size_t i = 0; i < vectorSize; i++)
     {
@@ -42,7 +42,7 @@ float CalculationHelper::magintudeOfDifferenceBetweenVectors(vector<float> vecto
 
 vector<float> CalculationHelper::sumOfVectors(vector<float> vector1, vector<float> vector2)
 {
-    const auto vectorSize = vector1.size();
+    const size_t vectorSize = vector1.size();
     vector<float> result;
     for (size_t i = 0; i < vectorSize; i++)
     {
@@ -55,7 +55,7 @@ vector<float> CalculationHelper::sumOfVectors(vector<float> vector1, vector<floa
 float CalculationHelper::euclidianDistance(vector<float> vector1, vector<float> vector2)
 {
     float sumOfDifferences = 0;
-    const auto vectorSize = vector1.size();
+    const size_t vectorSize = vector1.size();
     for (size_t i = 0; i < vectorSize; i++)
     {
         const float difference = vector1.at(i) - vector2.at(i);
@@ -68,7 +68,7 @@ float CalculationHelper::euclidianDistance(vector<float> vector1, vector<float> 
 
 vector<float> CalculationHelper::scalarTimesVector(float scalar, vector<float> vector0)
 {
-    const auto vectorSize = vector0.size();
+    const size_t vectorSize = vector0.size();
     vector<float> result;
     for (size_t i = 0; i < vectorSize; i++)
     {
@@ -128,4 +128,12 @@ float CalculationHelper::normaliseValue(float value, float min, float max)
 	const float upper = value - min;
 	const float lower = max - min;
 	return upper / lower;
+}
+
+float CalculationHelper::getRandomFloat(float minValue, float maxValue)
+{
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = maxValue - minValue;
+	float r = random * diff;
+	return minValue + r;
 }

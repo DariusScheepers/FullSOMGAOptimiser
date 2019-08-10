@@ -1,6 +1,6 @@
-#include "GeneticAlgorithm.hpp";
+#include "GeneticAlgorithm.hpp"
 
-GeneticAlgorithm::GeneticAlgorithm(GAConfigurations configurations)
+GeneticAlgorithm::GeneticAlgorithm(GAConfigurations * configurations)
 {
     GeneticAlgorithm::configurations = configurations;
 }
@@ -13,72 +13,81 @@ GeneticAlgorithm::~GeneticAlgorithm()
 void GeneticAlgorithm::runGeneticAlgorithm()
 {
     initialiseChromosomes();
-    const auto maxIterations = configurations.getIterations(); 
+    const unsigned int maxIterations = configurations->getIterations(); 
     for (size_t i = 0; i < maxIterations; i++)
     {
-        for (Chromosome * chromosome : chromosomes)
-        {
-            calculateFitness(chromosome);
-        }
-        generateOffSpring();
+		setAllChromosomesFitness();
         sortChromosomesFromMostFittestToLowest();
         removeWeakestChromosomes();
+        generateOffSpring();
     }
+	cout << "Best Chromosome Fitness: " << chromosomes.at(0)->getFitnessValue() << endl;
 }
 
 void GeneticAlgorithm::initialiseChromosomes()
 {
-    const auto size = configurations.getChromosomePopulationSize();
+    const unsigned int size = configurations->getChromosomePopulationSize();
     for (size_t i = 0; i < size; i++)
     {
-        Chromosome * newChromosome = new Chromosome();
+        Chromosome * newChromosome = new Chromosome(configurations);
         chromosomes.push_back(newChromosome);
     }
 }
 
-void GeneticAlgorithm::runSOMAndCalculateFitness()
+void GeneticAlgorithm::setAllChromosomesFitness()
 {
-    int amountOfThreads = configurations.getChromosomePopulationSize();
-    // thread somThreads;
-    vector<thread> somThreads;
+	runExperimentAndCalculateFitnessConcurrently();
+	// runExperimentAndCalculateFitnessLinear();
+}
+
+void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
+{
+	for (Chromosome * chromosome : chromosomes)
+	{
+		calculateFitness(chromosome);
+	}
+}
+
+void GeneticAlgorithm::runExperimentAndCalculateFitnessConcurrently()
+{
+    int amountOfThreads = configurations->getChromosomePopulationSize();
+    vector<thread> experimentThreads;
     for (size_t i = 0; i < amountOfThreads; i++)
     {
         Chromosome * chromosome = chromosomes.at(i);
-        thread somProgram(calculateFitness, chromosome);
-        somThreads.push_back(move(somProgram));
+        thread experimentProgram(&GeneticAlgorithm::calculateFitness, this, chromosome);
+		experimentThreads.push_back(move(experimentProgram));
     }
 
     for (size_t i = 0; i < amountOfThreads; i++)
     {
-        thread * returningThread = &somThreads.at(i);
-        if (returningThread->joinable())
-        {
-            returningThread->join();
-        }
+        thread * returningThread = &experimentThreads.at(i);    
+        returningThread->join();
     }    
 }
 
 void GeneticAlgorithm::calculateFitness(Chromosome * chromosome)
 {
-    const float newFitnessValue = 0.0; // TODO
-
-    // Run SOM program
-    chromosome->setFitnessValue(newFitnessValue);
+	chromosome->runAlgorithm(configurations->getTargetExperimentConfig());
 }
 
 void GeneticAlgorithm::generateOffSpring()
 {
     vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
     vector<Chromosome *> offspring = createOffspringByUniformCrossover(parents);
-    performMutation(offspring);
+	offspring = performMutation(offspring);
+	for each (Chromosome * child in offspring)
+	{
+		chromosomes.push_back(child);
+	}
 }
 
 vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgorithm()
 {
-    const auto selectionCutOffSize = static_cast<int>(chromosomes.size() * (configurations.getSelectionCutOffPercentage() / 100));
-    int parent1Index = indexOfBestChromosomeByTournamentSelection(selectionCutOffSize);
+    const int poolSize = getPoolSize();
+    int parent1Index = indexOfBestChromosomeByTournamentSelection(poolSize);
     Chromosome * parent1 = removeAndReturnChromosomeAt(parent1Index);
-    int parent2Index = indexOfBestChromosomeByTournamentSelection(selectionCutOffSize);
+    int parent2Index = indexOfBestChromosomeByTournamentSelection(poolSize);
     Chromosome * parent2 = chromosomes.at(parent2Index);
     chromosomes.push_back(parent1);
 
@@ -88,10 +97,19 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
     return parentPair;
 }
 
+int GeneticAlgorithm::getPoolSize()
+{
+	CalculationHelper calculations;
+	const float decimalSelectionCutOffSize = calculations.percentageToFloat(configurations->getSelectionCutOffPercentage());
+	const int result = static_cast<int> (decimalSelectionCutOffSize * (float)chromosomes.size());
+	return result;
+}
+
 int GeneticAlgorithm::indexOfBestChromosomeByTournamentSelection(int poolSize)
 {
     default_random_engine generator;
-    uniform_int_distribution<int> distribution(0, chromosomes.size() - 1);
+	int populationSize = chromosomes.size() - 1;
+    uniform_int_distribution<int> distribution(0, populationSize);
     int bestChromosomeIndex;
     float bestFitness = numeric_limits<float>::max();
     for (size_t i = 0; i < poolSize; i++)
@@ -121,10 +139,10 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
     default_random_engine generator;
     uniform_int_distribution<int> distribution(0, 100);
 
-    Chromosome * child1 = new Chromosome();
-    Chromosome * child2 = new Chromosome();
+    Chromosome * child1 = new Chromosome(configurations);
+    Chromosome * child2 = new Chromosome(configurations);
     
-    const auto childGenesAmount = configurations.getGenesAmount(); 
+    const unsigned int childGenesAmount = configurations->getGenesAmount();
     for (size_t i = 0; i < childGenesAmount; i++)
     {
         int randomNumber = distribution(generator);
@@ -137,8 +155,8 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
         }
         else
         {
-            newChildGene2 = parents.at(1)->getGene(i);
-            newChildGene1 = parents.at(0)->getGene(i);
+            newChildGene2 = parents.at(0)->getGene(i);
+            newChildGene1 = parents.at(1)->getGene(i);
         }
         child1->setGene(i, newChildGene1);
         child2->setGene(i, newChildGene2);
@@ -150,38 +168,58 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
     return newChildren;
 }
 
-void GeneticAlgorithm::performMutation(vector<Chromosome *> offspring)
+vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offspring)
 {
     default_random_engine generator;
     uniform_int_distribution<int> distribution(0, 100);
 
-    const auto mutationPercentage = configurations.getMutationPercentage();
-    const auto mutationProbability = configurations.getMutationProbability();
-    for (Chromosome * child : offspring)
+	vector<Chromosome *> mutatedChildren;
+	mutatedChildren.push_back(new Chromosome(configurations));
+	mutatedChildren.push_back(new Chromosome(configurations));
+
+    const unsigned short mutationProbability = configurations->getMutationProbability();
+    for (size_t i = 0; i < offspring.size(); i++)
     {
+		Chromosome * child = offspring.at(i);
         int index = 0;
         for (float gene : child->getGenes())
         {
             int randomNumber = distribution(generator);
-            if (randomNumber < mutationProbability)
+			float newGene = child->getGene(index);
+            if (randomNumber <= mutationProbability)
             {
-                float newGene = child->getGeneRandomValue(index);
-                child->setGene(index++, newGene);
-            }
-        }        
+                newGene = child->getGeneRandomValue(index);
+			}  
+			mutatedChildren.at(i)->setGene(index++, newGene);
+        }
     }
+	return mutatedChildren;
 }
 
 void GeneticAlgorithm::sortChromosomesFromMostFittestToLowest()
 {
-    sort(chromosomes.begin(), chromosomes.end());
+	struct less_than_key
+	{
+		inline bool operator() (Chromosome* chr1, Chromosome* chr2)
+		{
+			return (chr1->getFitnessValue() < chr2->getFitnessValue());
+		}
+	};
+    sort(chromosomes.begin(), chromosomes.end(), less_than_key());
 }
+
 
 void GeneticAlgorithm::removeWeakestChromosomes()
 {
-    const auto requiredPopulationSize = configurations.getChromosomePopulationSize();
+    const size_t requiredPopulationSize = configurations->getChromosomePopulationSize();
+	const size_t currentChromosomesSize = chromosomes.size();
+	if (requiredPopulationSize == currentChromosomesSize)
+	{
+		return;
+	}
+	chromosomes.erase(chromosomes.begin() + requiredPopulationSize, chromosomes.begin() + currentChromosomesSize - 1);
     chromosomes.resize(requiredPopulationSize);
-    chromosomes.shrink_to_fit();    
+    chromosomes.shrink_to_fit();
 }
 
 Chromosome * GeneticAlgorithm::returnBestChromsomes()

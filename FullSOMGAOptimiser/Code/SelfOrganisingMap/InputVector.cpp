@@ -7,6 +7,8 @@ InputVector::InputVector(vector<float> inputValues)
 
 InputVector::~InputVector()
 {
+	inputValues.clear();
+	inputValues.shrink_to_fit();
 }
 
 float InputVector::getInputValueAt(int index)

@@ -6,23 +6,23 @@
 #include "../SelfOrganisingMap/SelfOrganisingMap.hpp"
 #include "../SelfOrganisingMap/SOMConfigurations.hpp"
 #include <random>
+#include <ctime>
 
 using namespace std;
 
 class Chromosome
 {
     private:
-        GAConfigurations configurations;
+        GAConfigurations * configurations;
         vector<float> genes;
         float fitnessValue;
-        enum class SelfOrganisingMapParameters;
+		bool fitnessCalculated;
 
-        SOMConfigurations * somConfig;
         SelfOrganisingMap * selfOrganisingMap;
 
         void intialiseGenes();
     public:
-        Chromosome();
+        Chromosome(GAConfigurations *);
         ~Chromosome();
 
         void setFitnessValue(float);
@@ -32,8 +32,7 @@ class Chromosome
         float getGene(int index);
         float getGeneRandomValue(size_t index);
 
-        bool operator>(Chromosome*);
-        void runAlgorithm();
+        void runAlgorithm(SOMConfigurations *);
 
 };
 

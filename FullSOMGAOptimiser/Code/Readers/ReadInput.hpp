@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include "GeneRanges.h"
 
 #define dataMatrix vector<vector<float>>
 
@@ -24,7 +25,8 @@ class ReadInput
 		dataMatrix readDataSet(string, char);
         vector<string> readArguments();
         vector<string> readSOMConfig();
-
+		vector<string> readGAConfig();
+		GeneRanges * readGAGenesConfig();
 };
 
 #endif

@@ -75,7 +75,7 @@ vector<InputVector*> SOMConfigurations::findTopLeftAndBottomRightTrainingVectors
 	CalculationHelper calculations;
 	vector<InputVector *> result(2);
 	float maxDistance = 0;
-	const auto trainingVectorsSize = trainingSet.size();
+	const size_t trainingVectorsSize = trainingSet.size();
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
 		InputVector * firstSelectedTrainingVector = trainingSet.at(i);
@@ -106,7 +106,7 @@ InputVector * SOMConfigurations::findBottomLeftTrainingVector(InputVector * vect
 {
 	InputVector * bestVector;
 	float maxDistance = 0;
-	const auto trainingVectorsSize = trainingSet.size();
+	const size_t trainingVectorsSize = trainingSet.size();
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
 		InputVector * vector3 = trainingSet.at(i);
@@ -133,7 +133,7 @@ InputVector * SOMConfigurations::findTopRightTrainingVector(InputVector * vector
 {
 	InputVector * bestVector;
 	float maxDistance = 0;
-	const auto trainingVectorsSize = trainingSet.size();
+	const size_t trainingVectorsSize = trainingSet.size();
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
 		InputVector * vector4 = trainingSet.at(i);

@@ -50,7 +50,15 @@ class SelfOrganisingMap
 		void printEndNeuronMap();
        
     public:
-        SelfOrganisingMap(SOMConfigurations*, usint, usint, float, float, float, float);
+        SelfOrganisingMap(
+			SOMConfigurations*,
+			usint,
+			usint,
+			float,
+			float,
+			float, 
+			float
+		);
         ~SelfOrganisingMap();
 
         void runSelfOrganisingMap();

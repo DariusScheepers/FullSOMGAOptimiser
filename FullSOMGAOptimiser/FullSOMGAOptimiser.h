@@ -9,6 +9,9 @@
 #include "./Code/Readers/ReadInput.hpp"
 #include "./Code/SelfOrganisingMap/SOMConfigurations.hpp"
 #include "./Code/SelfOrganisingMap/SelfOrganisingMap.hpp"
+#include "./Code/Readers/GeneRanges.h"
+#include "./Code/GeneticAlgorithm/GAConfigurations.hpp"
+#include "./Code/GeneticAlgorithm/GeneticAlgorithm.hpp"
 
 using namespace std;
 
@@ -20,10 +23,27 @@ enum class somConfigurations {
 	defaultRows,
 	defaultColumns,
 	defaultLearningRate,
-	defaultKernelWidth,
 	defaultLearningRateDecay,
+	defaultKernelWidth,
 	defaultKernelWidthDecay
 };
 
+enum class gaConfigurations {
+	chromosomePopulationSize,
+	iterations,
+	genesAmount,
+	crossoverProbability,
+	mutationProbability,
+	selectionCutOffSize
+};
+
+enum class gaGenesConfigurations {
+	rows,
+	columns,
+	learningRate,
+	learningRateDecay,
+	kernelWidth,
+	kernelWidthDecay
+};
 
 // TODO: Reference additional headers your program requires here.

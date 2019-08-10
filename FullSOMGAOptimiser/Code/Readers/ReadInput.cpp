@@ -63,7 +63,6 @@ vector<string> ReadInput::getFileContent(string fileName)
 		if (str.size() > 0)
         {
 			out.push_back(str);
-            // cout << str << endl;
         }
 	}
 	//Close The File
@@ -115,4 +114,19 @@ vector<string> ReadInput::readSOMConfig()
     const string argumentsPath = absolutePathToMain + "/Configurations/SelfOrganisingMap_Config.txt";
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
+}
+
+vector<string> ReadInput::readGAConfig()
+{
+	const string argumentsPath = absolutePathToMain + "/Configurations/GeneticAlgorithm_Config.txt";
+	vector<string> lines = getFileContent(argumentsPath);
+	return readKeysOfKeyValuePairs(lines);
+}
+
+GeneRanges * ReadInput::readGAGenesConfig()
+{
+	const string argumentsPath = absolutePathToMain + "/Configurations/GeneticAlgorithmGenes_Config.txt";
+	vector<string> lines = getFileContent(argumentsPath);
+	vector<string> values = readKeysOfKeyValuePairs(lines);
+	return new GeneRanges(values);
 }

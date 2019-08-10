@@ -13,12 +13,19 @@ SelfOrganisingMap::SelfOrganisingMap(SOMConfigurations * configurations, usint r
 
 SelfOrganisingMap::~SelfOrganisingMap()
 {
+	for (size_t i = 0; i < neuronMap.size(); i++)
+	{
+		neuronMap.at(i).clear();
+		neuronMap.at(i).shrink_to_fit();
+	}
+	neuronMap.clear();
+	neuronMap.shrink_to_fit();
 }
 
 void SelfOrganisingMap::runSelfOrganisingMap()
 {
 	createNeuronMap();
-	printInitialNeuronMap();
+	// printInitialNeuronMap();
     const int maxIterations = configurations->getMaxEpochs();
     for (iteration = 0; iteration < maxIterations; iteration++)
     {
@@ -28,7 +35,7 @@ void SelfOrganisingMap::runSelfOrganisingMap()
         updateEachNeuronWeights(selectedVector, bestMatchingUnit);
 		printQuantizationError();
     }
-	printEndNeuronMap();
+	// printEndNeuronMap();
 }
 
 void SelfOrganisingMap::createNeuronMap()
@@ -39,7 +46,7 @@ void SelfOrganisingMap::createNeuronMap()
         vector<Neuron*> columnNeurons;
 		for (size_t j = 0; j < columns; j++)
 		{
-			const auto weightSize = configurations->getTrainingVectorAt(0)->getInputValues().size();
+			const size_t weightSize = configurations->getTrainingVectorAt(0)->getInputValues().size();
 			vector<float> neuronWeights(weightSize);
 			columnNeurons.push_back(new Neuron(neuronWeights, i, j));
 		}
@@ -53,7 +60,8 @@ void SelfOrganisingMap::createNeuronMap()
 InputVector * SelfOrganisingMap::selectTrainingVector()
 {
     default_random_engine generator;
-    uniform_int_distribution<int> distribution(0, configurations->getTrainingSet().size() - 1);
+	int trainingSetSize = configurations->getTrainingSet().size() - 1;
+    uniform_int_distribution<int> distribution(0, trainingSetSize);
     const int randomIndex = distribution(generator);
     return configurations->getTrainingVectorAt(randomIndex);
 }

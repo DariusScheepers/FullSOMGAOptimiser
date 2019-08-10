@@ -1,37 +1,35 @@
 #include "Chromosome.hpp"
 
-enum class Chromosome::SelfOrganisingMapParameters {
-    rows = 0,
-    columns = 1,
-    learningRate = 2,
-    learningDecay = 3,
-    kernelWidth = 4,
-    kernelDecay = 5
-};
-
-Chromosome::Chromosome()
+Chromosome::Chromosome(GAConfigurations * configurations)
 {
+	Chromosome::configurations = configurations;
     intialiseGenes();    
+	fitnessValue = 9999.0;
+	fitnessCalculated = false;
+}
+Chromosome::~Chromosome()
+{
+	genes.clear();
+	genes.shrink_to_fit();
 }
 
 void Chromosome::intialiseGenes()
 {
-    const auto genesPopulationAmount = configurations.getGenesAmount();
+    const unsigned int genesPopulationAmount = configurations->getGenesAmount();
     for (size_t i = 0; i < genesPopulationAmount; i++)
     {
-        const auto randomValue = getGeneRandomValue(i);
+        const float randomValue = getGeneRandomValue(i);
         genes.push_back(randomValue);
+		// cout << "R at " << i << " : " << randomValue;
     }
 }
 
 float Chromosome::getGeneRandomValue(size_t index) {
-    const default_random_engine generator;
-    const auto genesValueRanges = configurations.getGeneValueRanges();
-    const auto minValue = genesValueRanges.at(index)[0];
-    const auto maxValue = genesValueRanges.at(index)[1];
-    uniform_int_distribution<float> distribution(minValue, maxValue);
-
-    return distribution(generator);
+	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
+    float minValue = genesValueRanges.at(index)[0];
+    float maxValue = genesValueRanges.at(index)[1];
+	CalculationHelper calculations;
+	return calculations.getRandomFloat(minValue, maxValue);
 }
 
 void Chromosome::setFitnessValue(float fitnessValue)
@@ -59,21 +57,29 @@ float Chromosome::getGene(int index)
     return genes.at(index);
 }
 
-bool Chromosome::operator>(Chromosome* comparingChromosome) {
-    return fitnessValue > comparingChromosome->fitnessValue;
-}
-
-void Chromosome::runAlgorithm()
+void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 {
-    selfOrganisingMap = new SelfOrganisingMap(
-        somConfig,
-        static_cast<int>(genes.at(SelfOrganisingMapParameters::rows)),
-        static_cast<int>(genes.at(SelfOrganisingMapParameters::columns)),
-        genes.at(SelfOrganisingMapParameters::learningRate),
-        genes.at(SelfOrganisingMapParameters::learningDecay),
-        genes.at(SelfOrganisingMapParameters::kernelWidth),
-        genes.at(SelfOrganisingMapParameters::kernelDecay),
+	if (fitnessCalculated)
+	{
+		return;
+	}
+	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
+	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
+	const float learningRate = genes.at(2);
+	const float learningDecay = genes.at(3);
+	const float kernelWidth = genes.at(4);
+	const float kernelDecay = genes.at(5);
+
+	selfOrganisingMap = new SelfOrganisingMap(
+		somConfiguration,
+		rows,
+		columns,
+		learningRate,
+        learningDecay,
+        kernelWidth,
+        kernelDecay
     );
     selfOrganisingMap->runSelfOrganisingMap();
     fitnessValue = selfOrganisingMap->calculateQuantizationError();
+	fitnessCalculated = true;
 }

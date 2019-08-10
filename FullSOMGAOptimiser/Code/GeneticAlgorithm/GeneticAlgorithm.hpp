@@ -12,22 +12,26 @@ using namespace std;
 class GeneticAlgorithm
 {
     private:
-        GAConfigurations configurations;
+        GAConfigurations * configurations;
         vector<Chromosome *> chromosomes;
 
         void initialiseChromosomes();
-        void runSOMAndCalculateFitness();
+		void setAllChromosomesFitness();
+        void runExperimentAndCalculateFitnessConcurrently();
+		void runExperimentAndCalculateFitnessLinear();
         void calculateFitness(Chromosome *);
         void generateOffSpring();
+		int getPoolSize();
         vector<Chromosome *> getBestParentsByTournamentSelectionAlgorithm();
         int indexOfBestChromosomeByTournamentSelection(int poolSize);
         Chromosome * removeAndReturnChromosomeAt(int index);
         vector<Chromosome *> createOffspringByUniformCrossover(vector<Chromosome *>);
-        void performMutation(vector<Chromosome *> offspring);
+		vector<Chromosome *> performMutation(vector<Chromosome *> offspring);
         void sortChromosomesFromMostFittestToLowest();
         void removeWeakestChromosomes();
+
     public:
-        GeneticAlgorithm(GAConfigurations configurations);
+        GeneticAlgorithm(GAConfigurations * configurations);
 
         void runGeneticAlgorithm();
         Chromosome * returnBestChromsomes();

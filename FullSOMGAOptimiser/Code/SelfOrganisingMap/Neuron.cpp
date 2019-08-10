@@ -6,6 +6,11 @@ Neuron::Neuron(vector<float> weights, float xCoordinate, float yCoordinate)
     Neuron::xCoordinate = xCoordinate;
     Neuron::yCoordinate = yCoordinate;
 }
+Neuron::~Neuron()
+{
+	weights.clear();
+	weights.shrink_to_fit();
+}
 
 vector<float> Neuron::getWeights()
 {

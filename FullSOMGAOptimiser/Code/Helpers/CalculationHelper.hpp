@@ -24,6 +24,7 @@ class CalculationHelper
         static vector<float> scalarTimesVector(float, vector<float>);
         static float percentageToFloat(float);
 		static dataMatrix normaliseDataSet(dataMatrix);
+		static float getRandomFloat(float, float);
 };
 
 #endif

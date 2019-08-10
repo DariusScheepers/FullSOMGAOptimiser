@@ -4,11 +4,12 @@ GAConfigurations::GAConfigurations(
     unsigned int chromosomePopulationSize,
     unsigned int iterations,
     unsigned int genesAmount,
-    vector<usint[2]>geneValueRanges,
-    vector<bool[2]>geneValueRangesInclusiveOrExclusive,
+	vector<vector<float>>geneValueRanges,
+    vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
     usint crossoverProbability,
     usint mutationProbability,
-    usint mutationPercentage
+	usint selectionCutOffPercentage,
+	SOMConfigurations * targetExperimentConfigurations
 )
 {
     GAConfigurations::chromosomePopulationSize = chromosomePopulationSize;
@@ -18,7 +19,8 @@ GAConfigurations::GAConfigurations(
     GAConfigurations::geneValueRangesInclusiveOrExclusive = geneValueRangesInclusiveOrExclusive;
     GAConfigurations::crossoverProbability = crossoverProbability;
     GAConfigurations::mutationProbability = mutationProbability;
-    GAConfigurations::mutationPercentage = mutationPercentage;
+	GAConfigurations::selectionCutOffPercentage = selectionCutOffPercentage;
+	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 
     setExactRangesOnGenes();
 }
@@ -43,7 +45,7 @@ void GAConfigurations::setGenesAmount(unsigned int genesAmount)
     GAConfigurations::genesAmount = genesAmount;
 }
 
-void GAConfigurations::setGeneValueRanges(vector<usint[2]> geneValueRanges)
+void GAConfigurations::setGeneValueRanges(vector<vector<float>> geneValueRanges)
 {
     GAConfigurations::geneValueRanges = geneValueRanges;
 }
@@ -58,14 +60,14 @@ void GAConfigurations::setMutationProbability(usint mutationProbability)
     GAConfigurations::mutationProbability = mutationProbability;
 }
 
-void GAConfigurations::setMutationPercentage(usint mutationPercentage)
-{
-    GAConfigurations::mutationPercentage = mutationPercentage;
-}
-
 void GAConfigurations::setSelectionCutOffPercentage(usint selectionCutOffPercentage)
 {
     GAConfigurations::selectionCutOffPercentage = selectionCutOffPercentage;
+}
+
+void GAConfigurations::setTargetExperimentConfig(SOMConfigurations * targetExperimentConfigurations)
+{
+	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 }
 
 unsigned int GAConfigurations::getChromosomePopulationSize()
@@ -83,7 +85,7 @@ unsigned int GAConfigurations::getGenesAmount()
     return genesAmount;
 }
 
-vector<usint[2]> GAConfigurations::getGeneValueRanges()
+vector<vector<float>> GAConfigurations::getGeneValueRanges()
 {
     return geneValueRanges;
 }
@@ -98,25 +100,29 @@ usint GAConfigurations::getMutationProbability()
     return mutationProbability;
 }
 
-usint GAConfigurations::getMutationPercentage()
-{
-    return mutationPercentage;
-}
-
 usint GAConfigurations::getSelectionCutOffPercentage()
 {
     return selectionCutOffPercentage;
+}
+
+SOMConfigurations * GAConfigurations::getTargetExperimentConfig()
+{
+	return targetExperimentConfigurations;
 }
 
 void GAConfigurations::setExactRangesOnGenes()
 {
     for (size_t i = 0; i < geneValueRanges.size(); i++)
     {
-        if (geneValueRangesInclusiveOrExclusive.at(i)[0]) {
-            geneValueRanges.at(i)[0] += numeric_limits<float>::min();
+		const bool openingInclusive = geneValueRangesInclusiveOrExclusive.at(i)[0];
+        if (!openingInclusive) {
+			const float currentGeneValue = geneValueRanges.at(i)[0];
+            geneValueRanges.at(i)[0] = currentGeneValue + numeric_limits<float>::min();
         }
-        if (geneValueRangesInclusiveOrExclusive.at(i)[1]) {
-            geneValueRanges.at(i)[1] -= numeric_limits<float>::min();
+		const bool closingInclusive = geneValueRangesInclusiveOrExclusive.at(i)[1];
+		if (!closingInclusive) {
+			const float currentGeneValue = geneValueRanges.at(i)[1];
+            geneValueRanges.at(i)[1] = currentGeneValue - numeric_limits<float>::min();
         }
     }
 }
