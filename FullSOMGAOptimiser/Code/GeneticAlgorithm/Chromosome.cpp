@@ -11,6 +11,7 @@ Chromosome::~Chromosome()
 {
 	genes.clear();
 	genes.shrink_to_fit();
+	delete selfOrganisingMap;
 }
 
 void Chromosome::intialiseGenes()
@@ -69,6 +70,7 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 	const float learningDecay = genes.at(3);
 	const float kernelWidth = genes.at(4);
 	const float kernelDecay = genes.at(5);
+	const int trainingIterations = genes.at(6);
 
 	selfOrganisingMap = new SelfOrganisingMap(
 		somConfiguration,
@@ -77,7 +79,8 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 		learningRate,
         learningDecay,
         kernelWidth,
-        kernelDecay
+        kernelDecay,
+		trainingIterations
     );
     selfOrganisingMap->runSelfOrganisingMap();
     fitnessValue = selfOrganisingMap->calculateQuantizationError();

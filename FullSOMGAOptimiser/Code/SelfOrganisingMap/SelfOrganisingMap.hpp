@@ -24,6 +24,7 @@ class SelfOrganisingMap
         float learningDecay;
         float kernelWidth;
         float kernelDecay;
+		int trainingIterations;
         SOMConfigurations * configurations;
 
         // important global variables
@@ -57,7 +58,8 @@ class SelfOrganisingMap
 			float,
 			float,
 			float, 
-			float
+			float,
+			int
 		);
         ~SelfOrganisingMap();
 

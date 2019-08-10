@@ -18,8 +18,8 @@ using namespace std;
 enum class somConfigurations {
 	dataSet,
 	dataSeperator,
-	maximumTrainingIterations,
 	traningSetPortion,
+	defaultMaximumTrainingIterations,
 	defaultRows,
 	defaultColumns,
 	defaultLearningRate,
@@ -43,7 +43,8 @@ enum class gaGenesConfigurations {
 	learningRate,
 	learningRateDecay,
 	kernelWidth,
-	kernelWidthDecay
+	kernelWidthDecay,
+	trainingIterations
 };
 
 // TODO: Reference additional headers your program requires here.

@@ -1,6 +1,6 @@
 #include "SelfOrganisingMap.hpp"
 
-SelfOrganisingMap::SelfOrganisingMap(SOMConfigurations * configurations, usint rows, usint columns, float learningRate, float learningDecay, float kernelWidth, float kernelDecay)
+SelfOrganisingMap::SelfOrganisingMap(SOMConfigurations * configurations, usint rows, usint columns, float learningRate, float learningDecay, float kernelWidth, float kernelDecay, int trainingIterations)
 {
     SelfOrganisingMap::configurations = configurations;
     SelfOrganisingMap::rows = rows;
@@ -9,6 +9,7 @@ SelfOrganisingMap::SelfOrganisingMap(SOMConfigurations * configurations, usint r
     SelfOrganisingMap::learningDecay = learningDecay;
     SelfOrganisingMap::kernelWidth = kernelWidth;
     SelfOrganisingMap::kernelDecay = kernelDecay;
+	SelfOrganisingMap::trainingIterations = trainingIterations;
 }
 
 SelfOrganisingMap::~SelfOrganisingMap()
@@ -26,8 +27,7 @@ void SelfOrganisingMap::runSelfOrganisingMap()
 {
 	createNeuronMap();
 	// printInitialNeuronMap();
-    const int maxIterations = configurations->getMaxEpochs();
-    for (iteration = 0; iteration < maxIterations; iteration++)
+    for (iteration = 0; iteration < trainingIterations; iteration++)
     {
         setNewLearningRateAndKernelWidth(iteration);
         InputVector * selectedVector = selectTrainingVector();

@@ -1,9 +1,8 @@
 #include "SOMConfigurations.hpp"
 
-SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matrix dataSet)
+SOMConfigurations::SOMConfigurations(int trainingSetPortion, matrix dataSet)
 {
 	CalculationHelper calculations;
-    SOMConfigurations::maxEpochs = maxEpochs;
     SOMConfigurations::trainingSetPortion = trainingSetPortion;
     SOMConfigurations::dataSet = calculations.normaliseDataSet(dataSet);
     createTrainingSet();
@@ -14,10 +13,6 @@ SOMConfigurations::~SOMConfigurations()
 {
 }
 
-int SOMConfigurations::getMaxEpochs()
-{
-    return maxEpochs;
-}
 
 matrix SOMConfigurations::getDataSet()
 {

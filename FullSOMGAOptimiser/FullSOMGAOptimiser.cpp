@@ -11,9 +11,9 @@ int getSOMConfigIndex(somConfigurations somConfigValue)
 			return 0;
 		case somConfigurations::dataSeperator:
 			return 1;
-		case somConfigurations::maximumTrainingIterations:
-			return 2;
 		case somConfigurations::traningSetPortion:
+			return 2;
+		case somConfigurations::defaultMaximumTrainingIterations:
 			return 3;
 		case somConfigurations::defaultRows:
 			return 4;
@@ -69,6 +69,8 @@ int getGAGeneConfigIndex(gaGenesConfigurations gaGeneConfigValue)
 			return 4;
 		case gaGenesConfigurations::kernelWidthDecay:
 			return 5;
+		case gaGenesConfigurations::trainingIterations:
+			return 6;
 	default:
 		break;
 	}
@@ -93,9 +95,8 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	ReadInput readInput;
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
 	vector<vector<float>> dataSet = readInput.readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
-	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
-	return new SOMConfigurations(maxEpochs, trainingSetPortion, dataSet);
+	return new SOMConfigurations(trainingSetPortion, dataSet);
 }
 
 SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
@@ -107,6 +108,7 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 	const float learningDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
 	const float kernelWidth = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
 	const float kernelDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
+	const int trainingIterations = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultMaximumTrainingIterations)));
 
 	return new SelfOrganisingMap(
 		somConfigurations,
@@ -115,7 +117,8 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 		learningRate,
 		learningDecay,
 		kernelWidth,
-		kernelDecay
+		kernelDecay,
+		trainingIterations
 	);
 }
 

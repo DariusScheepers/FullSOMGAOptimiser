@@ -21,7 +21,6 @@ enum class cornerVectors {
 class SOMConfigurations
 {
     private:
-        int maxEpochs;
         int trainingSetPortion;
         matrix dataSet;
 		inputVectors trainingSet;
@@ -38,10 +37,9 @@ class SOMConfigurations
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
     public:
-        SOMConfigurations(int, int, matrix);
+        SOMConfigurations(int, matrix);
         ~SOMConfigurations();
 
-        int getMaxEpochs();
         matrix getDataSet();
         int getTrainingSetPortion();
 		inputVectors getTrainingSet();
