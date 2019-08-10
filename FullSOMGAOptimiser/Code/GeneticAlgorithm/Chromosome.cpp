@@ -11,6 +11,7 @@ Chromosome::~Chromosome()
 {
 	genes.clear();
 	genes.shrink_to_fit();
+	delete selfOrganisingMap;
 }
 
 void Chromosome::intialiseGenes()
