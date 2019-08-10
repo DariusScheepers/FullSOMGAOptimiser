@@ -132,8 +132,13 @@ float CalculationHelper::normaliseValue(float value, float min, float max)
 
 float CalculationHelper::getRandomFloat(float minValue, float maxValue)
 {
-	float random = ((float)rand()) / (float)RAND_MAX;
-	float diff = maxValue - minValue;
-	float r = random * diff;
-	return minValue + r;
+	srand(time(0));
+
+	default_random_engine generator;
+	uniform_real_distribution<float> distribution(minValue, maxValue);
+	return distribution(generator);
+	//float random = ((float)rand()) / (float)RAND_MAX;
+	//float diff = maxValue - minValue;
+	//float r = random * diff;
+	//return minValue + r;
 }

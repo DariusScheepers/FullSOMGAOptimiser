@@ -30,6 +30,8 @@ class GeneticAlgorithm
         void sortChromosomesFromMostFittestToLowest();
         void removeWeakestChromosomes();
 
+		void printCurrentBestChromosome(int);
+
     public:
         GeneticAlgorithm(GAConfigurations * configurations);
 

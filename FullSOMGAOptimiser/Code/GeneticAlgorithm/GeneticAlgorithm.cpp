@@ -20,8 +20,8 @@ void GeneticAlgorithm::runGeneticAlgorithm()
         sortChromosomesFromMostFittestToLowest();
         removeWeakestChromosomes();
         generateOffSpring();
+		printCurrentBestChromosome(i);
     }
-	cout << "Best Chromosome Fitness: " << chromosomes.at(0)->getFitnessValue() << endl;
 }
 
 void GeneticAlgorithm::initialiseChromosomes()
@@ -36,8 +36,8 @@ void GeneticAlgorithm::initialiseChromosomes()
 
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	runExperimentAndCalculateFitnessConcurrently();
-	// runExperimentAndCalculateFitnessLinear();
+	// runExperimentAndCalculateFitnessConcurrently();
+	runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
@@ -225,4 +225,19 @@ void GeneticAlgorithm::removeWeakestChromosomes()
 Chromosome * GeneticAlgorithm::returnBestChromsomes()
 {
     return chromosomes[0];
+}
+
+void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
+{
+	Chromosome * bestChromosome = chromosomes.at(0);
+	cout << "========================\n";
+	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getIterations() << endl;
+	cout << "\t Fitness" << bestChromosome->getFitnessValue() << endl;
+	cout << "\t Genes Values" << endl;
+	for (size_t i = 0; i < bestChromosome->getGenes().size(); i++)
+	{
+		const float geneValue = bestChromosome->getGene(i);
+		cout << "\t\t" << geneValue << endl;
+	}
+	cout << "========================\n";
 }

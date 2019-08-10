@@ -2,6 +2,8 @@
 #define CALCULATION_HELPER_H
 
 #include <vector>
+#include <ctime>
+#include <random>
 #include "math.h"
 using namespace std;
 
