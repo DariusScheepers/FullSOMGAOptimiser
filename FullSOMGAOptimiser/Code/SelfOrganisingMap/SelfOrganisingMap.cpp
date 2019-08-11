@@ -59,10 +59,9 @@ void SelfOrganisingMap::createNeuronMap()
 
 InputVector * SelfOrganisingMap::selectTrainingVector()
 {
-    default_random_engine generator;
+	CalculationHelper calculations;
 	int trainingSetSize = configurations->getTrainingSet().size() - 1;
-    uniform_int_distribution<int> distribution(0, trainingSetSize);
-    const int randomIndex = distribution(generator);
+	const int randomIndex = calculations.getRandomInt(0, trainingSetSize);
     return configurations->getTrainingVectorAt(randomIndex);
 }
 

@@ -36,8 +36,8 @@ void GeneticAlgorithm::initialiseChromosomes()
 
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	// runExperimentAndCalculateFitnessConcurrently();
-	runExperimentAndCalculateFitnessLinear();
+	runExperimentAndCalculateFitnessConcurrently();
+	//runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
@@ -50,7 +50,7 @@ void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessConcurrently()
 {
-    int amountOfThreads = configurations->getChromosomePopulationSize();
+    int amountOfThreads = chromosomes.size();
     vector<thread> experimentThreads;
     for (size_t i = 0; i < amountOfThreads; i++)
     {
@@ -107,14 +107,13 @@ int GeneticAlgorithm::getPoolSize()
 
 int GeneticAlgorithm::indexOfBestChromosomeByTournamentSelection(int poolSize)
 {
-    default_random_engine generator;
 	int populationSize = chromosomes.size() - 1;
-    uniform_int_distribution<int> distribution(0, populationSize);
+	CalculationHelper calculations;
     int bestChromosomeIndex;
     float bestFitness = numeric_limits<float>::max();
     for (size_t i = 0; i < poolSize; i++)
     {
-        const int randomIndex = distribution(generator);
+        const int randomIndex = calculations.getRandomInt(0, populationSize);
 
         Chromosome * pickedChromosome = chromosomes.at(randomIndex);
         if (pickedChromosome->getFitnessValue() < bestFitness)
@@ -136,8 +135,7 @@ Chromosome * GeneticAlgorithm::removeAndReturnChromosomeAt(int index)
 
 vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<Chromosome *> parents)
 {
-    default_random_engine generator;
-    uniform_int_distribution<int> distribution(0, 100);
+	CalculationHelper calculations;
 
     Chromosome * child1 = new Chromosome(configurations);
     Chromosome * child2 = new Chromosome(configurations);
@@ -145,7 +143,7 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
     const unsigned int childGenesAmount = configurations->getGenesAmount();
     for (size_t i = 0; i < childGenesAmount; i++)
     {
-        int randomNumber = distribution(generator);
+		int randomNumber = calculations.getRandomInt(0, 100);
         float newChildGene1;
         float newChildGene2;
         if (randomNumber > 50)
@@ -170,8 +168,7 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
 
 vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offspring)
 {
-    default_random_engine generator;
-    uniform_int_distribution<int> distribution(0, 100);
+	CalculationHelper calculations;
 
 	vector<Chromosome *> mutatedChildren;
 	mutatedChildren.push_back(new Chromosome(configurations));
@@ -184,7 +181,7 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
         int index = 0;
         for (float gene : child->getGenes())
         {
-            int randomNumber = distribution(generator);
+			int randomNumber = calculations.getRandomInt(0, 100);
 			float newGene = child->getGene(index);
             if (randomNumber <= mutationProbability)
             {
@@ -232,7 +229,7 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 	Chromosome * bestChromosome = chromosomes.at(0);
 	cout << "========================\n";
 	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getIterations() << endl;
-	cout << "\t Fitness" << bestChromosome->getFitnessValue() << endl;
+	cout << "\t Fitness " << bestChromosome->getFitnessValue() << endl;
 	cout << "\t Genes Values" << endl;
 	for (size_t i = 0; i < bestChromosome->getGenes().size(); i++)
 	{

@@ -4,6 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <random>
+#include <cstdlib>
 #include "math.h"
 using namespace std;
 
@@ -27,6 +28,7 @@ class CalculationHelper
         static float percentageToFloat(float);
 		static dataMatrix normaliseDataSet(dataMatrix);
 		static float getRandomFloat(float, float);
+		static int getRandomInt(int, int);
 };
 
 #endif
