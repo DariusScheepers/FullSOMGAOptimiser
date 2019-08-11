@@ -1,6 +1,6 @@
 #include "GeneticAlgorithm.hpp"
 
-GeneticAlgorithm::GeneticAlgorithm(GAConfigurations * configurations)
+GeneticAlgorithm::GeneticAlgorithm(GAConfigurations * configurations) //
 {
     GeneticAlgorithm::configurations = configurations;
 }
