@@ -142,7 +142,7 @@ float CalculationHelper::getRandomFloat(float minValue, float maxValue)
 
 int CalculationHelper::getRandomInt(int minValue, int maxValue)
 {
-	int random = ((int)rand()) / (int)RAND_MAX;
+	float random = ((float)rand()) / (float)RAND_MAX;
 
 	// generate (in your case) a float between 0 and (4.5-.78)
 	// then add .78, giving you a float between .78 and 4.5

@@ -73,13 +73,23 @@ void GeneticAlgorithm::calculateFitness(Chromosome * chromosome)
 
 void GeneticAlgorithm::generateOffSpring()
 {
-    vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
-    vector<Chromosome *> offspring = createOffspringByUniformCrossover(parents);
-	offspring = performMutation(offspring);
+	const int parentPairsAmount = ((float)chromosomes.size() / (float)2) - 1;
+	vector<Chromosome *> offspring;
+	for (size_t i = 0; i < parentPairsAmount; i++)
+	{
+		vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
+		vector<Chromosome *> addedOffspring = createOffspringByUniformCrossover(parents);
+		addedOffspring = performMutation(addedOffspring);
+		for each (Chromosome * addedChild in addedOffspring)
+		{
+			offspring.push_back(addedChild);
+		}
+	}
 	for each (Chromosome * child in offspring)
 	{
 		chromosomes.push_back(child);
 	}
+	placeSelectedReproducingParentsBack();
 }
 
 vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgorithm()
@@ -87,9 +97,10 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
     const int poolSize = getPoolSize();
     int parent1Index = indexOfBestChromosomeByTournamentSelection(poolSize);
     Chromosome * parent1 = removeAndReturnChromosomeAt(parent1Index);
+	parentsSelectedForReproducingAtAnIteration.push_back(parent1);
     int parent2Index = indexOfBestChromosomeByTournamentSelection(poolSize);
-    Chromosome * parent2 = chromosomes.at(parent2Index);
-    chromosomes.push_back(parent1);
+    Chromosome * parent2 = removeAndReturnChromosomeAt(parent2Index);
+	parentsSelectedForReproducingAtAnIteration.push_back(parent2);
 
     vector<Chromosome *> parentPair;
     parentPair.push_back(parent1);
@@ -191,6 +202,15 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
         }
     }
 	return mutatedChildren;
+}
+
+void GeneticAlgorithm::placeSelectedReproducingParentsBack()
+{
+	for each (Chromosome * parent in parentsSelectedForReproducingAtAnIteration)
+	{
+		chromosomes.push_back(parent);
+	}
+	parentsSelectedForReproducingAtAnIteration.clear();
 }
 
 void GeneticAlgorithm::sortChromosomesFromMostFittestToLowest()

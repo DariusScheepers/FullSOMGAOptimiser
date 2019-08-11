@@ -15,6 +15,8 @@ class GeneticAlgorithm
         GAConfigurations * configurations;
         vector<Chromosome *> chromosomes;
 
+		vector<Chromosome *> parentsSelectedForReproducingAtAnIteration;
+
         void initialiseChromosomes();
 		void setAllChromosomesFitness();
         void runExperimentAndCalculateFitnessConcurrently();
@@ -27,6 +29,7 @@ class GeneticAlgorithm
         Chromosome * removeAndReturnChromosomeAt(int index);
         vector<Chromosome *> createOffspringByUniformCrossover(vector<Chromosome *>);
 		vector<Chromosome *> performMutation(vector<Chromosome *> offspring);
+		void placeSelectedReproducingParentsBack();
         void sortChromosomesFromMostFittestToLowest();
         void removeWeakestChromosomes();
 
