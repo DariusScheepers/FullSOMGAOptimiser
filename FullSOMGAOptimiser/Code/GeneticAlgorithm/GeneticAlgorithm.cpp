@@ -73,9 +73,9 @@ void GeneticAlgorithm::calculateFitness(Chromosome * chromosome)
 
 void GeneticAlgorithm::generateOffSpring()
 {
-	const int parentPairsAmount = ((float)chromosomes.size() / (float)2) - 1;
+	const int parentPairsAmount = ((float)chromosomes.size() / (float)2) - 2;
 	vector<Chromosome *> offspring;
-	for (size_t i = 0; i < parentPairsAmount; i++)
+	for (size_t i = 0; i < parentPairsAmount || chromosomes.size() < 2; i++)
 	{
 		vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
 		vector<Chromosome *> addedOffspring = createOffspringByUniformCrossover(parents);
