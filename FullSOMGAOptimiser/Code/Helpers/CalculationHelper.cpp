@@ -2,7 +2,6 @@
 
 CalculationHelper::CalculationHelper()
 {
-
 }
 
 CalculationHelper::~CalculationHelper()
@@ -132,13 +131,22 @@ float CalculationHelper::normaliseValue(float value, float min, float max)
 
 float CalculationHelper::getRandomFloat(float minValue, float maxValue)
 {
-	srand(time(0));
+	float random = ((float)rand()) / (float)RAND_MAX;
 
-	default_random_engine generator;
-	uniform_real_distribution<float> distribution(minValue, maxValue);
-	return distribution(generator);
-	//float random = ((float)rand()) / (float)RAND_MAX;
-	//float diff = maxValue - minValue;
-	//float r = random * diff;
-	//return minValue + r;
+	// generate (in your case) a float between 0 and (4.5-.78)
+	// then add .78, giving you a float between .78 and 4.5
+	float range = maxValue - minValue;
+	float result = (random*range) + minValue;
+	return result;
+}
+
+int CalculationHelper::getRandomInt(int minValue, int maxValue)
+{
+	int random = ((int)rand()) / (int)RAND_MAX;
+
+	// generate (in your case) a float between 0 and (4.5-.78)
+	// then add .78, giving you a float between .78 and 4.5
+	int range = maxValue - minValue;
+	int result = (random*range) + minValue;
+	return result;
 }
