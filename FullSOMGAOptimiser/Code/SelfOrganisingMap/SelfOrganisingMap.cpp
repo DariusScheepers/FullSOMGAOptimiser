@@ -65,15 +65,13 @@ void SelfOrganisingMap::createNeuronMap()
 
 InputVector * SelfOrganisingMap::selectTrainingVector()
 {
-	CalculationHelper calculations;
 	int trainingSetSize = configurations->getTrainingSet().size() - 1;
-	const int randomIndex = calculations.getRandomInt(0, trainingSetSize);
+	const int randomIndex = configurations->calculations->getRandomInt(0, trainingSetSize);
     return configurations->getTrainingVectorAt(randomIndex);
 }
 
 Neuron * SelfOrganisingMap::getBestMatchingUnit(InputVector* selectedTrainingVector)
 {
-	CalculationHelper calculations;
 	Neuron * bmu;
 	float closestDistance = numeric_limits<float>::max();
 	for (size_t i = 0; i < rows; i++)
@@ -81,7 +79,7 @@ Neuron * SelfOrganisingMap::getBestMatchingUnit(InputVector* selectedTrainingVec
 		for (size_t j = 0; j < columns; j++)
 		{
 			Neuron * currentCandidate = neuronMap.at(i).at(j);
-			const float currentDistance = calculations.euclidianDistance(
+			const float currentDistance = configurations->calculations->euclidianDistance(
 				currentCandidate->getWeights(),
 				selectedTrainingVector->getInputValues()
 			);
@@ -229,11 +227,10 @@ void SelfOrganisingMap::printEndNeuronMap()
 
 vector<float> SelfOrganisingMap::adjustedWeightByHypercube(vector<float> vector1, vector<float> vector2, int max, int index)
 {
-    CalculationHelper calculations;
     const float scalar = ((float)index - 1) / ((float)max - 1);
-    const vector<float> differenceInVector1And2 = calculations.differenceBetweenVectors(vector1, vector2);
-    const vector<float> term1 = calculations.scalarTimesVector(scalar, differenceInVector1And2);
-    const vector<float> result = calculations.sumOfVectors(term1, vector2);
+    const vector<float> differenceInVector1And2 = configurations->calculations->differenceBetweenVectors(vector1, vector2);
+    const vector<float> term1 = configurations->calculations->scalarTimesVector(scalar, differenceInVector1And2);
+    const vector<float> result = configurations->calculations->sumOfVectors(term1, vector2);
 	return result;
 }
 

@@ -40,14 +40,6 @@ float WeightCalculations::neighbourhoodFunctionSmoothGaussianKernel()
     currentNeuronCoordinates.push_back(currentNeuron->getYCoordinate());
     CalculationHelper calculations;
 
-
-
-
-
-
-
-
-
     const float upperBracketValue = pow(calculations.magnitudeOfVector(calculations.differenceBetweenVectors(bmuCoordinates, currentNeuronCoordinates)), 2);
     const float lowerBracketValue = 2 * pow(newKernelWidth, 2);
     const float wholeBrackerValue = -1 * (upperBracketValue / lowerBracketValue);

@@ -31,8 +31,7 @@ float Chromosome::getGeneRandomValue(size_t index) {
 	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
     float minValue = genesValueRanges.at(index)[0];
     float maxValue = genesValueRanges.at(index)[1];
-	CalculationHelper calculations;
-	return calculations.getRandomFloat(minValue, maxValue);
+	return configurations->calculations->getRandomFloat(minValue, maxValue);
 }
 
 void Chromosome::setFitnessValue(float fitnessValue)

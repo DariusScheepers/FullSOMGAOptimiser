@@ -38,8 +38,10 @@ class SOMConfigurations
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
     public:
-        SOMConfigurations(int, int, matrix);
+        SOMConfigurations(int, int, matrix, CalculationHelper *);
         ~SOMConfigurations();
+
+		CalculationHelper * calculations;
 
         int getMaxEpochs();
         matrix getDataSet();
