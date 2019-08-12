@@ -12,6 +12,21 @@ SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matr
 
 SOMConfigurations::~SOMConfigurations()
 {
+	for (size_t i = 0; i < trainingSet.size(); i++)
+	{
+		InputVector * deletingVector = trainingSet.at(i);
+		delete deletingVector;
+	}
+	trainingSet.clear();
+	trainingSet.shrink_to_fit();
+	for (size_t i = 0; i < dataSet.size(); i++)
+	{
+		vector<float> dataSetRow = dataSet.at(i);
+		dataSetRow.clear();
+		dataSetRow.shrink_to_fit();
+	}
+	dataSet.clear();
+	dataSet.shrink_to_fit();
 }
 
 int SOMConfigurations::getMaxEpochs()

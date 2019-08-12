@@ -15,6 +15,12 @@ SelfOrganisingMap::~SelfOrganisingMap()
 {
 	for (size_t i = 0; i < neuronMap.size(); i++)
 	{
+		vector<Neuron *> neuronMapRow = neuronMap.at(i);
+		for (size_t j = 0; j < neuronMapRow.size(); j++)
+		{
+			Neuron * deletingNeuron = neuronMapRow.at(j);
+			delete deletingNeuron;
+		}
 		neuronMap.at(i).clear();
 		neuronMap.at(i).shrink_to_fit();
 	}

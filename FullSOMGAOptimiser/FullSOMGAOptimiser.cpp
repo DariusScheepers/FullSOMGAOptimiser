@@ -3,6 +3,10 @@
 
 #include "FullSOMGAOptimiser.h"
 
+// #define _CRTDBG_MAP_ALLOC
+// #include <stdlib.h>
+// #include <crtdbg.h>
+
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
 	switch (somConfigValue)
@@ -162,14 +166,17 @@ int main(int argc, char ** argv)
 	{
 		SelfOrganisingMap * selfOrganisingMap = getSelfOrganisingMap(somConfigurationFileValues);
 		selfOrganisingMap->runSelfOrganisingMap();
+		delete selfOrganisingMap;
 	}
 	else
 	{
 		GeneticAlgorithm * geneticAlgorithm = getGeneticAlgorithm(somConfigurationFileValues);
 		geneticAlgorithm->runGeneticAlgorithm();
+		delete geneticAlgorithm;
 	}
 
 	cout << "Finished Project" << endl;
+	// _CrtDumpMemoryLeaks();
 	int a;
 	cin >> a;
 	return 0;
