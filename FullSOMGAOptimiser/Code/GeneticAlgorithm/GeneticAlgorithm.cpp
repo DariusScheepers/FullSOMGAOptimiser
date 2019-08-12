@@ -206,6 +206,7 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
 			}  
 			mutatedChildren.at(i)->setGene(index++, newGene);
         }
+		delete child;
     }
 	return mutatedChildren;
 }

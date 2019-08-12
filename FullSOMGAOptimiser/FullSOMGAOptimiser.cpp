@@ -3,10 +3,6 @@
 
 #include "FullSOMGAOptimiser.h"
 
-// #define _CRTDBG_MAP_ALLOC
-// #include <stdlib.h>
-// #include <crtdbg.h>
-
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
 	switch (somConfigValue)
