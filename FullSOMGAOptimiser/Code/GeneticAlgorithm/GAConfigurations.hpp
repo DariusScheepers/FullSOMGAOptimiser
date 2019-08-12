@@ -23,17 +23,20 @@ class GAConfigurations
         
         void setExactRangesOnGenes();
     public:
-        GAConfigurations(
-            unsigned int chromosomePopulationSize,
-            unsigned int iterations,
-            unsigned int genesAmount,
-            vector<vector<float>>geneValueRanges,
-            vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
-            usint crossoverProbability,
-            usint mutationProbability,
+		GAConfigurations(
+			unsigned int chromosomePopulationSize,
+			unsigned int iterations,
+			unsigned int genesAmount,
+			vector<vector<float>>geneValueRanges,
+			vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
+			usint crossoverProbability,
+			usint mutationProbability,
 			usint selectionCutOffPercentage,
-			SOMConfigurations * targetExperimentConfigurations
+			SOMConfigurations * targetExperimentConfigurations,
+			CalculationHelper * calculations
         );
+
+		CalculationHelper * calculations;
 
         void setChromosomePopulationSize(unsigned int chromosomePopulationSize);
         void setIterations(unsigned int iterations);

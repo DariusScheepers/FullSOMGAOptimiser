@@ -116,8 +116,7 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
 
 int GeneticAlgorithm::getPoolSize()
 {
-	CalculationHelper calculations;
-	const float decimalSelectionCutOffSize = calculations.percentageToFloat(configurations->getSelectionCutOffPercentage());
+	const float decimalSelectionCutOffSize = configurations->calculations->percentageToFloat(configurations->getSelectionCutOffPercentage());
 	const int result = static_cast<int> (decimalSelectionCutOffSize * (float)chromosomes.size());
 	return result;
 }
@@ -125,12 +124,11 @@ int GeneticAlgorithm::getPoolSize()
 int GeneticAlgorithm::indexOfBestChromosomeByTournamentSelection(int poolSize)
 {
 	int populationSize = chromosomes.size() - 1;
-	CalculationHelper calculations;
     int bestChromosomeIndex;
     float bestFitness = numeric_limits<float>::max();
     for (size_t i = 0; i < poolSize; i++)
     {
-        const int randomIndex = calculations.getRandomInt(0, populationSize);
+        const int randomIndex = configurations->calculations->getRandomInt(0, populationSize);
 
         Chromosome * pickedChromosome = chromosomes.at(randomIndex);
         if (pickedChromosome->getFitnessValue() < bestFitness)
@@ -152,15 +150,13 @@ Chromosome * GeneticAlgorithm::removeAndReturnChromosomeAt(int index)
 
 vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<Chromosome *> parents)
 {
-	CalculationHelper calculations;
-
     Chromosome * child1 = new Chromosome(configurations);
     Chromosome * child2 = new Chromosome(configurations);
     
     const unsigned int childGenesAmount = configurations->getGenesAmount();
     for (size_t i = 0; i < childGenesAmount; i++)
     {
-		int randomNumber = calculations.getRandomInt(0, 100);
+		int randomNumber = configurations->calculations->getRandomInt(0, 100);
         float newChildGene1;
         float newChildGene2;
         if (randomNumber > 50)
@@ -185,8 +181,6 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
 
 vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offspring)
 {
-	CalculationHelper calculations;
-
 	vector<Chromosome *> mutatedChildren;
 	mutatedChildren.push_back(new Chromosome(configurations));
 	mutatedChildren.push_back(new Chromosome(configurations));
@@ -198,7 +192,7 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
         int index = 0;
         for (float gene : child->getGenes())
         {
-			int randomNumber = calculations.getRandomInt(0, 100);
+			int randomNumber = configurations->calculations->getRandomInt(0, 100);
 			float newGene = child->getGene(index);
             if (randomNumber <= mutationProbability)
             {

@@ -3,6 +3,8 @@
 
 #include "FullSOMGAOptimiser.h"
 
+CalculationHelper * calculations;
+
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
 	switch (somConfigValue)
@@ -96,7 +98,7 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
 	vector<vector<float>> dataSet = readInput.readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
-	return new SOMConfigurations(trainingSetPortion, dataSet);
+	return new SOMConfigurations(trainingSetPortion, dataSet, calculations);
 }
 
 SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
@@ -147,7 +149,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 		crossoverProbability,
 		mutationProbability,
 		selectionCutOffSize,
-		somConfigurationsValues
+		somConfigurationsValues,
+		calculations
 	);
 
 	return new GeneticAlgorithm(gaConfiguration);
@@ -158,6 +161,7 @@ int main(int argc, char ** argv)
 	printCommandLineArguments(argc, argv);
 
 	ReadInput readInput;
+	calculations = new CalculationHelper();
 
 	vector<string> somConfigurationFileValues = readInput.readSOMConfig();
 	vector<string> arguments = readInput.readArguments();

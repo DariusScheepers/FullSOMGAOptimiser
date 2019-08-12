@@ -1,10 +1,9 @@
 #include "SOMConfigurations.hpp"
 
-SOMConfigurations::SOMConfigurations(int trainingSetPortion, matrix dataSet)
+SOMConfigurations::SOMConfigurations(int trainingSetPortion, matrix dataSet, CalculationHelper * calculations)
 {
-	CalculationHelper calculations;
     SOMConfigurations::trainingSetPortion = trainingSetPortion;
-    SOMConfigurations::dataSet = calculations.normaliseDataSet(dataSet);
+    SOMConfigurations::dataSet = calculations->normaliseDataSet(dataSet);
     createTrainingSet();
 	findCornerVectors();
 }
@@ -41,10 +40,9 @@ int SOMConfigurations::getTrainingSetPortion()
 
 void SOMConfigurations::createTrainingSet()
 {
-    CalculationHelper calculations;
     matrix inputData = dataSet;
     random_shuffle(inputData.begin(), inputData.end());
-    const int trainingSetSize = static_cast<int>(inputData.size() * calculations.percentageToFloat(trainingSetPortion));
+    const int trainingSetSize = static_cast<int>(inputData.size() * calculations->percentageToFloat(trainingSetPortion));
     inputData.resize(trainingSetSize);
     trainingSet = convertMatrixToInputVectors(dataSet);
 }
@@ -82,7 +80,6 @@ void SOMConfigurations::findCornerVectors()
 
 vector<InputVector*> SOMConfigurations::findTopLeftAndBottomRightTrainingVectors()
 {
-	CalculationHelper calculations;
 	vector<InputVector *> result(2);
 	float maxDistance = 0;
 	const size_t trainingVectorsSize = trainingSet.size();
@@ -96,7 +93,7 @@ vector<InputVector*> SOMConfigurations::findTopLeftAndBottomRightTrainingVectors
 				continue;
 			}
 			InputVector * secondSelectedTrainingVector = trainingSet.at(j);
-			const float currentDistance = calculations.euclidianDistance(
+			const float currentDistance = calculations->euclidianDistance(
 				firstSelectedTrainingVector->getInputValues(),
 				secondSelectedTrainingVector->getInputValues()
 			);
@@ -120,12 +117,11 @@ InputVector * SOMConfigurations::findBottomLeftTrainingVector(InputVector * vect
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
 		InputVector * vector3 = trainingSet.at(i);
-		CalculationHelper calculations;
-		const float distanceBetweenVector1And3 = calculations.euclidianDistance(
+		const float distanceBetweenVector1And3 = calculations->euclidianDistance(
 			vector1->getInputValues(),
 			vector3->getInputValues()
 		);
-		const float distanceBetweenVector2And3 = calculations.euclidianDistance(
+		const float distanceBetweenVector2And3 = calculations->euclidianDistance(
 			vector2->getInputValues(),
 			vector3->getInputValues()
 		);
@@ -147,16 +143,15 @@ InputVector * SOMConfigurations::findTopRightTrainingVector(InputVector * vector
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
 		InputVector * vector4 = trainingSet.at(i);
-		CalculationHelper calculations;
-		const float distanceBetweenVector1And4 = calculations.euclidianDistance(
+		const float distanceBetweenVector1And4 = calculations->euclidianDistance(
 			vector1->getInputValues(),
 			vector4->getInputValues()
 		);
-		const float distanceBetweenVector2And4 = calculations.euclidianDistance(
+		const float distanceBetweenVector2And4 = calculations->euclidianDistance(
 			vector2->getInputValues(),
 			vector4->getInputValues()
 		);
-		const float distanceBetweenVector3And4 = calculations.euclidianDistance(
+		const float distanceBetweenVector3And4 = calculations->euclidianDistance(
 			vector3->getInputValues(),
 			vector4->getInputValues()
 		);

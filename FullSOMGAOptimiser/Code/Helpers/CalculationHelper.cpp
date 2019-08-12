@@ -2,6 +2,7 @@
 
 CalculationHelper::CalculationHelper()
 {
+	srand(time(NULL));
 }
 
 CalculationHelper::~CalculationHelper()

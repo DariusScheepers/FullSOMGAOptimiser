@@ -37,8 +37,10 @@ class SOMConfigurations
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
     public:
-        SOMConfigurations(int, matrix);
+        SOMConfigurations(int, matrix, CalculationHelper *);
         ~SOMConfigurations();
+
+		CalculationHelper * calculations;
 
         matrix getDataSet();
         int getTrainingSetPortion();

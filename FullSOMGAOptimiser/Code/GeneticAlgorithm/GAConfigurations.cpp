@@ -9,7 +9,8 @@ GAConfigurations::GAConfigurations(
     usint crossoverProbability,
     usint mutationProbability,
 	usint selectionCutOffPercentage,
-	SOMConfigurations * targetExperimentConfigurations
+	SOMConfigurations * targetExperimentConfigurations,
+	CalculationHelper * calculations
 )
 {
     GAConfigurations::chromosomePopulationSize = chromosomePopulationSize;
@@ -21,6 +22,7 @@ GAConfigurations::GAConfigurations(
     GAConfigurations::mutationProbability = mutationProbability;
 	GAConfigurations::selectionCutOffPercentage = selectionCutOffPercentage;
 	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
+	GAConfigurations::calculations = calculations;
 
     setExactRangesOnGenes();
 }
