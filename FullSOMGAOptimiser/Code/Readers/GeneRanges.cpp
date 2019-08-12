@@ -7,6 +7,17 @@ GeneRanges::GeneRanges(vector<string> values)
 
 GeneRanges::~GeneRanges()
 {
+	for (size_t i = 0; i < rangesValues.size(); i++)
+	{
+		rangesValues.at(i).clear();
+		rangesValues.at(i).shrink_to_fit();
+		rangesInclusive.at(i).clear();
+		rangesInclusive.at(i).shrink_to_fit();
+	}
+	rangesValues.clear();
+	rangesValues.shrink_to_fit();
+	rangesInclusive.clear();
+	rangesInclusive.shrink_to_fit();
 }
 
 void GeneRanges::handleValues(vector<string> values)

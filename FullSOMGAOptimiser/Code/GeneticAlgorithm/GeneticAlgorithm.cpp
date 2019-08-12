@@ -7,7 +7,13 @@ GeneticAlgorithm::GeneticAlgorithm(GAConfigurations * configurations) //
 
 GeneticAlgorithm::~GeneticAlgorithm()
 {
-    chromosomes.resize(0);
+	for (size_t i = 0; i < chromosomes.size(); i++)
+	{
+		Chromosome * deletingChromosome = chromosomes.at(i);
+		delete deletingChromosome;
+	}
+	chromosomes.clear();
+	chromosomes.resize(0);
 }
 
 void GeneticAlgorithm::runGeneticAlgorithm()
@@ -234,7 +240,12 @@ void GeneticAlgorithm::removeWeakestChromosomes()
 	{
 		return;
 	}
-	chromosomes.erase(chromosomes.begin() + requiredPopulationSize, chromosomes.begin() + currentChromosomesSize - 1);
+	// chromosomes.erase(chromosomes.begin() + requiredPopulationSize, chromosomes.begin() + currentChromosomesSize - 1);
+	for (size_t i = requiredPopulationSize; i < chromosomes.size(); i++)
+	{
+		Chromosome * deletingChromosome = chromosomes.at(i);
+		delete deletingChromosome;
+	}
     chromosomes.resize(requiredPopulationSize);
     chromosomes.shrink_to_fit();
 }

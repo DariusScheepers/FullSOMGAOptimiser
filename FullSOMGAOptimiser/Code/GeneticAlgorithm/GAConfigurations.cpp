@@ -27,7 +27,7 @@ GAConfigurations::GAConfigurations(
 
 GAConfigurations::~GAConfigurations()
 {
-
+	delete targetExperimentConfigurations;
 }
 
 void GAConfigurations::setChromosomePopulationSize(unsigned int chromosomePopulationSize)
