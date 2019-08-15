@@ -144,6 +144,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 	unsigned short int selectionCutOffSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::selectionCutOffSize)));
 	SOMConfigurations * somConfigurationsValues = getSOMConfigurations(somConfigValues);
 
+	delete gaGenesConfigurationFileValues;
+
 	GAConfigurations * gaConfiguration = new GAConfigurations(
 		chromosomePopulationSize,
 		iterations,

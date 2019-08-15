@@ -14,6 +14,7 @@ GeneticAlgorithm::~GeneticAlgorithm()
 	}
 	chromosomes.clear();
 	chromosomes.resize(0);
+	delete configurations;
 }
 
 void GeneticAlgorithm::runGeneticAlgorithm()
