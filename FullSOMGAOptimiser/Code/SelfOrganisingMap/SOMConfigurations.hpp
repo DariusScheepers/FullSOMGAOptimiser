@@ -25,6 +25,8 @@ class SOMConfigurations
         int trainingSetPortion;
         matrix dataSet;
 		inputVectors trainingSet;
+		int slidingWindowOffset;
+		float stoppingCriteriaThreshhold;
 
 		InputVector * topLeftTrainingVector;
 		InputVector * bottomRightTrainingVector;
@@ -37,8 +39,9 @@ class SOMConfigurations
 		vector<InputVector*> findTopLeftAndBottomRightTrainingVectors();
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
+
     public:
-        SOMConfigurations(int, int, matrix, CalculationHelper *);
+        SOMConfigurations(int, int, matrix, int, float, CalculationHelper *);
         ~SOMConfigurations();
 
 		CalculationHelper * calculations;
@@ -49,6 +52,10 @@ class SOMConfigurations
 		inputVectors getTrainingSet();
 		InputVector * getTrainingVectorAt(int);
 		InputVector * getCornerVectorAt(cornerVectors);
+		float getStoppingCriteriaThreshhold();
+		int getSlidingWindowOffset();
+		InputVector * sliceInputVectorAtIndex(int);
+		void addTrainingVector(InputVector *);
 };
 
 #endif

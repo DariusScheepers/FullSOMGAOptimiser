@@ -24,6 +24,8 @@ enum class somConfigurations {
 	dataSeperator,
 	maximumTrainingIterations,
 	traningSetPortion,
+	slidingWindowOffset,
+	stoppingCriteriaThreshhold,
 	defaultRows,
 	defaultColumns,
 	defaultLearningRate,

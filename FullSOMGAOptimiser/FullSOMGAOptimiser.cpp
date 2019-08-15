@@ -17,18 +17,22 @@ int getSOMConfigIndex(somConfigurations somConfigValue)
 			return 2;
 		case somConfigurations::traningSetPortion:
 			return 3;
-		case somConfigurations::defaultRows:
+		case somConfigurations::slidingWindowOffset:
 			return 4;
-		case somConfigurations::defaultColumns:
+		case somConfigurations::stoppingCriteriaThreshhold:
 			return 5;
-		case somConfigurations::defaultLearningRate:
+		case somConfigurations::defaultRows:
 			return 6;
-		case somConfigurations::defaultKernelWidth:
+		case somConfigurations::defaultColumns:
 			return 7;
-		case somConfigurations::defaultLearningRateDecay:
+		case somConfigurations::defaultLearningRate:
 			return 8;
-		case somConfigurations::defaultKernelWidthDecay:
+		case somConfigurations::defaultKernelWidth:
 			return 9;
+		case somConfigurations::defaultLearningRateDecay:
+			return 10;
+		case somConfigurations::defaultKernelWidthDecay:
+			return 11;
 	default:
 		break;
 	}
@@ -97,8 +101,10 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	vector<vector<float>> dataSet = readInput.readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
+	const int slidingWindowOffset = stoi(values.at(getSOMConfigIndex(somConfigurations::slidingWindowOffset)));
+	const float stoppingCriteriaThreshhold = stof(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
 
-	return new SOMConfigurations(maxEpochs, trainingSetPortion, dataSet, calculations);
+	return new SOMConfigurations(maxEpochs, trainingSetPortion, dataSet, slidingWindowOffset, stoppingCriteriaThreshhold, calculations);
 }
 
 SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)

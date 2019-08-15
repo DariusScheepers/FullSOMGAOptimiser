@@ -1,10 +1,12 @@
 #include "SOMConfigurations.hpp"
 
-SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matrix dataSet, CalculationHelper * calculations)
+SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matrix dataSet, int slidingWindowOffset, float stoppingCriteriaThreshhold, CalculationHelper * calculations)
 {
     SOMConfigurations::maxEpochs = maxEpochs;
 	SOMConfigurations::trainingSetPortion = trainingSetPortion;
 	SOMConfigurations::calculations = calculations;
+	SOMConfigurations::slidingWindowOffset = slidingWindowOffset;
+	SOMConfigurations::stoppingCriteriaThreshhold = stoppingCriteriaThreshhold;
     SOMConfigurations::dataSet = calculations->normaliseDataSet(dataSet);
     createTrainingSet();
 	findCornerVectors();
@@ -50,7 +52,7 @@ void SOMConfigurations::createTrainingSet()
     random_shuffle(inputData.begin(), inputData.end());
     const int trainingSetSize = static_cast<int>(inputData.size() * calculations->percentageToFloat(trainingSetPortion));
     inputData.resize(trainingSetSize);
-    trainingSet = convertMatrixToInputVectors(dataSet);
+    trainingSet = convertMatrixToInputVectors(inputData);
 }
 
 inputVectors SOMConfigurations::convertMatrixToInputVectors(matrix floatSet)
@@ -186,5 +188,28 @@ InputVector * SOMConfigurations::getCornerVectorAt(cornerVectors cornerVector)
 		default:
 			break;
 	}
+}
+
+float SOMConfigurations::getStoppingCriteriaThreshhold()
+{
+	return stoppingCriteriaThreshhold;
+}
+
+int SOMConfigurations::getSlidingWindowOffset()
+{
+	return slidingWindowOffset;
+}
+
+InputVector * SOMConfigurations::sliceInputVectorAtIndex(int index)
+{
+	InputVector * removedInputVector = trainingSet.at(index);
+	trainingSet.at(index) = trainingSet.back();
+	trainingSet.resize(trainingSet.size() - 1);
+	return removedInputVector;
+}
+
+void SOMConfigurations::addTrainingVector(InputVector * inputVector)
+{
+	trainingSet.push_back(inputVector);
 }
 

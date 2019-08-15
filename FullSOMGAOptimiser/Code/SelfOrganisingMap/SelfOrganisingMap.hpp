@@ -36,17 +36,22 @@ class SelfOrganisingMap
 
         void createNeuronMap();
         InputVector * selectTrainingVector();
-        Neuron * getBestMatchingUnit(InputVector*);
+		vector<InputVector *> selectedTraningVectors;
+        Neuron * getBestMatchingUnit(InputVector *);
         void updateEachNeuronWeights(InputVector *, Neuron *);
         void setNewLearningRateAndKernelWidth(int);
         float calculateExponenialDecay(float intialValue, int iteration, float decayConstant);
 
         void performHypercubeWeightInitialization();
         vector<float> adjustedWeightByHypercube(vector<float>, vector<float>, int, int);
+		float calculateStandardDeviationOfQE(int slidingWindowSize, int iteration);
+		float calculateDecreaseInQE(int slidingWindowSize);
+		void addToQEHistory(float, int);
+		vector<float> quantizationErrorHistory;
 
 		void printNeuronMap();
 		void printInitialNeuronMap();
-		void printQuantizationError();
+		void printQuantizationError(int);
 		void printEndNeuronMap();
        
     public:

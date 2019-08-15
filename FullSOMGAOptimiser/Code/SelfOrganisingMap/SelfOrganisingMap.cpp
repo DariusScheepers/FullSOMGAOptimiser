@@ -32,14 +32,17 @@ void SelfOrganisingMap::runSelfOrganisingMap()
 {
 	createNeuronMap();
 	// printInitialNeuronMap();
-    const int maxIterations = configurations->getMaxEpochs();
-    for (iteration = 0; iteration < maxIterations; iteration++)
+	const float stoppingCriteriaThreshhold = configurations->getStoppingCriteriaThreshhold();
+	const float slidingWindowSize = configurations->getSlidingWindowOffset();
+    // const int maxIterations = configurations->getMaxEpochs();
+    for (iteration = 0; stoppingCriteriaThreshhold < calculateStandardDeviationOfQE(slidingWindowSize, iteration); iteration++)
     {
         setNewLearningRateAndKernelWidth(iteration);
         InputVector * selectedVector = selectTrainingVector();
         Neuron * bestMatchingUnit = getBestMatchingUnit(selectedVector);
         updateEachNeuronWeights(selectedVector, bestMatchingUnit);
-		printQuantizationError();
+		addToQEHistory(calculateQuantizationError(), slidingWindowSize);
+		printQuantizationError(slidingWindowSize);
     }
 	// printEndNeuronMap();
 }
@@ -65,9 +68,23 @@ void SelfOrganisingMap::createNeuronMap()
 
 InputVector * SelfOrganisingMap::selectTrainingVector()
 {
+	if (configurations->getTrainingSet().size() == 0)
+	{
+		for each (InputVector * trainingVector in selectedTraningVectors)
+		{
+			configurations->addTrainingVector(trainingVector);
+		}
+		selectedTraningVectors.clear();
+	}
+	if (configurations->getTrainingSet().size() == 1)
+	{
+		int a = 0;
+	}
 	int trainingSetSize = configurations->getTrainingSet().size() - 1;
 	const int randomIndex = configurations->calculations->getRandomInt(0, trainingSetSize);
-    return configurations->getTrainingVectorAt(randomIndex);
+	InputVector * chosenInputVector = configurations->sliceInputVectorAtIndex(randomIndex);
+	selectedTraningVectors.push_back(chosenInputVector);
+    return chosenInputVector;
 }
 
 Neuron * SelfOrganisingMap::getBestMatchingUnit(InputVector* selectedTrainingVector)
@@ -212,10 +229,17 @@ void SelfOrganisingMap::printInitialNeuronMap() {
 	cout << endl << endl;
 }
 
-void SelfOrganisingMap::printQuantizationError()
+void SelfOrganisingMap::printQuantizationError(int slidingWindowSize)
 {
+	const float quantizationError = quantizationErrorHistory.back();
 	cout << "Quantization Error at Iteration: " << iteration << endl;
-	cout << "\t " << calculateQuantizationError() << endl;
+	cout << "\t " << quantizationError << endl;
+
+	if (iteration % slidingWindowSize == 0)
+	{
+		cout << "Smooth Quantization Error: " << endl;
+		cout << "\t" << calculateDecreaseInQE(slidingWindowSize) << endl;
+	}
 }
 
 void SelfOrganisingMap::printEndNeuronMap()
@@ -238,12 +262,65 @@ float SelfOrganisingMap::calculateQuantizationError()
 {
     CalculationHelper calculations;
     float sum = 0;
-    const auto trainingVectorsSize = configurations->getTrainingSet().size();
+	vector<InputVector *> allTrainingVectors;
+	for (size_t i = 0; i < configurations->getTrainingSet().size(); i++)
+	{
+		InputVector * currentTrainingVector = configurations->getTrainingSet().at(i);
+		allTrainingVectors.push_back(currentTrainingVector);
+	}
+	for (size_t i = 0; i < selectedTraningVectors.size(); i++)
+	{
+		InputVector * currentTrainingVector = selectedTraningVectors.at(i);
+		allTrainingVectors.push_back(currentTrainingVector);
+	}
+    const auto trainingVectorsSize = allTrainingVectors.size();
     for (size_t i = 0; i < trainingVectorsSize; i++)
     {
-        InputVector * currentTrainingVectors = configurations->getTrainingSet().at(i);
+        InputVector * currentTrainingVectors = allTrainingVectors.at(i);
         Neuron * bmu = getBestMatchingUnit(currentTrainingVectors);
         sum += calculations.euclidianDistance(currentTrainingVectors->getInputValues(), bmu->getWeights());
     }
     return sum / trainingVectorsSize;
+}
+
+void SelfOrganisingMap::addToQEHistory(float quantizationError, int slidingWindowSize)
+{
+	quantizationErrorHistory.push_back(quantizationError);
+	if (quantizationErrorHistory.size() > slidingWindowSize)
+	{
+		rotate(quantizationErrorHistory.begin(), quantizationErrorHistory.begin() + 1, quantizationErrorHistory.end());
+		quantizationErrorHistory.resize(slidingWindowSize);
+	}
+}
+
+float SelfOrganisingMap::calculateDecreaseInQE(int slidingWindowSize)
+{
+	float sum = 0.0;
+	for each (float qe in quantizationErrorHistory)
+	{
+		sum += qe;
+	}
+	const float result = sum / (float) slidingWindowSize;
+	return result;
+
+}
+
+float SelfOrganisingMap::calculateStandardDeviationOfQE(int slidingWindowSize, int iteration)
+{
+	if (iteration < slidingWindowSize)
+	{
+		return 9999;
+	}
+	float decreaseInQE = calculateDecreaseInQE(slidingWindowSize);
+	float sum = 0.0;
+
+	for each (float qe in quantizationErrorHistory)
+	{
+		const float differenceInQEAndDecreaseInQE = qe - decreaseInQE;
+		const float square = differenceInQEAndDecreaseInQE * differenceInQEAndDecreaseInQE;
+		sum += square;
+	}
+	const float average = sum / (float)(slidingWindowSize - 1);
+	const float result = sqrt(average);
+	return result;
 }
