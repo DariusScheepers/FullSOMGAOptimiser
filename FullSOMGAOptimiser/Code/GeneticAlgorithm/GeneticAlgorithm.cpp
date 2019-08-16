@@ -96,7 +96,6 @@ void GeneticAlgorithm::generateOffSpring()
 	{
 		chromosomes.push_back(child);
 	}
-	placeSelectedReproducingParentsBack();
 }
 
 vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgorithm()
@@ -104,10 +103,8 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
     const int poolSize = getPoolSize();
     int parent1Index = indexOfBestChromosomeByTournamentSelection(poolSize);
     Chromosome * parent1 = removeAndReturnChromosomeAt(parent1Index);
-	parentsSelectedForReproducingAtAnIteration.push_back(parent1);
     int parent2Index = indexOfBestChromosomeByTournamentSelection(poolSize);
     Chromosome * parent2 = removeAndReturnChromosomeAt(parent2Index);
-	parentsSelectedForReproducingAtAnIteration.push_back(parent2);
 
     vector<Chromosome *> parentPair;
     parentPair.push_back(parent1);
@@ -174,10 +171,19 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
         child2->setGene(i, newChildGene2);
     }
 
+	deleteChromosomes(parents);
     vector<Chromosome *> newChildren;
     newChildren.push_back(child1);
     newChildren.push_back(child2);
     return newChildren;
+}
+
+void GeneticAlgorithm::deleteChromosomes(vector<Chromosome *> deletingChromosomes)
+{
+	for each (Chromosome * deletingChromosome in deletingChromosomes)
+	{
+		delete deletingChromosome;
+	}
 }
 
 vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offspring)
@@ -204,15 +210,6 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
 		delete child;
     }
 	return mutatedChildren;
-}
-
-void GeneticAlgorithm::placeSelectedReproducingParentsBack()
-{
-	for each (Chromosome * parent in parentsSelectedForReproducingAtAnIteration)
-	{
-		chromosomes.push_back(parent);
-	}
-	parentsSelectedForReproducingAtAnIteration.clear();
 }
 
 void GeneticAlgorithm::sortChromosomesFromMostFittestToLowest()
