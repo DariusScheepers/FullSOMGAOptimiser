@@ -31,10 +31,10 @@ SelfOrganisingMap::~SelfOrganisingMap()
 void SelfOrganisingMap::runSelfOrganisingMap()
 {
 	createNeuronMap();
-	// printInitialNeuronMap();
+	printInitialNeuronMap();
 	const float stoppingCriteriaThreshhold = configurations->getStoppingCriteriaThreshhold();
 	const float slidingWindowSize = configurations->getSlidingWindowOffset();
-    // const int maxIterations = configurations->getMaxEpochs();
+    const int maxIterations = configurations->getMaxEpochs();
     for (iteration = 0; stoppingCriteriaThreshhold < calculateStandardDeviationOfQE(slidingWindowSize, iteration); iteration++)
     {
         setNewLearningRateAndKernelWidth(iteration);
@@ -42,9 +42,10 @@ void SelfOrganisingMap::runSelfOrganisingMap()
         Neuron * bestMatchingUnit = getBestMatchingUnit(selectedVector);
         updateEachNeuronWeights(selectedVector, bestMatchingUnit);
 		addToQEHistory(calculateQuantizationError(), slidingWindowSize);
+		// cout << "selected " << selectedTraningVectors.size() << " left " << configurations->getTrainingSet().size() << endl;
 		printQuantizationError(slidingWindowSize);
     }
-	// printEndNeuronMap();
+	printEndNeuronMap();
 }
 
 void SelfOrganisingMap::createNeuronMap()
@@ -262,24 +263,21 @@ float SelfOrganisingMap::calculateQuantizationError()
 {
     CalculationHelper calculations;
     float sum = 0;
-	vector<InputVector *> allTrainingVectors;
-	for (size_t i = 0; i < configurations->getTrainingSet().size(); i++)
-	{
-		InputVector * currentTrainingVector = configurations->getTrainingSet().at(i);
-		allTrainingVectors.push_back(currentTrainingVector);
-	}
-	for (size_t i = 0; i < selectedTraningVectors.size(); i++)
-	{
-		InputVector * currentTrainingVector = selectedTraningVectors.at(i);
-		allTrainingVectors.push_back(currentTrainingVector);
-	}
-    const auto trainingVectorsSize = allTrainingVectors.size();
-    for (size_t i = 0; i < trainingVectorsSize; i++)
+    const size_t trainingVectorsSizeForTrainingVectorsLeft = configurations->getTrainingSet().size();
+    for (size_t i = 0; i < trainingVectorsSizeForTrainingVectorsLeft; i++)
     {
-        InputVector * currentTrainingVectors = allTrainingVectors.at(i);
+        InputVector * currentTrainingVectors = configurations->getTrainingSet().at(i);
         Neuron * bmu = getBestMatchingUnit(currentTrainingVectors);
-        sum += calculations.euclidianDistance(currentTrainingVectors->getInputValues(), bmu->getWeights());
+        sum += configurations->calculations->euclidianDistance(currentTrainingVectors->getInputValues(), bmu->getWeights());
     }
+	const size_t trainingVectorsSizeForSelectedTrainingVectors = selectedTraningVectors.size();
+	for (size_t i = 0; i < trainingVectorsSizeForSelectedTrainingVectors; i++)
+	{
+		InputVector * currentTrainingVectors = selectedTraningVectors.at(i);
+		Neuron * bmu = getBestMatchingUnit(currentTrainingVectors);
+		sum += configurations->calculations->euclidianDistance(currentTrainingVectors->getInputValues(), bmu->getWeights());
+	}
+	const size_t trainingVectorsSize = trainingVectorsSizeForTrainingVectorsLeft + trainingVectorsSizeForSelectedTrainingVectors;
     return sum / trainingVectorsSize;
 }
 
