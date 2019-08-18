@@ -80,9 +80,9 @@ void GeneticAlgorithm::calculateFitness(Chromosome * chromosome)
 
 void GeneticAlgorithm::generateOffSpring()
 {
-	const int parentPairsAmount = ((float)chromosomes.size() / (float)2) - 2;
+	const int parentPairsAmount = (float)chromosomes.size() / (float)2;
 	vector<Chromosome *> offspring;
-	for (size_t i = 0; i < parentPairsAmount || chromosomes.size() < 2; i++)
+	for (size_t i = 0; i < parentPairsAmount; i++)
 	{
 		vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
 		vector<Chromosome *> addedOffspring = createOffspringByUniformCrossover(parents);
@@ -118,7 +118,7 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
 int GeneticAlgorithm::getPoolSize()
 {
 	const float decimalSelectionCutOffSize = configurations->calculations->percentageToFloat(configurations->getSelectionCutOffPercentage());
-	const int result = static_cast<int> (decimalSelectionCutOffSize * (float)chromosomes.size());
+	const int result = ceil(decimalSelectionCutOffSize * (float)chromosomes.size());
 	return result;
 }
 
