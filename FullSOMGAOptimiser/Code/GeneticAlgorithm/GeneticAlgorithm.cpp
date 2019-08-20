@@ -24,10 +24,15 @@ void GeneticAlgorithm::runGeneticAlgorithm()
     for (size_t i = 0; i < maxIterations; i++)
     {
 		setAllChromosomesFitness();
+		sortChromosomesFromMostFittestToLowest();
 		printCurrentBestChromosome(i);
-        generateOffSpring();
+		if (i < maxIterations - 1)
+		{
+			generateOffSpring();
+		}
     }
 	sortChromosomesFromMostFittestToLowest();
+	printCurrentBestChromosome(maxIterations);
 }
 
 void GeneticAlgorithm::initialiseChromosomes()

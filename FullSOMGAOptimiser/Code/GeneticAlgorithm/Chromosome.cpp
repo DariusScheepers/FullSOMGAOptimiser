@@ -18,7 +18,7 @@ Chromosome::~Chromosome()
 
 void Chromosome::intialiseGenes()
 {
-    const unsigned int genesPopulationAmount = configurations->getGenesAmount();
+    const unsigned int genesPopulationAmount = configurations->getGeneValueRanges().size();
     for (size_t i = 0; i < genesPopulationAmount; i++)
     {
         const float randomValue = getGeneRandomValue(i);
@@ -89,14 +89,6 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 	{
 		return;
 	}
-
-
-
-	fitnessValue = configurations->calculations->getRandomFloat(0, 100);
-	fitnessCalculated = true;
-	return;
-
-
 
 	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
