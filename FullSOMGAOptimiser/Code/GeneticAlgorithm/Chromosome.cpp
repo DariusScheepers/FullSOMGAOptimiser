@@ -90,8 +90,7 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 		return;
 	}
 
-	const float x = genes.at(0);
-	fitnessValue = computeRastrigin();
+	fitnessValue = computeSpherical();
 	fitnessCalculated = true;
 
 
@@ -116,7 +115,7 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 	//fitnessCalculated = true;
 }
 
-float Chromosome::computeRastrigin()
+float Chromosome::computeSpherical()
 {
 	const float M_PI = 3.14159;
 	const int maxIterations = genes.size();
@@ -125,10 +124,8 @@ float Chromosome::computeRastrigin()
 	{
 		const float geneX = genes.at(i);
 		float xSquare = pow(geneX, 2);
-		float cosFunc = 10.0 * cos(2.0 * M_PI * geneX);
-		float constant = 10.0;
 
-		sum += xSquare - cosFunc + constant;
+		sum += xSquare;
 	}
 	return sum;
 }

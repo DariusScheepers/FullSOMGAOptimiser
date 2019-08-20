@@ -39,7 +39,7 @@ class Chromosome
 
         void runAlgorithm(SOMConfigurations *);
 
-		float computeRastrigin();
+		float computeSpherical();
 
 };
 
