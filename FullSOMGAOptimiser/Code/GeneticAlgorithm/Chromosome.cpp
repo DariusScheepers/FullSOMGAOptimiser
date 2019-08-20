@@ -59,12 +59,33 @@ float Chromosome::getGene(int index)
     return genes.at(index);
 }
 
+float Chromosome::mutateGene(int index)
+{
+	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
+	const float geneValueRangeAtIndex = genesValueRanges.at(index)[1] - genesValueRanges.at(index)[0];
+	float currentGeneValue = genes.at(index);
+	const float mutationOffsetAsDecimal = configurations->calculations->percentageToFloat(configurations->getMutationOffsetPortion());
+	const float geneValueOffset = geneValueRangeAtIndex * mutationOffsetAsDecimal;
+	const float minValue = currentGeneValue - geneValueOffset;
+	const float maxValue = currentGeneValue + geneValueOffset;
+	const float newGeneValue = configurations->calculations->getRandomFloat(minValue, maxValue);
+}
+
 void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 {
 	if (fitnessCalculated)
 	{
 		return;
 	}
+
+
+
+	fitnessValue = configurations->calculations->getRandomFloat(0, 100);
+	fitnessCalculated = true;
+	return;
+
+
+
 	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
 	const float learningRate = genes.at(2);

@@ -152,12 +152,13 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
     Chromosome * child2 = new Chromosome(configurations);
     
     const unsigned int childGenesAmount = configurations->getGenesAmount();
+	const usint crossOverSplit = configurations->getCrossOverSplit();
     for (size_t i = 0; i < childGenesAmount; i++)
     {
 		int randomNumber = configurations->calculations->getRandomInt(0, 100);
         float newChildGene1;
         float newChildGene2;
-        if (randomNumber > 50)
+        if (randomNumber > crossOverSplit)
         {
             newChildGene1 = parents.at(0)->getGene(i);
             newChildGene2 = parents.at(1)->getGene(i);
@@ -203,7 +204,7 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
 			float newGene = child->getGene(index);
             if (randomNumber <= mutationProbability)
             {
-                newGene = child->getGeneRandomValue(index);
+                newGene = child->mutateGene(index);
 			}  
 			mutatedChildren.at(i)->setGene(index++, newGene);
         }

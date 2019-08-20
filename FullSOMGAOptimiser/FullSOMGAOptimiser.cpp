@@ -54,6 +54,10 @@ int getGAConfigIndex(gaConfigurations gaConfigValue)
 			return 4;
 		case gaConfigurations::selectionCutOffSize:
 			return 5;
+		case gaConfigurations::crossOverSplit:
+			return 6;
+		case gaConfigurations::mutationOffsetPortion:
+			return 7;
 	default:
 		break;
 	}
@@ -142,6 +146,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 	unsigned short int crossoverProbability = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::crossoverProbability)));
 	unsigned short int mutationProbability = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::mutationProbability)));
 	unsigned short int selectionCutOffSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::selectionCutOffSize)));
+	unsigned short int crossOverSplit = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::crossOverSplit)));
+	unsigned short int mutationOffsetPortion = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::mutationOffsetPortion)));
 	SOMConfigurations * somConfigurationsValues = getSOMConfigurations(somConfigValues);
 
 	delete gaGenesConfigurationFileValues;
@@ -155,6 +161,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 		crossoverProbability,
 		mutationProbability,
 		selectionCutOffSize,
+		crossOverSplit,
+		mutationOffsetPortion,
 		somConfigurationsValues,
 		calculations
 	);

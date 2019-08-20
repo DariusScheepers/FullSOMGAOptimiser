@@ -9,6 +9,8 @@ GAConfigurations::GAConfigurations(
     usint crossoverProbability,
     usint mutationProbability,
 	usint selectionCutOffPercentage,
+	usint crossOverSplit,
+	usint mutationOffsetPortion,
 	SOMConfigurations * targetExperimentConfigurations,
 	CalculationHelper * calculations
 )
@@ -21,6 +23,8 @@ GAConfigurations::GAConfigurations(
     GAConfigurations::crossoverProbability = crossoverProbability;
     GAConfigurations::mutationProbability = mutationProbability;
 	GAConfigurations::selectionCutOffPercentage = selectionCutOffPercentage;
+	GAConfigurations::crossOverSplit = crossOverSplit;
+	GAConfigurations::mutationOffsetPortion = mutationOffsetPortion;
 	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 	GAConfigurations::calculations = calculations;
 
