@@ -31,7 +31,7 @@ class Chromosome
         vector<float> getGenes();
         float getGene(int index);
         float getGeneRandomValue(size_t index);
-		float mutateGene(int index);
+		float mutateGene(size_t index);
 
         void runAlgorithm(SOMConfigurations *);
 

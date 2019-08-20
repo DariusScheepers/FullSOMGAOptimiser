@@ -24,11 +24,10 @@ void GeneticAlgorithm::runGeneticAlgorithm()
     for (size_t i = 0; i < maxIterations; i++)
     {
 		setAllChromosomesFitness();
-        sortChromosomesFromMostFittestToLowest();
-        removeWeakestChromosomes();
-        generateOffSpring();
 		printCurrentBestChromosome(i);
+        generateOffSpring();
     }
+	sortChromosomesFromMostFittestToLowest();
 }
 
 void GeneticAlgorithm::initialiseChromosomes()
@@ -92,6 +91,12 @@ void GeneticAlgorithm::generateOffSpring()
 			offspring.push_back(addedChild);
 		}
 	}
+	for (size_t i = 0; i < chromosomes.size(); i++)
+	{
+		Chromosome * parent = chromosomes.at(i);
+		delete parent;
+	}
+	chromosomes.clear();
 	for each (Chromosome * child in offspring)
 	{
 		chromosomes.push_back(child);
@@ -104,7 +109,8 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
     int parent1Index = indexOfBestChromosomeByTournamentSelection(poolSize);
     Chromosome * parent1 = removeAndReturnChromosomeAt(parent1Index);
     int parent2Index = indexOfBestChromosomeByTournamentSelection(poolSize);
-    Chromosome * parent2 = removeAndReturnChromosomeAt(parent2Index);
+    Chromosome * parent2 = chromosomes.at(parent2Index);
+	chromosomes.push_back(parent1);
 
     vector<Chromosome *> parentPair;
     parentPair.push_back(parent1);
@@ -152,7 +158,7 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
     Chromosome * child2 = new Chromosome(configurations);
     
     const unsigned int childGenesAmount = configurations->getGenesAmount();
-	const usint crossOverSplit = configurations->getCrossOverSplit();
+	const int crossOverSplit = configurations->getCrossOverSplit();
     for (size_t i = 0; i < childGenesAmount; i++)
     {
 		int randomNumber = configurations->calculations->getRandomInt(0, 100);
@@ -172,7 +178,6 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<
         child2->setGene(i, newChildGene2);
     }
 
-	deleteChromosomes(parents);
     vector<Chromosome *> newChildren;
     newChildren.push_back(child1);
     newChildren.push_back(child2);

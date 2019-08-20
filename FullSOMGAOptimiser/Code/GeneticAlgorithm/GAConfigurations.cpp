@@ -110,6 +110,14 @@ usint GAConfigurations::getSelectionCutOffPercentage()
 {
     return selectionCutOffPercentage;
 }
+usint GAConfigurations::getCrossOverSplit()
+{
+	return crossOverSplit;
+}
+usint GAConfigurations::getMutationOffsetPortion()
+{
+	return mutationOffsetPortion;
+}
 
 SOMConfigurations * GAConfigurations::getTargetExperimentConfig()
 {

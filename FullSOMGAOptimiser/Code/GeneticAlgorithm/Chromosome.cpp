@@ -12,7 +12,7 @@ Chromosome::~Chromosome()
 	genes.clear();
 	genes.shrink_to_fit();
 	if (fitnessCalculated) {
-		delete selfOrganisingMap;
+		// delete selfOrganisingMap;
 	}
 }
 
@@ -59,16 +59,28 @@ float Chromosome::getGene(int index)
     return genes.at(index);
 }
 
-float Chromosome::mutateGene(int index)
+float Chromosome::mutateGene(size_t index)
 {
 	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
-	const float geneValueRangeAtIndex = genesValueRanges.at(index)[1] - genesValueRanges.at(index)[0];
-	float currentGeneValue = genes.at(index);
+	const float maxGeneValue = genesValueRanges.at(index)[1];
+	const float minxGeneValue = genesValueRanges.at(index)[0];
+	const float geneValueRangeAtIndex = maxGeneValue - minxGeneValue;
 	const float mutationOffsetAsDecimal = configurations->calculations->percentageToFloat(configurations->getMutationOffsetPortion());
 	const float geneValueOffset = geneValueRangeAtIndex * mutationOffsetAsDecimal;
+	const float currentGeneValue = genes.at(index);
 	const float minValue = currentGeneValue - geneValueOffset;
 	const float maxValue = currentGeneValue + geneValueOffset;
-	const float newGeneValue = configurations->calculations->getRandomFloat(minValue, maxValue);
+	float newGeneValue = configurations->calculations->getRandomFloat(minValue, maxValue);
+	if (newGeneValue > maxGeneValue)
+	{
+		newGeneValue = maxGeneValue;
+	}
+	else if (newGeneValue < minxGeneValue)
+	{
+		newGeneValue = minxGeneValue;
+	}
+
+	return newGeneValue;
 }
 
 void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
