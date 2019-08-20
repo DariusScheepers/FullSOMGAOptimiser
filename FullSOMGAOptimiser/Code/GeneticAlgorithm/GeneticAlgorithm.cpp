@@ -24,6 +24,7 @@ void GeneticAlgorithm::runGeneticAlgorithm()
     for (size_t i = 0; i < maxIterations; i++)
     {
 		setAllChromosomesFitness();
+		sortChromosomesFromMostFittestToLowest();
 		printCurrentBestChromosome(i);
         generateOffSpring();
     }
@@ -42,8 +43,8 @@ void GeneticAlgorithm::initialiseChromosomes()
 
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	runExperimentAndCalculateFitnessConcurrently();
-	//runExperimentAndCalculateFitnessLinear();
+	//runExperimentAndCalculateFitnessConcurrently();
+	runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()

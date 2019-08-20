@@ -8,6 +8,10 @@
 #include <random>
 #include <ctime>
 
+#define _USE_MATH_DEFINES
+
+#include <cmath>
+
 using namespace std;
 
 class Chromosome
@@ -34,6 +38,8 @@ class Chromosome
 		float mutateGene(size_t index);
 
         void runAlgorithm(SOMConfigurations *);
+
+		float computeRastrigin();
 
 };
 

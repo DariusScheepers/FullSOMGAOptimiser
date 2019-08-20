@@ -18,7 +18,7 @@ Chromosome::~Chromosome()
 
 void Chromosome::intialiseGenes()
 {
-    const unsigned int genesPopulationAmount = configurations->getGenesAmount();
+    const unsigned int genesPopulationAmount = configurations->getGeneValueRanges().size();
     for (size_t i = 0; i < genesPopulationAmount; i++)
     {
         const float randomValue = getGeneRandomValue(i);
@@ -90,31 +90,45 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 		return;
 	}
 
-
-
-	fitnessValue = configurations->calculations->getRandomFloat(0, 100);
+	const float x = genes.at(0);
+	fitnessValue = computeRastrigin();
 	fitnessCalculated = true;
-	return;
 
 
+	//const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
+	//const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
+	//const float learningRate = genes.at(2);
+	//const float learningDecay = genes.at(3);
+	//const float kernelWidth = genes.at(4);
+	//const float kernelDecay = genes.at(5);
 
-	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
-	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
-	const float learningRate = genes.at(2);
-	const float learningDecay = genes.at(3);
-	const float kernelWidth = genes.at(4);
-	const float kernelDecay = genes.at(5);
+	//selfOrganisingMap = new SelfOrganisingMap(
+	//	somConfiguration,
+	//	rows,
+	//	columns,
+	//	learningRate,
+    //    learningDecay,
+    //    kernelWidth,
+    //    kernelDecay
+    //);
+   // selfOrganisingMap->runSelfOrganisingMap();
+    //fitnessValue = selfOrganisingMap->calculateQuantizationError();
+	//fitnessCalculated = true;
+}
 
-	selfOrganisingMap = new SelfOrganisingMap(
-		somConfiguration,
-		rows,
-		columns,
-		learningRate,
-        learningDecay,
-        kernelWidth,
-        kernelDecay
-    );
-    selfOrganisingMap->runSelfOrganisingMap();
-    fitnessValue = selfOrganisingMap->calculateQuantizationError();
-	fitnessCalculated = true;
+float Chromosome::computeRastrigin()
+{
+	const float M_PI = 3.14159;
+	const int maxIterations = genes.size();
+	float sum = 0.0;
+	for (size_t i = 0; i < maxIterations; i++)
+	{
+		const float geneX = genes.at(i);
+		float xSquare = pow(geneX, 2);
+		float cosFunc = 10.0 * cos(2.0 * M_PI * geneX);
+		float constant = 10.0;
+
+		sum += xSquare - cosFunc + constant;
+	}
+	return sum;
 }
