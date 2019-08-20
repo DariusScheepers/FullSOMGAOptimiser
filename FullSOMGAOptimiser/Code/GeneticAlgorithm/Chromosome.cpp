@@ -4,7 +4,7 @@ Chromosome::Chromosome(GAConfigurations * configurations)
 {
 	Chromosome::configurations = configurations;
     intialiseGenes();    
-	fitnessValue = 9999.0;
+	fitnessValue = numeric_limits<float>::max();
 	fitnessCalculated = false;
 }
 Chromosome::~Chromosome()
