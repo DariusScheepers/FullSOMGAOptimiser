@@ -64,13 +64,11 @@ float Chromosome::mutateGene(size_t index)
 	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
 	const float maxGeneValue = genesValueRanges.at(index)[1];
 	const float minxGeneValue = genesValueRanges.at(index)[0];
-	const float geneValueRangeAtIndex = maxGeneValue - minxGeneValue;
-	const float mutationOffsetAsDecimal = configurations->calculations->percentageToFloat(configurations->getMutationOffsetPortion());
-	const float geneValueOffset = geneValueRangeAtIndex * mutationOffsetAsDecimal;
+	const float mean = 0.0;
+	const float standardDevaition = configurations->getMutationStandardDeviation();
+	const float randomOffset = configurations->calculations->getRandomNormalDistributionFloat(mean, standardDevaition);
 	const float currentGeneValue = genes.at(index);
-	const float minValue = currentGeneValue - geneValueOffset;
-	const float maxValue = currentGeneValue + geneValueOffset;
-	float newGeneValue = configurations->calculations->getRandomFloat(minValue, maxValue);
+	float newGeneValue = currentGeneValue + randomOffset;
 	if (newGeneValue > maxGeneValue)
 	{
 		newGeneValue = maxGeneValue;
@@ -79,8 +77,29 @@ float Chromosome::mutateGene(size_t index)
 	{
 		newGeneValue = minxGeneValue;
 	}
-
 	return newGeneValue;
+
+
+	//vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
+	//const float maxGeneValue = genesValueRanges.at(index)[1];
+	//const float minxGeneValue = genesValueRanges.at(index)[0];
+	//const float geneValueRangeAtIndex = maxGeneValue - minxGeneValue;
+	//const float mutationOffsetAsDecimal = configurations->calculations->percentageToFloat(configurations->getMutationStandardDeviation());
+	//const float geneValueOffset = geneValueRangeAtIndex * mutationOffsetAsDecimal;
+	//const float currentGeneValue = genes.at(index);
+	//const float minValue = currentGeneValue - geneValueOffset;
+	//const float maxValue = currentGeneValue + geneValueOffset;
+	//float newGeneValue = configurations->calculations->getRandomFloat(minValue, maxValue);
+	//if (newGeneValue > maxGeneValue)
+	//{
+	//	newGeneValue = maxGeneValue;
+	//}
+	//else if (newGeneValue < minxGeneValue)
+	//{
+	//	newGeneValue = minxGeneValue;
+	//}
+	//
+	//return newGeneValue;
 }
 
 void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
@@ -89,6 +108,10 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 	{
 		return;
 	}
+
+	fitnessValue = configurations->calculations->getRandomFloat(0, 100);
+	fitnessCalculated = true;
+	return;
 
 	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));

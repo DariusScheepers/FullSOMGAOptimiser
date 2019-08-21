@@ -145,3 +145,11 @@ int CalculationHelper::getRandomInt(int minValue, int maxValue)
 	const int result = distribution(generator);
 	return result;
 }
+
+
+float CalculationHelper::getRandomNormalDistributionFloat(float mean, float std)
+{
+	normal_distribution<float> distribution(mean, std);
+	const float result = distribution(generator);
+	return result;
+}

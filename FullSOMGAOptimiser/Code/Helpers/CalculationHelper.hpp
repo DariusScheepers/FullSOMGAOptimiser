@@ -30,6 +30,7 @@ class CalculationHelper
 		static dataMatrix normaliseDataSet(dataMatrix);
 		float getRandomFloat(float, float);
 		int getRandomInt(int, int);
+		float getRandomNormalDistributionFloat(float, float);
 };
 
 #endif

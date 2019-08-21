@@ -20,7 +20,7 @@ class GAConfigurations
         usint mutationProbability;
         usint selectionCutOffPercentage;
 		usint crossOverSplit;
-		usint mutationOffsetPortion;
+		usint mutationStandardDeviation;
 		SOMConfigurations * targetExperimentConfigurations;
         
         void setExactRangesOnGenes();
@@ -35,7 +35,7 @@ class GAConfigurations
 			usint mutationProbability,
 			usint selectionCutOffPercentage,
 			usint crossOverSplit,
-			usint mutationOffsetPortion,
+			usint mutationStandardDeviation,
 			SOMConfigurations * targetExperimentConfigurations,
 			CalculationHelper * calculations
         );
@@ -58,7 +58,7 @@ class GAConfigurations
         usint getMutationProbability();
         usint getSelectionCutOffPercentage();
 		usint getCrossOverSplit();
-		usint getMutationOffsetPortion();
+		usint getMutationStandardDeviation();
 
 		void setTargetExperimentConfig(SOMConfigurations *);
 		SOMConfigurations * getTargetExperimentConfig();
