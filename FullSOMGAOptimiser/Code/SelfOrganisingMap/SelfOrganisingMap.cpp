@@ -35,17 +35,28 @@ void SelfOrganisingMap::runSelfOrganisingMap()
 	const float stoppingCriteriaThreshhold = configurations->getStoppingCriteriaThreshhold();
 	const float slidingWindowSize = configurations->getSlidingWindowOffset();
     const int maxIterations = configurations->getMaxEpochs();
-    for (iteration = 0; stoppingCriteriaThreshhold < calculateStandardDeviationOfQE(slidingWindowSize, iteration); iteration++)
+	vector<string> output;
+    for (iteration = 0; iteration < 100; iteration++)
     {
         setNewLearningRateAndKernelWidth(iteration);
         InputVector * selectedVector = selectTrainingVector();
         Neuron * bestMatchingUnit = getBestMatchingUnit(selectedVector);
         updateEachNeuronWeights(selectedVector, bestMatchingUnit);
-		addToQEHistory(calculateQuantizationError(), slidingWindowSize);
+
+		float qe = calculateQuantizationError();
+		addToQEHistory(qe, slidingWindowSize);
+		string line = to_string(iteration) + "," + to_string(qe);
+		// cout << line << endl;
+		output.push_back(line);
+
 		// cout << "selected " << selectedTraningVectors.size() << " left " << configurations->getTrainingSet().size() << endl;
 		printQuantizationError(slidingWindowSize);
     }
 	printEndNeuronMap();
+
+	Writer *w = new Writer();
+	w->writeToFileWithName("test", output);
+	delete w;
 }
 
 void SelfOrganisingMap::createNeuronMap()
