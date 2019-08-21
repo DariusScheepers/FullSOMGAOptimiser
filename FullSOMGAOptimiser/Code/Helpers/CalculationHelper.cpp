@@ -3,6 +3,8 @@
 CalculationHelper::CalculationHelper()
 {
 	srand(time(NULL));
+	random_device rd;
+	mt19937 generator(rd());
 }
 
 CalculationHelper::~CalculationHelper()
@@ -132,9 +134,6 @@ float CalculationHelper::normaliseValue(float value, float min, float max)
 
 float CalculationHelper::getRandomFloat(float minValue, float maxValue)
 {
-	random_device rd;
-	mt19937 generator(rd());
-	//default_random_engine generator;
 	uniform_real_distribution<float> distribution(minValue, maxValue);
 	const float result = distribution(generator);
 	return result;
@@ -142,9 +141,6 @@ float CalculationHelper::getRandomFloat(float minValue, float maxValue)
 
 int CalculationHelper::getRandomInt(int minValue, int maxValue)
 {
-	random_device rd;
-	mt19937 generator(rd());
-	//default_random_engine generator;
 	uniform_int_distribution<int> distribution(minValue, maxValue);
 	const int result = distribution(generator);
 	return result;
