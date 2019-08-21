@@ -15,6 +15,7 @@ class CalculationHelper
     private:
         /* data */
 		static float normaliseValue(float, float, float);
+		mt19937 generator;
     public:
         CalculationHelper(/* args */);
         ~CalculationHelper();
@@ -27,8 +28,9 @@ class CalculationHelper
         static vector<float> scalarTimesVector(float, vector<float>);
         static float percentageToFloat(float);
 		static dataMatrix normaliseDataSet(dataMatrix);
-		static float getRandomFloat(float, float);
-		static int getRandomInt(int, int);
+		float getRandomFloat(float, float);
+		int getRandomInt(int, int);
+		float getRandomNormalDistributionFloat(float, float);
 };
 
 #endif

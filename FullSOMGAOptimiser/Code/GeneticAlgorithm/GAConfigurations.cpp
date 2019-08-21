@@ -10,7 +10,7 @@ GAConfigurations::GAConfigurations(
     usint mutationProbability,
 	usint selectionCutOffPercentage,
 	usint crossOverSplit,
-	usint mutationOffsetPortion,
+	usint mutationStandardDeviation,
 	SOMConfigurations * targetExperimentConfigurations,
 	CalculationHelper * calculations
 )
@@ -24,7 +24,7 @@ GAConfigurations::GAConfigurations(
     GAConfigurations::mutationProbability = mutationProbability;
 	GAConfigurations::selectionCutOffPercentage = selectionCutOffPercentage;
 	GAConfigurations::crossOverSplit = crossOverSplit;
-	GAConfigurations::mutationOffsetPortion = mutationOffsetPortion;
+	GAConfigurations::mutationStandardDeviation = mutationStandardDeviation;
 	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 	GAConfigurations::calculations = calculations;
 
@@ -114,9 +114,9 @@ usint GAConfigurations::getCrossOverSplit()
 {
 	return crossOverSplit;
 }
-usint GAConfigurations::getMutationOffsetPortion()
+usint GAConfigurations::getMutationStandardDeviation()
 {
-	return mutationOffsetPortion;
+	return mutationStandardDeviation;
 }
 
 SOMConfigurations * GAConfigurations::getTargetExperimentConfig()

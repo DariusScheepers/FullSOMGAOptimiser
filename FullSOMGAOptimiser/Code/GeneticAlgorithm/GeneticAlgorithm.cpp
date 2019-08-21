@@ -26,9 +26,13 @@ void GeneticAlgorithm::runGeneticAlgorithm()
 		setAllChromosomesFitness();
 		sortChromosomesFromMostFittestToLowest();
 		printCurrentBestChromosome(i);
-        generateOffSpring();
+		if (i < maxIterations - 1)
+		{
+			generateOffSpring();
+		}
     }
 	sortChromosomesFromMostFittestToLowest();
+	printCurrentBestChromosome(maxIterations);
 }
 
 void GeneticAlgorithm::initialiseChromosomes()
@@ -128,20 +132,28 @@ int GeneticAlgorithm::getPoolSize()
 
 int GeneticAlgorithm::indexOfBestChromosomeByTournamentSelection(int poolSize)
 {
-	int populationSize = chromosomes.size() - 1;
-    int bestChromosomeIndex;
-    float bestFitness = numeric_limits<float>::max();
+	vector<Chromosome *> chromosomesInTournament;
+	for (size_t i = 0; i < poolSize; i++)
+	{
+		int currentChromosomePopulationSize = chromosomes.size() - 1;
+		const int randomIndex = configurations->calculations->getRandomInt(0, currentChromosomePopulationSize);
+		Chromosome * pickedChromosome = removeAndReturnChromosomeAt(randomIndex);
+		chromosomesInTournament.push_back(pickedChromosome);
+	}
+
+	int bestChromosomeIndex;
+	float bestFitness = numeric_limits<float>::max();
     for (size_t i = 0; i < poolSize; i++)
     {
-        const int randomIndex = configurations->calculations->getRandomInt(0, populationSize);
-
-        Chromosome * pickedChromosome = chromosomes.at(randomIndex);
+        Chromosome * pickedChromosome = chromosomesInTournament.at(i);
         if (pickedChromosome->getFitnessValue() < bestFitness)
         {
-            bestChromosomeIndex = randomIndex;
+            bestChromosomeIndex = i;
             bestFitness = pickedChromosome->getFitnessValue();
         }
+		chromosomes.push_back(pickedChromosome);
     }
+	chromosomesInTournament.clear();
     return bestChromosomeIndex;
 }
 

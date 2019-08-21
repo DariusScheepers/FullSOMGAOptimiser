@@ -42,7 +42,7 @@ enum class gaConfigurations {
 	mutationProbability,
 	selectionCutOffSize,
 	crossOverSplit,
-	mutationOffsetPortion
+	mutationStandardDeviation
 };
 
 enum class gaGenesConfigurations {
