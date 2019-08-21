@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <random>
+#include <string>
 #include <iostream>
 #include "Neuron.hpp"
 #include "InputVector.hpp"
@@ -10,6 +11,7 @@
 #include "SOMConfigurations.hpp"
 #include "WeightCalculations.hpp"
 #include "../Helpers/CalculationHelper.hpp"
+#include "../Writers/Writer.h"
 using namespace std;
 
 #define usint unsigned short int

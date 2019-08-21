@@ -7,6 +7,7 @@ find_package(Threads REQUIRED)
 # Add source to this project's executable.
 add_executable (FullSOMGAOptimiser "FullSOMGAOptimiser.cpp" "FullSOMGAOptimiser.h"
 	"./Code/Readers/ReadInput.cpp"
+	"./Code/Writers/Writer.cpp"
 	"./Code/Readers/GeneRanges.cpp"
 	"./Code/Helpers/CalculationHelper.cpp"
 	"./Code/SelfOrganisingMap/InputVector.cpp"
