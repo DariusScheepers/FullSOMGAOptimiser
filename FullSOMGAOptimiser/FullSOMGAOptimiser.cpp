@@ -46,18 +46,14 @@ int getGAConfigIndex(gaConfigurations gaConfigValue)
 			return 0;
 		case gaConfigurations::iterations:
 			return 1;
-		case gaConfigurations::genesAmount:
-			return 2;
-		case gaConfigurations::crossoverProbability:
-			return 3;
 		case gaConfigurations::mutationProbability:
-			return 4;
+			return 2;
 		case gaConfigurations::selectionCutOffSize:
-			return 5;
+			return 3;
 		case gaConfigurations::crossOverSplit:
-			return 6;
+			return 4;
 		case gaConfigurations::mutationStandardDeviation:
-			return 7;
+			return 5;
 	default:
 		break;
 	}
@@ -140,10 +136,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 
 	unsigned int chromosomePopulationSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::chromosomePopulationSize)));
 	unsigned int iterations = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::iterations)));
-	unsigned int genesAmount = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::genesAmount)));
 	vector<vector<float>> gaGeneRanges = gaGenesConfigurationFileValues->getRangesValues();
 	vector<vector<bool>> gaGeneInclusives = gaGenesConfigurationFileValues->getRangesInclusive();
-	unsigned short int crossoverProbability = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::crossoverProbability)));
 	unsigned short int mutationProbability = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::mutationProbability)));
 	unsigned short int selectionCutOffSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::selectionCutOffSize)));
 	unsigned short int crossOverSplit = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::crossOverSplit)));
@@ -155,10 +149,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 	GAConfigurations * gaConfiguration = new GAConfigurations(
 		chromosomePopulationSize,
 		iterations,
-		genesAmount,
 		gaGeneRanges,
 		gaGeneInclusives,
-		crossoverProbability,
 		mutationProbability,
 		selectionCutOffSize,
 		crossOverSplit,

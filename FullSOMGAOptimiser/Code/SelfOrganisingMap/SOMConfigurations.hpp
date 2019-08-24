@@ -45,7 +45,7 @@ class SOMConfigurations
         ~SOMConfigurations();
 
 		CalculationHelper * calculations;
-
+		void runDataPreperations();
         int getMaxEpochs();
         matrix getDataSet();
         int getTrainingSetPortion();

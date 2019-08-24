@@ -7,9 +7,7 @@ SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matr
 	SOMConfigurations::calculations = calculations;
 	SOMConfigurations::slidingWindowOffset = slidingWindowOffset;
 	SOMConfigurations::stoppingCriteriaThreshhold = stoppingCriteriaThreshhold;
-    SOMConfigurations::dataSet = calculations->normaliseDataSet(dataSet);
-    createTrainingSet();
-	findCornerVectors();
+    SOMConfigurations::dataSet = dataSet;
 }
 
 SOMConfigurations::~SOMConfigurations()
@@ -29,6 +27,13 @@ SOMConfigurations::~SOMConfigurations()
 	}
 	dataSet.clear();
 	dataSet.shrink_to_fit();
+}
+
+void SOMConfigurations::runDataPreperations()
+{
+	dataSet = calculations->normaliseDataSet(dataSet);
+	createTrainingSet();
+	findCornerVectors();
 }
 
 int SOMConfigurations::getMaxEpochs()

@@ -82,6 +82,10 @@ vector<string> ReadInput::readKeysOfKeyValuePairs(vector<string> lines)
         for (size_t i = 0; i < line.length(); i++)
         {
             char character = line.at(i);
+			if (character == '/')
+			{
+				break;
+			}
             if (character == ':') {
                 i += 1;
                 keyRead = true;

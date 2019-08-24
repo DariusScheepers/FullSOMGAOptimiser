@@ -28,10 +28,8 @@ class GAConfigurations
 		GAConfigurations(
 			unsigned int chromosomePopulationSize,
 			unsigned int iterations,
-			unsigned int genesAmount,
 			vector<vector<float>>geneValueRanges,
 			vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
-			usint crossoverProbability,
 			usint mutationProbability,
 			usint selectionCutOffPercentage,
 			usint crossOverSplit,
@@ -39,31 +37,21 @@ class GAConfigurations
 			SOMConfigurations * targetExperimentConfigurations,
 			CalculationHelper * calculations
         );
+		~GAConfigurations();
 
 		CalculationHelper * calculations;
 
-        void setChromosomePopulationSize(unsigned int chromosomePopulationSize);
-        void setIterations(unsigned int iterations);
-        void setGenesAmount(unsigned int genesAmount);
-        void setGeneValueRanges(vector<vector<float>> geneValueRanges);
-        void setCrossoverProbability(usint crossoverProbability);
-        void setMutationProbability(usint mutationProbability);
-        void setSelectionCutOffPercentage(usint selectionCutOffPercentage);
-
         unsigned int getChromosomePopulationSize();
         unsigned int getIterations();
-        unsigned int getGenesAmount();
         vector<vector<float>> getGeneValueRanges();
-        usint getCrossoverProbability();
         usint getMutationProbability();
         usint getSelectionCutOffPercentage();
 		usint getCrossOverSplit();
 		usint getMutationStandardDeviation();
 
-		void setTargetExperimentConfig(SOMConfigurations *);
 		SOMConfigurations * getTargetExperimentConfig();
 
-        ~GAConfigurations();
+		bool runTest = true;
 };
 
 #endif

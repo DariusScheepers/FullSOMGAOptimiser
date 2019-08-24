@@ -3,10 +3,8 @@
 GAConfigurations::GAConfigurations(
     unsigned int chromosomePopulationSize,
     unsigned int iterations,
-    unsigned int genesAmount,
 	vector<vector<float>>geneValueRanges,
     vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
-    usint crossoverProbability,
     usint mutationProbability,
 	usint selectionCutOffPercentage,
 	usint crossOverSplit,
@@ -28,52 +26,17 @@ GAConfigurations::GAConfigurations(
 	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 	GAConfigurations::calculations = calculations;
 
+	if (!runTest)
+	{
+		targetExperimentConfigurations->runDataPreperations();
+	}
+
     setExactRangesOnGenes();
 }
 
 GAConfigurations::~GAConfigurations()
 {
 	delete targetExperimentConfigurations;
-}
-
-void GAConfigurations::setChromosomePopulationSize(unsigned int chromosomePopulationSize)
-{
-    GAConfigurations::chromosomePopulationSize = chromosomePopulationSize;
-}
-
-void GAConfigurations::setIterations(unsigned int iterations)
-{
-    GAConfigurations::iterations = iterations;
-}
-
-void GAConfigurations::setGenesAmount(unsigned int genesAmount)
-{
-    GAConfigurations::genesAmount = genesAmount;
-}
-
-void GAConfigurations::setGeneValueRanges(vector<vector<float>> geneValueRanges)
-{
-    GAConfigurations::geneValueRanges = geneValueRanges;
-}
-
-void GAConfigurations::setCrossoverProbability(usint crossoverProbability)
-{
-    GAConfigurations::crossoverProbability = crossoverProbability;
-}
-
-void GAConfigurations::setMutationProbability(usint mutationProbability)
-{
-    GAConfigurations::mutationProbability = mutationProbability;
-}
-
-void GAConfigurations::setSelectionCutOffPercentage(usint selectionCutOffPercentage)
-{
-    GAConfigurations::selectionCutOffPercentage = selectionCutOffPercentage;
-}
-
-void GAConfigurations::setTargetExperimentConfig(SOMConfigurations * targetExperimentConfigurations)
-{
-	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 }
 
 unsigned int GAConfigurations::getChromosomePopulationSize()
@@ -86,19 +49,9 @@ unsigned int GAConfigurations::getIterations()
     return iterations;
 }
 
-unsigned int GAConfigurations::getGenesAmount()
-{
-    return genesAmount;
-}
-
 vector<vector<float>> GAConfigurations::getGeneValueRanges()
 {
     return geneValueRanges;
-}
-
-usint GAConfigurations::getCrossoverProbability()
-{
-    return crossoverProbability;
 }
 
 usint GAConfigurations::getMutationProbability()

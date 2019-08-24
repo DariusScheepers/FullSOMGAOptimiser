@@ -12,8 +12,9 @@ Chromosome::~Chromosome()
 {
 	genes.clear();
 	genes.shrink_to_fit();
-	if (fitnessCalculated) {
-		// delete selfOrganisingMap;
+	if (!configurations->runTest && fitnessCalculated)
+	{
+		delete selfOrganisingMap;
 	}
 }
 
@@ -94,15 +95,12 @@ float Chromosome::mutateGene(size_t index)
 
 void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 {
-	if (fitnessCalculated)
+	if (configurations->runTest)
 	{
+		fitnessValue = computeSpherical();
+		fitnessCalculated = true;
 		return;
 	}
-
-	fitnessValue = computeSpherical();
-	fitnessCalculated = true;
-	return;
-
 
 	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
