@@ -290,6 +290,8 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 	Chromosome * bestChromosome = chromosomes.at(0);
 	cout << "========================\n";
 	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getIterations() << endl;
+	cout << "\t Memory Loc " << bestChromosome << endl;
+	cout << "\t Index " << bestChromosome->getIndex() << endl;
 	cout << "\t Fitness " << bestChromosome->getFitnessValue() << endl;
 	cout << "\t Genes Values" << endl;
 	for (size_t i = 0; i < bestChromosome->getGenes().size(); i++)
