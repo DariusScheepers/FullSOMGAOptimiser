@@ -89,27 +89,6 @@ float Chromosome::mutateGene(size_t index)
 		newGeneValue = minGeneValue;
 	}
 	return newGeneValue;
-
-
-	//vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
-	//const float maxGeneValue = genesValueRanges.at(index)[1];
-	//const float minxGeneValue = genesValueRanges.at(index)[0];
-	//const float geneValueRangeAtIndex = maxGeneValue - minxGeneValue;
-	//const float mutationOffsetAsDecimal = configurations->calculations->percentageToFloat(configurations->getMutationStandardDeviation());
-	//const float geneValueOffset = geneValueRangeAtIndex * mutationOffsetAsDecimal;
-	//const float currentGeneValue = genes.at(index);
-	//const float minValue = currentGeneValue - geneValueOffset;
-	//const float maxValue = currentGeneValue + geneValueOffset;
-	//float newGeneValue = configurations->calculations->getRandomFloat(minValue, maxValue);
-	//if (newGeneValue > maxGeneValue)
-	//{
-	//	newGeneValue = maxGeneValue;
-	//}
-	//else if (newGeneValue < minxGeneValue)
-	//{
-	//	newGeneValue = minxGeneValue;
-	//}
-	//
 	//return newGeneValue;
 }
 
@@ -122,27 +101,28 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 
 	fitnessValue = computeSpherical();
 	fitnessCalculated = true;
+	return;
 
 
-	//const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
-	//const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
-	//const float learningRate = genes.at(2);
-	//const float learningDecay = genes.at(3);
-	//const float kernelWidth = genes.at(4);
-	//const float kernelDecay = genes.at(5);
+	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
+	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
+	const float learningRate = genes.at(2);
+	const float learningDecay = genes.at(3);
+	const float kernelWidth = genes.at(4);
+	const float kernelDecay = genes.at(5);
 
-	//selfOrganisingMap = new SelfOrganisingMap(
-	//	somConfiguration,
-	//	rows,
-	//	columns,
-	//	learningRate,
-    //    learningDecay,
-    //    kernelWidth,
-    //    kernelDecay
-    //);
-   // selfOrganisingMap->runSelfOrganisingMap();
-    //fitnessValue = selfOrganisingMap->calculateQuantizationError();
-	//fitnessCalculated = true;
+	selfOrganisingMap = new SelfOrganisingMap(
+		somConfiguration,
+		rows,
+		columns,
+		learningRate,
+        learningDecay,
+        kernelWidth,
+        kernelDecay
+    );
+    selfOrganisingMap->runSelfOrganisingMap();
+    fitnessValue = selfOrganisingMap->calculateQuantizationError();
+	fitnessCalculated = true;
 }
 
 float Chromosome::computeSpherical()
