@@ -38,9 +38,9 @@ void GeneticAlgorithm::runGeneticAlgorithm()
 void GeneticAlgorithm::initialiseChromosomes()
 {
     const unsigned int size = configurations->getChromosomePopulationSize();
-    for (size_t i = 0; i < size; i++)
+    for (size_t index = 0; index < size; index++)
     {
-        Chromosome * newChromosome = new Chromosome(configurations);
+        Chromosome * newChromosome = new Chromosome(index, configurations);
         chromosomes.push_back(newChromosome);
     }
 }
@@ -86,10 +86,10 @@ void GeneticAlgorithm::generateOffSpring()
 {
 	const int parentPairsAmount = (float)chromosomes.size() / (float)2;
 	vector<Chromosome *> offspring;
-	for (size_t i = 0; i < parentPairsAmount; i++)
+	for (size_t i = 0; i < parentPairsAmount * 2; i += 2)
 	{
 		vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
-		vector<Chromosome *> addedOffspring = createOffspringByUniformCrossover(parents);
+		vector<Chromosome *> addedOffspring = createOffspringByUniformCrossover(i, parents);
 		addedOffspring = performMutation(addedOffspring);
 		for each (Chromosome * addedChild in addedOffspring)
 		{
@@ -148,13 +148,20 @@ int GeneticAlgorithm::indexOfBestChromosomeByTournamentSelection(int poolSize)
         Chromosome * pickedChromosome = chromosomesInTournament.at(i);
         if (pickedChromosome->getFitnessValue() < bestFitness)
         {
-            bestChromosomeIndex = i;
+            bestChromosomeIndex = pickedChromosome->getIndex();
             bestFitness = pickedChromosome->getFitnessValue();
         }
 		chromosomes.push_back(pickedChromosome);
     }
 	chromosomesInTournament.clear();
-    return bestChromosomeIndex;
+	for (size_t i = 0; i < chromosomes.size(); i++)
+	{
+		Chromosome * chr = chromosomes.at(i);
+		if (chr->getIndex() == bestChromosomeIndex)
+		{
+			return i;
+		}
+	}
 }
 
 Chromosome * GeneticAlgorithm::removeAndReturnChromosomeAt(int index)
@@ -165,12 +172,12 @@ Chromosome * GeneticAlgorithm::removeAndReturnChromosomeAt(int index)
     return selectedChromosome;
 }
 
-vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(vector<Chromosome *> parents)
+vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(int index, vector<Chromosome *> parents)
 {
-    Chromosome * child1 = new Chromosome(configurations);
-    Chromosome * child2 = new Chromosome(configurations);
+    Chromosome * child1 = new Chromosome(index, configurations);
+    Chromosome * child2 = new Chromosome(index + 1, configurations);
     
-    const unsigned int childGenesAmount = configurations->getGenesAmount();
+    const unsigned int childGenesAmount = configurations->getGeneValueRanges().size();
 	const int crossOverSplit = configurations->getCrossOverSplit();
     for (size_t i = 0; i < childGenesAmount; i++)
     {
@@ -208,8 +215,8 @@ void GeneticAlgorithm::deleteChromosomes(vector<Chromosome *> deletingChromosome
 vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offspring)
 {
 	vector<Chromosome *> mutatedChildren;
-	mutatedChildren.push_back(new Chromosome(configurations));
-	mutatedChildren.push_back(new Chromosome(configurations));
+	mutatedChildren.push_back(new Chromosome(offspring.at(0)->getIndex(), configurations));
+	mutatedChildren.push_back(new Chromosome(offspring.at(1)->getIndex(), configurations));
 
     const unsigned short mutationProbability = configurations->getMutationProbability();
     for (size_t i = 0; i < offspring.size(); i++)
@@ -265,6 +272,17 @@ void GeneticAlgorithm::removeWeakestChromosomes()
 Chromosome * GeneticAlgorithm::returnBestChromsomes()
 {
     return chromosomes[0];
+}
+
+Chromosome * GeneticAlgorithm::findChromosomeByIndex(int index)
+{
+	for (Chromosome * chr : chromosomes)
+	{
+		if (chr->getIndex() == index)
+		{
+			return chr;
+		}
+	}
 }
 
 void GeneticAlgorithm::printCurrentBestChromosome(int iteration)

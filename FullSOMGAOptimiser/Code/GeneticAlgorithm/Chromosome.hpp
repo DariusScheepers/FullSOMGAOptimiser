@@ -18,6 +18,7 @@ class Chromosome
 {
     private:
         GAConfigurations * configurations;
+		int index;
         vector<float> genes;
         float fitnessValue;
 		bool fitnessCalculated;
@@ -26,7 +27,7 @@ class Chromosome
 
         void intialiseGenes();
     public:
-        Chromosome(GAConfigurations *);
+        Chromosome(int, GAConfigurations *);
         ~Chromosome();
 
         void setFitnessValue(float);
@@ -36,6 +37,7 @@ class Chromosome
         float getGene(int index);
         float getGeneRandomValue(size_t index);
 		float mutateGene(size_t index);
+		int getIndex();
 
         void runAlgorithm(SOMConfigurations *);
 

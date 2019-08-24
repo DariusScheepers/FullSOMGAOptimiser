@@ -25,13 +25,14 @@ class GeneticAlgorithm
         vector<Chromosome *> getBestParentsByTournamentSelectionAlgorithm();
         int indexOfBestChromosomeByTournamentSelection(int poolSize);
         Chromosome * removeAndReturnChromosomeAt(int index);
-        vector<Chromosome *> createOffspringByUniformCrossover(vector<Chromosome *>);
+        vector<Chromosome *> createOffspringByUniformCrossover(int, vector<Chromosome *>);
 		vector<Chromosome *> performMutation(vector<Chromosome *> offspring);
         void sortChromosomesFromMostFittestToLowest();
         void removeWeakestChromosomes();
 		void deleteChromosomes(vector<Chromosome *>);
 
 		void printCurrentBestChromosome(int);
+		Chromosome * findChromosomeByIndex(int);
 
     public:
         GeneticAlgorithm(GAConfigurations * configurations);
