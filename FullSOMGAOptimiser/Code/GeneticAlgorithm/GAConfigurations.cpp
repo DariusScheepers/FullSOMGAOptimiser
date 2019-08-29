@@ -10,7 +10,8 @@ GAConfigurations::GAConfigurations(
 	usint crossOverSplit,
 	usint mutationStandardDeviation,
 	SOMConfigurations * targetExperimentConfigurations,
-	CalculationHelper * calculations
+	CalculationHelper * calculations,
+	Writer * writer
 )
 {
     GAConfigurations::chromosomePopulationSize = chromosomePopulationSize;
@@ -25,6 +26,7 @@ GAConfigurations::GAConfigurations(
 	GAConfigurations::mutationStandardDeviation = mutationStandardDeviation;
 	GAConfigurations::targetExperimentConfigurations = targetExperimentConfigurations;
 	GAConfigurations::calculations = calculations;
+	GAConfigurations::writer = writer;
 
 	if (!runTest)
 	{
@@ -93,3 +95,9 @@ void GAConfigurations::setExactRangesOnGenes()
         }
     }
 }
+
+Writer * GAConfigurations::getWriter()
+{
+	return writer;
+}
+

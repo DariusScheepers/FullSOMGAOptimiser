@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <string>
 #include "GeneRanges.h"
 
 #define dataMatrix vector<vector<float>>
@@ -19,7 +20,7 @@ class ReadInput
 
 		string absolutePathToMain = "C:/Users/bbdnet1882/Documents/Universiteit/COS700/Code/working/FullSOMGAOptimiser/FullSOMGAOptimiser";
     public:
-        ReadInput(/* args */);
+        ReadInput(string);
         ~ReadInput();
 
 		dataMatrix readDataSet(string, char);

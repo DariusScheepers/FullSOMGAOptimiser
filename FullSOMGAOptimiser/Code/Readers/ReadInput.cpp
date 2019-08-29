@@ -1,8 +1,8 @@
 #include "ReadInput.hpp"
 
-ReadInput::ReadInput()
+ReadInput::ReadInput(string absolutePathToMain)
 {
-
+	ReadInput::absolutePathToMain = absolutePathToMain;
 }
 
 ReadInput::~ReadInput()
@@ -12,7 +12,7 @@ ReadInput::~ReadInput()
 
 dataMatrix ReadInput::readDataSet(string fileName, char seperator)
 {
-	const string filePath = absolutePathToMain + "/Data/" + fileName;
+	const string filePath = absolutePathToMain + "Data/" + fileName;
     vector<string> lines = getFileContent(filePath);
 	dataMatrix data;
     const int linesAmount = lines.size();
@@ -82,10 +82,10 @@ vector<string> ReadInput::readKeysOfKeyValuePairs(vector<string> lines)
         for (size_t i = 0; i < line.length(); i++)
         {
             char character = line.at(i);
-			if (character == '/')
-			{
-				break;
-			}
+			//if (character == '/')
+			//{
+			//	break;
+			//}
             if (character == ':') {
                 i += 1;
                 keyRead = true;

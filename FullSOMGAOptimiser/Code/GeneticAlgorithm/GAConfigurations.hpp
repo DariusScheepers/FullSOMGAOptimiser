@@ -4,6 +4,7 @@
 #include <vector>
 #include <limits>
 #include "../SelfOrganisingMap/SOMConfigurations.hpp"
+#include "../Writers/Writer.h"
 #define usint unsigned short int
 
 using namespace std;
@@ -22,6 +23,7 @@ class GAConfigurations
 		usint crossOverSplit;
 		usint mutationStandardDeviation;
 		SOMConfigurations * targetExperimentConfigurations;
+		Writer * writer;
         
         void setExactRangesOnGenes();
     public:
@@ -35,7 +37,8 @@ class GAConfigurations
 			usint crossOverSplit,
 			usint mutationStandardDeviation,
 			SOMConfigurations * targetExperimentConfigurations,
-			CalculationHelper * calculations
+			CalculationHelper * calculations,
+			Writer *
         );
 		~GAConfigurations();
 
@@ -50,6 +53,7 @@ class GAConfigurations
 		usint getMutationStandardDeviation();
 
 		SOMConfigurations * getTargetExperimentConfig();
+		Writer * getWriter();
 
 		bool runTest = true;
 };

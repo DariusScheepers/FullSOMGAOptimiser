@@ -31,6 +31,8 @@ class CalculationHelper
 		float getRandomFloat(float, float);
 		int getRandomInt(int, int);
 		float getRandomNormalDistributionFloat(float, float);
+		vector<float> randomShuffleFloat(vector<float>&);
+		vector<vector<float>> randomShuffleVectors(vector<vector<float>>&);
 };
 
 #endif

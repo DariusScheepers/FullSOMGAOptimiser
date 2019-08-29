@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include "../Helpers/CalculationHelper.hpp"
+#include "../Writers/Writer.h"
 #include "InputVector.hpp"
 using namespace std;
 
@@ -27,6 +28,7 @@ class SOMConfigurations
 		inputVectors trainingSet;
 		int slidingWindowOffset;
 		float stoppingCriteriaThreshhold;
+		Writer * writer;
 
 		InputVector * topLeftTrainingVector;
 		InputVector * bottomRightTrainingVector;
@@ -41,7 +43,7 @@ class SOMConfigurations
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
 
     public:
-        SOMConfigurations(int, int, matrix, int, float, CalculationHelper *);
+        SOMConfigurations(int, int, matrix, int, float, CalculationHelper *, Writer *);
         ~SOMConfigurations();
 
 		CalculationHelper * calculations;
@@ -56,6 +58,8 @@ class SOMConfigurations
 		int getSlidingWindowOffset();
 		InputVector * sliceInputVectorAtIndex(int);
 		void addTrainingVector(InputVector *);
+
+		Writer * getWriter();
 };
 
 #endif

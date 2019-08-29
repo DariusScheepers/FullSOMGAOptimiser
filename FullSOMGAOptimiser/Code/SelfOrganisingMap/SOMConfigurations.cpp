@@ -1,6 +1,6 @@
 #include "SOMConfigurations.hpp"
 
-SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matrix dataSet, int slidingWindowOffset, float stoppingCriteriaThreshhold, CalculationHelper * calculations)
+SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matrix dataSet, int slidingWindowOffset, float stoppingCriteriaThreshhold, CalculationHelper * calculations, Writer * writer)
 {
     SOMConfigurations::maxEpochs = maxEpochs;
 	SOMConfigurations::trainingSetPortion = trainingSetPortion;
@@ -8,6 +8,7 @@ SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matr
 	SOMConfigurations::slidingWindowOffset = slidingWindowOffset;
 	SOMConfigurations::stoppingCriteriaThreshhold = stoppingCriteriaThreshhold;
     SOMConfigurations::dataSet = dataSet;
+	SOMConfigurations::writer = writer;
 }
 
 SOMConfigurations::~SOMConfigurations()
@@ -31,7 +32,7 @@ SOMConfigurations::~SOMConfigurations()
 
 void SOMConfigurations::runDataPreperations()
 {
-	dataSet = calculations->normaliseDataSet(dataSet);
+	// dataSet = calculations->normaliseDataSet(dataSet);
 	createTrainingSet();
 	findCornerVectors();
 }
@@ -54,7 +55,7 @@ int SOMConfigurations::getTrainingSetPortion()
 void SOMConfigurations::createTrainingSet()
 {
     matrix inputData = dataSet;
-    random_shuffle(inputData.begin(), inputData.end());
+	calculations->randomShuffleVectors(inputData);
     const int trainingSetSize = static_cast<int>(inputData.size() * calculations->percentageToFloat(trainingSetPortion));
     inputData.resize(trainingSetSize);
     trainingSet = convertMatrixToInputVectors(inputData);
@@ -216,5 +217,10 @@ InputVector * SOMConfigurations::sliceInputVectorAtIndex(int index)
 void SOMConfigurations::addTrainingVector(InputVector * inputVector)
 {
 	trainingSet.push_back(inputVector);
+}
+
+Writer * SOMConfigurations::getWriter()
+{
+	return writer;
 }
 

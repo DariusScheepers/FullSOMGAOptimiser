@@ -28,7 +28,7 @@ SelfOrganisingMap::~SelfOrganisingMap()
 	neuronMap.shrink_to_fit();
 }
 
-void SelfOrganisingMap::runSelfOrganisingMap()
+void SelfOrganisingMap::runSelfOrganisingMap() ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 {
 	createNeuronMap();
 	printInitialNeuronMap();
@@ -36,7 +36,7 @@ void SelfOrganisingMap::runSelfOrganisingMap()
 	const float slidingWindowSize = configurations->getSlidingWindowOffset();
     const int maxIterations = configurations->getMaxEpochs();
 	vector<string> output;
-    for (iteration = 0; iteration < 100; iteration++)
+    for (iteration = 0; iteration < 1000; iteration++)
     {
         setNewLearningRateAndKernelWidth(iteration);
         InputVector * selectedVector = selectTrainingVector();
@@ -54,14 +54,11 @@ void SelfOrganisingMap::runSelfOrganisingMap()
     }
 	printEndNeuronMap();
 
-	Writer *w = new Writer();
-	w->writeToFileWithName("test", output);
-	delete w;
+	configurations->getWriter()->writeToFileWithName("test", output);
 }
 
 void SelfOrganisingMap::createNeuronMap()
 {
-	neuronMatrix newNeuronMap;
     for (size_t i = 0; i < rows; i++)
     {
         vector<Neuron*> columnNeurons;
@@ -71,9 +68,8 @@ void SelfOrganisingMap::createNeuronMap()
 			vector<float> neuronWeights(weightSize);
 			columnNeurons.push_back(new Neuron(neuronWeights, i, j));
 		}
-		newNeuronMap.push_back(columnNeurons);
+		neuronMap.push_back(columnNeurons);
     }
-	neuronMap = newNeuronMap;
 
     performHypercubeWeightInitialization();
 }
@@ -272,23 +268,22 @@ vector<float> SelfOrganisingMap::adjustedWeightByHypercube(vector<float> vector1
 
 float SelfOrganisingMap::calculateQuantizationError()
 {
-    CalculationHelper calculations;
     float sum = 0;
     const size_t trainingVectorsSizeForTrainingVectorsLeft = configurations->getTrainingSet().size();
     for (size_t i = 0; i < trainingVectorsSizeForTrainingVectorsLeft; i++)
     {
-        InputVector * currentTrainingVectors = configurations->getTrainingSet().at(i);
-        Neuron * bmu = getBestMatchingUnit(currentTrainingVectors);
-        sum += configurations->calculations->euclidianDistance(currentTrainingVectors->getInputValues(), bmu->getWeights());
+        InputVector * currentTrainingVector = configurations->getTrainingSet().at(i);
+        Neuron * bmu = getBestMatchingUnit(currentTrainingVector);
+        sum += configurations->calculations->euclidianDistance(currentTrainingVector->getInputValues(), bmu->getWeights());
     }
 	const size_t trainingVectorsSizeForSelectedTrainingVectors = selectedTraningVectors.size();
 	for (size_t i = 0; i < trainingVectorsSizeForSelectedTrainingVectors; i++)
 	{
-		InputVector * currentTrainingVectors = selectedTraningVectors.at(i);
-		Neuron * bmu = getBestMatchingUnit(currentTrainingVectors);
-		sum += configurations->calculations->euclidianDistance(currentTrainingVectors->getInputValues(), bmu->getWeights());
+		InputVector * currentTrainingVector = selectedTraningVectors.at(i);
+		Neuron * bmu = getBestMatchingUnit(currentTrainingVector);
+		sum += configurations->calculations->euclidianDistance(currentTrainingVector->getInputValues(), bmu->getWeights());
 	}
-	const size_t trainingVectorsSize = trainingVectorsSizeForTrainingVectorsLeft + trainingVectorsSizeForSelectedTrainingVectors;
+	const float trainingVectorsSize = static_cast<float>(trainingVectorsSizeForTrainingVectorsLeft + trainingVectorsSizeForSelectedTrainingVectors);
     return sum / trainingVectorsSize;
 }
 

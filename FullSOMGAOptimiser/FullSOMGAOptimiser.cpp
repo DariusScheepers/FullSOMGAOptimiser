@@ -5,6 +5,9 @@
 
 CalculationHelper * calculations;
 
+ReadInput * reader;
+Writer * writer;
+
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
 	switch (somConfigValue)
@@ -80,36 +83,42 @@ int getGAGeneConfigIndex(gaGenesConfigurations gaGeneConfigValue)
 	}
 }
 
-void printCommandLineArguments(int argc, char ** argv)
+bool generateSingletons(int argc, char ** argv)
 {
-	cout << "You have entered " << argc
-		<< " arguments:" << "\n";
-
-	if (argc > 0)
+	if (argc < 2)
 	{
-		cout << "Arguments:" << endl;
-		for (int i = 0; i < argc; ++i) {
-			cout << argv[i] << "\n";
-		}
+		cout << "ERROR: No path to main working directory is provided. Exiting...\n";
+		return false;
 	}
+
+	calculations = new CalculationHelper();
+	writer = new Writer(argv[1]);
+	reader = new ReadInput(argv[1]);
 }
 
 SOMConfigurations * getSOMConfigurations(vector<string> values)
 {
-	ReadInput readInput;
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
-	vector<vector<float>> dataSet = readInput.readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
+	vector<vector<float>> dataSet = reader->readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
 	const int slidingWindowOffset = stoi(values.at(getSOMConfigIndex(somConfigurations::slidingWindowOffset)));
 	const float stoppingCriteriaThreshhold = stof(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
 
-	return new SOMConfigurations(maxEpochs, trainingSetPortion, dataSet, slidingWindowOffset, stoppingCriteriaThreshhold, calculations);
+	return new SOMConfigurations(maxEpochs,
+		trainingSetPortion,
+		dataSet,
+		slidingWindowOffset,
+		stoppingCriteriaThreshhold,
+		calculations,
+		writer
+	);
 }
 
 SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 {
 	SOMConfigurations * somConfigurations = getSOMConfigurations(values);
+	somConfigurations->runDataPreperations();
 	const int rows = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultRows)));
 	const int columns = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultColumns)));
 	const float learningRate = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRate)));
@@ -130,9 +139,8 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 
 GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 {
-	ReadInput readInput;
-	vector<string> gaConfigurationFileValues = readInput.readGAConfig();
-	GeneRanges * gaGenesConfigurationFileValues = readInput.readGAGenesConfig();
+	vector<string> gaConfigurationFileValues = reader->readGAConfig();
+	GeneRanges * gaGenesConfigurationFileValues = reader->readGAGenesConfig();
 
 	unsigned int chromosomePopulationSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::chromosomePopulationSize)));
 	unsigned int iterations = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::iterations)));
@@ -156,7 +164,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 		crossOverSplit,
 		mutationStandardDeviation,
 		somConfigurationsValues,
-		calculations
+		calculations,
+		writer
 	);
 
 	return new GeneticAlgorithm(gaConfiguration);
@@ -164,13 +173,10 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 
 int main(int argc, char ** argv)
 {
-	printCommandLineArguments(argc, argv);
+	generateSingletons(argc, argv);
 
-	ReadInput readInput;
-	calculations = new CalculationHelper();
-
-	vector<string> somConfigurationFileValues = readInput.readSOMConfig();
-	vector<string> arguments = readInput.readArguments();
+	vector<string> somConfigurationFileValues = reader->readSOMConfig();
+	vector<string> arguments = reader->readArguments();
 	if (arguments.at(0) == "0")
 	{
 		SelfOrganisingMap * selfOrganisingMap = getSelfOrganisingMap(somConfigurationFileValues);

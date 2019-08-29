@@ -1,8 +1,8 @@
 #include "Writer.h"
 
-Writer::Writer()
+Writer::Writer(string absolutePathToMain)
 {
-
+	Writer::absolutePathToMain = absolutePathToMain + "Output/";
 }
 
 Writer::~Writer()

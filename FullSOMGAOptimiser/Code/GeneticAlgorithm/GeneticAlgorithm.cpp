@@ -33,6 +33,7 @@ void GeneticAlgorithm::runGeneticAlgorithm()
     }
 	sortChromosomesFromMostFittestToLowest();
 	printCurrentBestChromosome(maxIterations);
+	printChromosomeGenesToFile(chromosomes.at(0));	
 }
 
 void GeneticAlgorithm::initialiseChromosomes()
@@ -47,8 +48,8 @@ void GeneticAlgorithm::initialiseChromosomes()
 
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	//runExperimentAndCalculateFitnessConcurrently();
-	runExperimentAndCalculateFitnessLinear();
+	runExperimentAndCalculateFitnessConcurrently();
+	//runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
@@ -300,4 +301,21 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 		cout << "\t\t" << geneValue << endl;
 	}
 	cout << "========================\n";
+}
+
+void GeneticAlgorithm::printChromosomeGenesToFile(Chromosome * chromosome)
+{
+	vector<string> output;
+	for (float gene : chromosome->getGenes())
+	{
+		string line = to_string(gene);
+		output.push_back(line);
+	}
+
+	time_t _tm = time(NULL);
+	struct tm * curtime = localtime(&_tm);
+	string time = asctime(curtime);
+
+	string fileName = time + " FitnessValue " + to_string(chromosome->getFitnessValue()) + " GenesAmount " + to_string(chromosome->getGenes().size());
+	configurations->getWriter()->writeToFileWithName(fileName, output);
 }

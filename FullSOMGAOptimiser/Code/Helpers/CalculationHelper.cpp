@@ -5,6 +5,7 @@ CalculationHelper::CalculationHelper()
 	srand(time(NULL));
 	random_device rd;
 	mt19937 generator(rd());
+	CalculationHelper::generator = generator;
 }
 
 CalculationHelper::~CalculationHelper()
@@ -152,4 +153,17 @@ float CalculationHelper::getRandomNormalDistributionFloat(float mean, float std)
 	normal_distribution<float> distribution(mean, std);
 	const float result = distribution(generator);
 	return result;
+}
+
+vector<float> CalculationHelper::randomShuffleFloat(vector<float> &randomOrdering)
+{
+	random_shuffle(randomOrdering.begin(), randomOrdering.end());
+	return randomOrdering;
+}
+
+
+vector<vector<float>> CalculationHelper::randomShuffleVectors(vector<vector<float>> &randomOrdering)
+{
+	random_shuffle(randomOrdering.begin(), randomOrdering.end());
+	return randomOrdering;
 }

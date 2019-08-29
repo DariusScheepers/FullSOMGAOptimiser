@@ -33,6 +33,7 @@ class GeneticAlgorithm
 
 		void printCurrentBestChromosome(int);
 		Chromosome * findChromosomeByIndex(int);
+		void printChromosomeGenesToFile(Chromosome *);
 
     public:
         GeneticAlgorithm(GAConfigurations * configurations);
