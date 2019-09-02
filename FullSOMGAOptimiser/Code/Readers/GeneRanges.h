@@ -13,11 +13,11 @@ public:
 	~GeneRanges();
 
 	vector<vector<bool>> getRangesInclusive();
-	vector<vector<float>> getRangesValues();
+	vector<vector<double>> getRangesValues();
 
 private:
 	vector<vector<bool>> rangesInclusive;
-	vector<vector<float>> rangesValues;
+	vector<vector<double>> rangesValues;
 
 	void handleValues(vector<string>);
 };

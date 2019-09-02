@@ -2,7 +2,7 @@
 #define SOM_CONFIGURATIONS_H
 
 #define usint unsigned short int
-#define matrix vector<vector<float>>
+#define matrix vector<vector<double>>
 #define inputVectors vector<InputVector *>
 
 #include <vector>
@@ -25,9 +25,10 @@ class SOMConfigurations
         int maxEpochs;
         int trainingSetPortion;
         matrix dataSet;
-		inputVectors trainingSet;
+		inputVectors input;
+
 		int slidingWindowOffset;
-		float stoppingCriteriaThreshhold;
+		double stoppingCriteriaThreshhold;
 		Writer * writer;
 
 		InputVector * topLeftTrainingVector;
@@ -36,28 +37,27 @@ class SOMConfigurations
 		InputVector * topRightTrainingVector;
 
 		inputVectors convertMatrixToInputVectors(matrix);
-        void createTrainingSet();
+        void createTrainingAndTestSet();
 		void findCornerVectors();
 		vector<InputVector*> findTopLeftAndBottomRightTrainingVectors();
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
 
     public:
-        SOMConfigurations(int, int, matrix, int, float, CalculationHelper *, Writer *);
+        SOMConfigurations(int, int, matrix, int, double, CalculationHelper *, Writer *);
         ~SOMConfigurations();
 
 		CalculationHelper * calculations;
 		void runDataPreperations();
+		void shuffleDataSet();
         int getMaxEpochs();
+		int getTrainingSetPortion();
         matrix getDataSet();
-        int getTrainingSetPortion();
-		inputVectors getTrainingSet();
+		inputVectors getInput();
 		InputVector * getTrainingVectorAt(int);
 		InputVector * getCornerVectorAt(cornerVectors);
-		float getStoppingCriteriaThreshhold();
+		double getStoppingCriteriaThreshhold();
 		int getSlidingWindowOffset();
-		InputVector * sliceInputVectorAtIndex(int);
-		void addTrainingVector(InputVector *);
 
 		Writer * getWriter();
 };

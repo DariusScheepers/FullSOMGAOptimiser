@@ -26,7 +26,7 @@ void GeneRanges::handleValues(vector<string> values)
 	{
 		int index = 0;
 		vector<bool> valueInclusive;
-		vector<float> valueRange;
+		vector<double> valueRange;
 		bool commaRead = false;
 		string valueBeingRead = "";
 		for each (char character in value)
@@ -80,7 +80,7 @@ vector<vector<bool>> GeneRanges::getRangesInclusive()
 	return rangesInclusive;
 }
 
-vector<vector<float>> GeneRanges::getRangesValues()
+vector<vector<double>> GeneRanges::getRangesValues()
 {
 	return rangesValues;
 }

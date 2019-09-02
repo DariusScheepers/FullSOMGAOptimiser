@@ -99,11 +99,11 @@ bool generateSingletons(int argc, char ** argv)
 SOMConfigurations * getSOMConfigurations(vector<string> values)
 {
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
-	vector<vector<float>> dataSet = reader->readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
+	vector<vector<double>> dataSet = reader->readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
 	const int slidingWindowOffset = stoi(values.at(getSOMConfigIndex(somConfigurations::slidingWindowOffset)));
-	const float stoppingCriteriaThreshhold = stof(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
+	const double stoppingCriteriaThreshhold = stof(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
 
 	return new SOMConfigurations(maxEpochs,
 		trainingSetPortion,
@@ -121,10 +121,10 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 	somConfigurations->runDataPreperations();
 	const int rows = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultRows)));
 	const int columns = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultColumns)));
-	const float learningRate = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRate)));
-	const float learningDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
-	const float kernelWidth = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
-	const float kernelDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
+	const double learningRate = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRate)));
+	const double learningDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
+	const double kernelWidth = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
+	const double kernelDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
 
 	return new SelfOrganisingMap(
 		somConfigurations,
@@ -144,7 +144,7 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 
 	unsigned int chromosomePopulationSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::chromosomePopulationSize)));
 	unsigned int iterations = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::iterations)));
-	vector<vector<float>> gaGeneRanges = gaGenesConfigurationFileValues->getRangesValues();
+	vector<vector<double>> gaGeneRanges = gaGenesConfigurationFileValues->getRangesValues();
 	vector<vector<bool>> gaGeneInclusives = gaGenesConfigurationFileValues->getRangesInclusive();
 	unsigned short int mutationProbability = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::mutationProbability)));
 	unsigned short int selectionCutOffSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::selectionCutOffSize)));
@@ -181,6 +181,8 @@ int main(int argc, char ** argv)
 	{
 		SelfOrganisingMap * selfOrganisingMap = getSelfOrganisingMap(somConfigurationFileValues);
 		selfOrganisingMap->runSelfOrganisingMap();
+		double fitnessValue = selfOrganisingMap->calculatePerformance();
+		cout << "Overall fitness: " << fitnessValue << endl;
 		delete selfOrganisingMap;
 	}
 	else

@@ -7,13 +7,13 @@ using namespace std;
 class InputVector
 {
     private:
-        vector<float> inputValues;
+        vector<double> inputValues;
     public:
-        InputVector(vector<float> inputValues);
+        InputVector(vector<double> inputValues);
         ~InputVector();
 
-        float getInputValueAt(int index);
-        vector<float> getInputValues();
+        double getInputValueAt(int index);
+        vector<double> getInputValues();
 };
 
 #endif

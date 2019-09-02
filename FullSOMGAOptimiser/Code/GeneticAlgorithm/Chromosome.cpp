@@ -5,7 +5,7 @@ Chromosome::Chromosome(int index, GAConfigurations * configurations)
 	Chromosome::index = index;
 	Chromosome::configurations = configurations;
     intialiseGenes();    
-	fitnessValue = numeric_limits<float>::max();
+	fitnessValue = numeric_limits<double>::max();
 	fitnessCalculated = false;
 }
 Chromosome::~Chromosome()
@@ -23,40 +23,40 @@ void Chromosome::intialiseGenes()
     const unsigned int genesPopulationAmount = configurations->getGeneValueRanges().size();
     for (size_t i = 0; i < genesPopulationAmount; i++)
     {
-        const float randomValue = getGeneRandomValue(i);
+        const double randomValue = getGeneRandomValue(i);
         genes.push_back(randomValue);
 		// cout << "R at " << i << " : " << randomValue;
     }
 }
 
-float Chromosome::getGeneRandomValue(size_t index) {
-	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
-    float minValue = genesValueRanges.at(index)[0];
-    float maxValue = genesValueRanges.at(index)[1];
-	return configurations->calculations->getRandomFloat(minValue, maxValue);
+double Chromosome::getGeneRandomValue(size_t index) {
+	vector<vector<double>> genesValueRanges = configurations->getGeneValueRanges();
+    double minValue = genesValueRanges.at(index)[0];
+    double maxValue = genesValueRanges.at(index)[1];
+	return configurations->calculations->getRandomDouble(minValue, maxValue);
 }
 
-void Chromosome::setFitnessValue(float fitnessValue)
+void Chromosome::setFitnessValue(double fitnessValue)
 {
     Chromosome::fitnessValue = fitnessValue;
 }
 
-float Chromosome::getFitnessValue()
+double Chromosome::getFitnessValue()
 {
     return fitnessValue;
 }
 
-void Chromosome::setGene(int index, float value)
+void Chromosome::setGene(int index, double value)
 {
     genes.at(index) = value;
 }
 
-vector<float> Chromosome::getGenes()
+vector<double> Chromosome::getGenes()
 {
     return genes;
 }
 
-float Chromosome::getGene(int index)
+double Chromosome::getGene(int index)
 {
     return genes.at(index);
 }
@@ -66,21 +66,21 @@ int Chromosome::getIndex()
 	return index;
 }
 
-float Chromosome::mutateGene(size_t index)
+double Chromosome::mutateGene(size_t index)
 {
-	const float currentGeneValue = genes.at(index);
-	const float standardDevaition = configurations->calculations->percentageToFloat(configurations->getMutationStandardDeviation());
+	const double currentGeneValue = genes.at(index);
+	const double standardDevaition = configurations->calculations->percentageToDouble(configurations->getMutationStandardDeviation());
 	if (standardDevaition == 0.0)
 	{
 		return currentGeneValue;
 	}
-	vector<vector<float>> genesValueRanges = configurations->getGeneValueRanges();
-	const float maxGeneValue = genesValueRanges.at(index)[1];
-	const float minGeneValue = genesValueRanges.at(index)[0];
-	const float mean = 0.0;
-	const float newStD = standardDevaition * (maxGeneValue - minGeneValue);
-	const float randomOffset = configurations->calculations->getRandomNormalDistributionFloat(mean, newStD);
-	float newGeneValue = currentGeneValue + randomOffset;
+	vector<vector<double>> genesValueRanges = configurations->getGeneValueRanges();
+	const double maxGeneValue = genesValueRanges.at(index)[1];
+	const double minGeneValue = genesValueRanges.at(index)[0];
+	const double mean = 0.0;
+	const double newStD = standardDevaition * (maxGeneValue - minGeneValue);
+	const double randomOffset = configurations->calculations->getRandomNormalDistributionDouble(mean, newStD);
+	double newGeneValue = currentGeneValue + randomOffset;
 	if (newGeneValue > maxGeneValue)
 	{
 		newGeneValue = maxGeneValue;
@@ -104,10 +104,10 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 
 	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
-	const float learningRate = genes.at(2);
-	const float learningDecay = genes.at(3);
-	const float kernelWidth = genes.at(4);
-	const float kernelDecay = genes.at(5);
+	const double learningRate = genes.at(2);
+	const double learningDecay = genes.at(3);
+	const double kernelWidth = genes.at(4);
+	const double kernelDecay = genes.at(5);
 
 	selfOrganisingMap = new SelfOrganisingMap(
 		somConfiguration,
@@ -119,21 +119,21 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
         kernelDecay
     );
     selfOrganisingMap->runSelfOrganisingMap();
-    fitnessValue = selfOrganisingMap->calculateQuantizationError();
+    fitnessValue = selfOrganisingMap->calculatePerformance();
 	fitnessCalculated = true;
 }
 
-float Chromosome::computeSpherical()
+double Chromosome::computeSpherical()
 {
-	const float M_PI = 3.14159;
+	const double M_PI = 3.14159;
 	const int maxIterations = genes.size();
-	float sum = 0.0;
+	double sum = 0.0;
 	//cout << "+++++++++++++++++++++++++++++++++\n";
 	for (size_t i = 0; i < maxIterations; i++)
 	{
-		const float geneX = genes.at(i);
+		const double geneX = genes.at(i);
 		//cout << "Gene Value " << geneX << endl;
-		float xSquare = pow(geneX, 2);
+		double xSquare = pow(geneX, 2);
 
 		sum += xSquare;
 	}

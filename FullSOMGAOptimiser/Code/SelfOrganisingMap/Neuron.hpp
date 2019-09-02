@@ -7,19 +7,19 @@ using namespace std;
 class Neuron
 {
     private:
-        vector<float> weights;
-        float xCoordinate;
-        float yCoordinate;
+        vector<double> weights;
+        double xCoordinate;
+        double yCoordinate;
     public:
-        Neuron(vector<float>, float, float);
+        Neuron(vector<double>, double, double);
         ~Neuron();
 
-        vector<float> getWeights();
-        float getWeightAt(int index);
-        void setWeight(int, float);
-        float getXCoordinate();
-        float getYCoordinate();
-        void setAllWeights(vector<float>);
+        vector<double> getWeights();
+        double getWeightAt(int index);
+        void setWeight(int, double);
+        double getXCoordinate();
+        double getYCoordinate();
+        void setAllWeights(vector<double>);
 };
 
 #endif

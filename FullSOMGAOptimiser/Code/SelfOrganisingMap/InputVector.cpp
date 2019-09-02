@@ -1,6 +1,6 @@
 #include "InputVector.hpp"
 
-InputVector::InputVector(vector<float> inputValues)
+InputVector::InputVector(vector<double> inputValues)
 {
 	InputVector::inputValues = inputValues;
 }
@@ -11,12 +11,12 @@ InputVector::~InputVector()
 	inputValues.shrink_to_fit();
 }
 
-float InputVector::getInputValueAt(int index)
+double InputVector::getInputValueAt(int index)
 {
     return inputValues.at(index);
 }
 
-vector<float> InputVector::getInputValues()
+vector<double> InputVector::getInputValues()
 {
     return inputValues;
 }

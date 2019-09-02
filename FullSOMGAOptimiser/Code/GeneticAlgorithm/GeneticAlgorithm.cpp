@@ -85,7 +85,7 @@ void GeneticAlgorithm::calculateFitness(Chromosome * chromosome)
 
 void GeneticAlgorithm::generateOffSpring()
 {
-	const int parentPairsAmount = (float)chromosomes.size() / (float)2;
+	const int parentPairsAmount = (double)chromosomes.size() / (double)2;
 	vector<Chromosome *> offspring;
 	for (size_t i = 0; i < parentPairsAmount * 2; i += 2)
 	{
@@ -126,8 +126,8 @@ vector<Chromosome *> GeneticAlgorithm::getBestParentsByTournamentSelectionAlgori
 
 int GeneticAlgorithm::getPoolSize()
 {
-	const float decimalSelectionCutOffSize = configurations->calculations->percentageToFloat(configurations->getSelectionCutOffPercentage());
-	const int result = ceil(decimalSelectionCutOffSize * (float)chromosomes.size());
+	const double decimalSelectionCutOffSize = configurations->calculations->percentageToDouble(configurations->getSelectionCutOffPercentage());
+	const int result = ceil(decimalSelectionCutOffSize * (double)chromosomes.size());
 	return result;
 }
 
@@ -143,7 +143,7 @@ int GeneticAlgorithm::indexOfBestChromosomeByTournamentSelection(int poolSize)
 	}
 
 	int bestChromosomeIndex;
-	float bestFitness = numeric_limits<float>::max();
+	double bestFitness = numeric_limits<double>::max();
     for (size_t i = 0; i < poolSize; i++)
     {
         Chromosome * pickedChromosome = chromosomesInTournament.at(i);
@@ -183,8 +183,8 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(int ind
     for (size_t i = 0; i < childGenesAmount; i++)
     {
 		int randomNumber = configurations->calculations->getRandomInt(0, 100);
-        float newChildGene1;
-        float newChildGene2;
+        double newChildGene1;
+        double newChildGene2;
         if (randomNumber > crossOverSplit)
         {
             newChildGene1 = parents.at(0)->getGene(i);
@@ -224,10 +224,10 @@ vector<Chromosome *> GeneticAlgorithm::performMutation(vector<Chromosome *> offs
     {
 		Chromosome * child = offspring.at(i);
         int index = 0;
-        for (float gene : child->getGenes())
+        for (double gene : child->getGenes())
         {
 			int randomNumber = configurations->calculations->getRandomInt(0, 100);
-			float newGene = child->getGene(index);
+			double newGene = child->getGene(index);
             if (randomNumber <= mutationProbability)
             {
                 newGene = child->mutateGene(index);
@@ -297,7 +297,7 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 	cout << "\t Genes Values" << endl;
 	for (size_t i = 0; i < bestChromosome->getGenes().size(); i++)
 	{
-		const float geneValue = bestChromosome->getGene(i);
+		const double geneValue = bestChromosome->getGene(i);
 		cout << "\t\t" << geneValue << endl;
 	}
 	cout << "========================\n";
@@ -306,7 +306,7 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 void GeneticAlgorithm::printChromosomeGenesToFile(Chromosome * chromosome)
 {
 	vector<string> output;
-	for (float gene : chromosome->getGenes())
+	for (double gene : chromosome->getGenes())
 	{
 		string line = to_string(gene);
 		output.push_back(line);

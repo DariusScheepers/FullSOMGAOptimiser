@@ -19,7 +19,7 @@ dataMatrix ReadInput::readDataSet(string fileName, char seperator)
     for (size_t i = 0; i < linesAmount; i++)
     {
         const string line = lines.at(i);
-        vector<float> lineData;
+        vector<double> lineData;
         const int linesLength = line.length();
         string dataPiece = "";
         for (size_t i = 0; i < linesLength; i++)
@@ -33,7 +33,7 @@ dataMatrix ReadInput::readDataSet(string fileName, char seperator)
             {
                 try
                 {
-                    const float finalData = stof(dataPiece);
+                    const double finalData = stof(dataPiece);
                     lineData.push_back(finalData);
                 }
                 catch(const exception& e)
@@ -43,7 +43,7 @@ dataMatrix ReadInput::readDataSet(string fileName, char seperator)
         }
 		if (dataPiece.size() > 0 && isdigit(dataPiece.at(0)))
 		{
-			const float finalData = stof(dataPiece);
+			const double finalData = stof(dataPiece);
 			lineData.push_back(finalData);
 		}
         data.push_back(lineData);       

@@ -13,22 +13,22 @@ CalculationHelper::~CalculationHelper()
 
 }
 
-vector<float> CalculationHelper::differenceBetweenVectors(vector<float> vector1, vector<float> vector2)
+vector<double> CalculationHelper::differenceBetweenVectors(vector<double> vector1, vector<double> vector2)
 {
     const size_t vectorSize = vector1.size();
-    vector<float> result;
+    vector<double> result;
     for (size_t i = 0; i < vectorSize; i++)
     {
-        const float difference = vector1.at(i) - vector2.at(i);
+        const double difference = vector1.at(i) - vector2.at(i);
         result.push_back(difference);
     }
     return result;  
 
 }
 
-float CalculationHelper::magnitudeOfVector(vector<float> vectorValues)
+double CalculationHelper::magnitudeOfVector(vector<double> vectorValues)
 {
-    float sumValues = 0;
+    double sumValues = 0;
     for (size_t i = 0; i < vectorValues.size(); i++)
     {
         sumValues += vectorValues.at(i) * vectorValues.at(i);
@@ -37,70 +37,70 @@ float CalculationHelper::magnitudeOfVector(vector<float> vectorValues)
 
 }
 
-float CalculationHelper::magintudeOfDifferenceBetweenVectors(vector<float> vector1, vector<float> vector2)
+double CalculationHelper::magintudeOfDifferenceBetweenVectors(vector<double> vector1, vector<double> vector2)
 {
-    const vector<float> differenceInVectors = differenceBetweenVectors(vector1, vector2);
+    const vector<double> differenceInVectors = differenceBetweenVectors(vector1, vector2);
     return magnitudeOfVector(differenceInVectors);
 }
 
-vector<float> CalculationHelper::sumOfVectors(vector<float> vector1, vector<float> vector2)
+vector<double> CalculationHelper::sumOfVectors(vector<double> vector1, vector<double> vector2)
 {
     const size_t vectorSize = vector1.size();
-    vector<float> result;
+    vector<double> result;
     for (size_t i = 0; i < vectorSize; i++)
     {
-        const float sum = vector1.at(i) + vector2.at(i);
+        const double sum = vector1.at(i) + vector2.at(i);
         result.push_back(sum);
     }
     return result;
 }
 
-float CalculationHelper::euclidianDistance(vector<float> vector1, vector<float> vector2)
+double CalculationHelper::euclidianDistance(vector<double> vector1, vector<double> vector2)
 {
-    float sumOfDifferences = 0;
+	double sumOfDifferences = 0.0;
     const size_t vectorSize = vector1.size();
     for (size_t i = 0; i < vectorSize; i++)
     {
-        const float difference = vector1.at(i) - vector2.at(i);
-        const float sqaureValue = difference * difference;
+        const double difference = vector1.at(i) - vector2.at(i);
+        const double sqaureValue = difference * difference;
         sumOfDifferences += sqaureValue;
     }
-    const float squareRootValue = sqrt(sumOfDifferences);
+    const double squareRootValue = sqrt(sumOfDifferences);
     return squareRootValue;    
 }
 
-vector<float> CalculationHelper::scalarTimesVector(float scalar, vector<float> vector0)
+vector<double> CalculationHelper::scalarTimesVector(double scalar, vector<double> vector0)
 {
     const size_t vectorSize = vector0.size();
-    vector<float> result;
+    vector<double> result;
     for (size_t i = 0; i < vectorSize; i++)
     {
-        const float product = vector0.at(i) * scalar;
+        const double product = vector0.at(i) * scalar;
         result.push_back(product);
     }
     return result;    
 }
 
-float CalculationHelper::percentageToFloat(float percentage)
+double CalculationHelper::percentageToDouble(double percentage)
 {
-    return percentage / (float)100;
+    return percentage / (double)100;
 }
 
 dataMatrix CalculationHelper::normaliseDataSet(dataMatrix dataSet)
 {
-	vector<float> columnMaxValues;
-	vector<float> columnMinValues;
+	vector<double> columnMaxValues;
+	vector<double> columnMinValues;
 	for (size_t i = 0; i < dataSet.at(0).size(); i++)
 	{
-		columnMaxValues.push_back(numeric_limits<float>::min());
-		columnMinValues.push_back(numeric_limits<float>::max());
+		columnMaxValues.push_back(numeric_limits<double>::min());
+		columnMinValues.push_back(numeric_limits<double>::max());
 	}
 	for (size_t i = 0; i < dataSet.size(); i++)
 	{
-		vector<float> row = dataSet.at(i);
+		vector<double> row = dataSet.at(i);
 		for (size_t j = 0; j < row.size(); j++)
 		{
-			float value = row.at(j);
+			double value = row.at(j);
 			if (value < columnMinValues.at(j))
 			{
 				columnMinValues.at(j) = value;
@@ -114,8 +114,8 @@ dataMatrix CalculationHelper::normaliseDataSet(dataMatrix dataSet)
 	dataMatrix normalisedSet;
 	for (size_t i = 0; i < dataSet.size(); i++)
 	{
-		vector<float> row = dataSet.at(i);
-		vector<float> normalisedRow;
+		vector<double> row = dataSet.at(i);
+		vector<double> normalisedRow;
 		for (size_t j = 0; j < row.size(); j++)
 		{
 			normalisedRow.push_back(normaliseValue(row.at(j), columnMinValues.at(j), columnMaxValues.at(j)));
@@ -126,17 +126,17 @@ dataMatrix CalculationHelper::normaliseDataSet(dataMatrix dataSet)
 	return normalisedSet;
 }
 
-float CalculationHelper::normaliseValue(float value, float min, float max)
+double CalculationHelper::normaliseValue(double value, double min, double max)
 {
-	const float upper = value - min;
-	const float lower = max - min;
+	const double upper = value - min;
+	const double lower = max - min;
 	return upper / lower;
 }
 
-float CalculationHelper::getRandomFloat(float minValue, float maxValue)
+double CalculationHelper::getRandomDouble(double minValue, double maxValue)
 {
-	uniform_real_distribution<float> distribution(minValue, maxValue);
-	const float result = distribution(generator);
+	uniform_real_distribution<double> distribution(minValue, maxValue);
+	const double result = distribution(generator);
 	return result;
 }
 
@@ -148,21 +148,21 @@ int CalculationHelper::getRandomInt(int minValue, int maxValue)
 }
 
 
-float CalculationHelper::getRandomNormalDistributionFloat(float mean, float std)
+double CalculationHelper::getRandomNormalDistributionDouble(double mean, double std)
 {
-	normal_distribution<float> distribution(mean, std);
-	const float result = distribution(generator);
+	normal_distribution<double> distribution(mean, std);
+	const double result = distribution(generator);
 	return result;
 }
 
-vector<float> CalculationHelper::randomShuffleFloat(vector<float> &randomOrdering)
+vector<double> CalculationHelper::randomShuffleDouble(vector<double> &randomOrdering)
 {
 	random_shuffle(randomOrdering.begin(), randomOrdering.end());
 	return randomOrdering;
 }
 
 
-vector<vector<float>> CalculationHelper::randomShuffleVectors(vector<vector<float>> &randomOrdering)
+vector<vector<double>> CalculationHelper::randomShuffleVectors(vector<vector<double>> &randomOrdering)
 {
 	random_shuffle(randomOrdering.begin(), randomOrdering.end());
 	return randomOrdering;

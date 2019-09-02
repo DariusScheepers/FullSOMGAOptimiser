@@ -15,7 +15,7 @@ class GAConfigurations
         unsigned int chromosomePopulationSize;
         unsigned int iterations;
         unsigned int genesAmount;
-        vector<vector<float>> geneValueRanges;
+        vector<vector<double>> geneValueRanges;
         vector<vector<bool>> geneValueRangesInclusiveOrExclusive;
         usint crossoverProbability;
         usint mutationProbability;
@@ -30,7 +30,7 @@ class GAConfigurations
 		GAConfigurations(
 			unsigned int chromosomePopulationSize,
 			unsigned int iterations,
-			vector<vector<float>>geneValueRanges,
+			vector<vector<double>>geneValueRanges,
 			vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
 			usint mutationProbability,
 			usint selectionCutOffPercentage,
@@ -46,7 +46,7 @@ class GAConfigurations
 
         unsigned int getChromosomePopulationSize();
         unsigned int getIterations();
-        vector<vector<float>> getGeneValueRanges();
+        vector<vector<double>> getGeneValueRanges();
         usint getMutationProbability();
         usint getSelectionCutOffPercentage();
 		usint getCrossOverSplit();

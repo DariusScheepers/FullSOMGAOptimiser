@@ -19,8 +19,8 @@ class Chromosome
     private:
         GAConfigurations * configurations;
 		int index;
-        vector<float> genes;
-        float fitnessValue;
+        vector<double> genes;
+        double fitnessValue;
 		bool fitnessCalculated;
 
         SelfOrganisingMap * selfOrganisingMap;
@@ -30,18 +30,18 @@ class Chromosome
         Chromosome(int, GAConfigurations *);
         ~Chromosome();
 
-        void setFitnessValue(float);
-        float getFitnessValue();
-        void setGene(int index, float value);
-        vector<float> getGenes();
-        float getGene(int index);
-        float getGeneRandomValue(size_t index);
-		float mutateGene(size_t index);
+        void setFitnessValue(double);
+        double getFitnessValue();
+        void setGene(int index, double value);
+        vector<double> getGenes();
+        double getGene(int index);
+        double getGeneRandomValue(size_t index);
+		double mutateGene(size_t index);
 		int getIndex();
 
         void runAlgorithm(SOMConfigurations *);
 
-		float computeSpherical();
+		double computeSpherical();
 
 };
 

@@ -1,6 +1,12 @@
 #include "SOMConfigurations.hpp"
 
-SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matrix dataSet, int slidingWindowOffset, float stoppingCriteriaThreshhold, CalculationHelper * calculations, Writer * writer)
+SOMConfigurations::SOMConfigurations(int maxEpochs,
+	int trainingSetPortion,
+	matrix dataSet,
+	int slidingWindowOffset,
+	double stoppingCriteriaThreshhold,
+	CalculationHelper * calculations,
+	Writer * writer)
 {
     SOMConfigurations::maxEpochs = maxEpochs;
 	SOMConfigurations::trainingSetPortion = trainingSetPortion;
@@ -13,16 +19,16 @@ SOMConfigurations::SOMConfigurations(int maxEpochs, int trainingSetPortion, matr
 
 SOMConfigurations::~SOMConfigurations()
 {
-	for (size_t i = 0; i < trainingSet.size(); i++)
+	for (size_t i = 0; i < input.size(); i++)
 	{
-		InputVector * deletingVector = trainingSet.at(i);
+		InputVector * deletingVector = input.at(i);
 		delete deletingVector;
 	}
-	trainingSet.clear();
-	trainingSet.shrink_to_fit();
+	input.clear();
+	input.shrink_to_fit();
 	for (size_t i = 0; i < dataSet.size(); i++)
 	{
-		vector<float> dataSetRow = dataSet.at(i);
+		vector<double> dataSetRow = dataSet.at(i);
 		dataSetRow.clear();
 		dataSetRow.shrink_to_fit();
 	}
@@ -32,9 +38,14 @@ SOMConfigurations::~SOMConfigurations()
 
 void SOMConfigurations::runDataPreperations()
 {
-	// dataSet = calculations->normaliseDataSet(dataSet);
-	createTrainingSet();
+	dataSet = calculations->normaliseDataSet(dataSet);
+	createTrainingAndTestSet();
 	findCornerVectors();
+}
+
+void SOMConfigurations::shuffleDataSet()
+{
+	calculations->randomShuffleVectors(dataSet);
 }
 
 int SOMConfigurations::getMaxEpochs()
@@ -47,24 +58,17 @@ matrix SOMConfigurations::getDataSet()
     return dataSet;
 }
 
-int SOMConfigurations::getTrainingSetPortion()
+void SOMConfigurations::createTrainingAndTestSet()
 {
-    return trainingSetPortion;
+	shuffleDataSet();
+	trainingSetPortion = static_cast<int>(dataSet.size() * calculations->percentageToDouble(trainingSetPortion));
+	input = convertMatrixToInputVectors(dataSet);
 }
 
-void SOMConfigurations::createTrainingSet()
-{
-    matrix inputData = dataSet;
-	calculations->randomShuffleVectors(inputData);
-    const int trainingSetSize = static_cast<int>(inputData.size() * calculations->percentageToFloat(trainingSetPortion));
-    inputData.resize(trainingSetSize);
-    trainingSet = convertMatrixToInputVectors(inputData);
-}
-
-inputVectors SOMConfigurations::convertMatrixToInputVectors(matrix floatSet)
+inputVectors SOMConfigurations::convertMatrixToInputVectors(matrix doubleSet)
 {
 	inputVectors result;
-	for each (vector<float> var in floatSet)
+	for each (vector<double> var in doubleSet)
 	{
 		InputVector * current = new InputVector(var);
 		result.push_back(current);
@@ -72,14 +76,9 @@ inputVectors SOMConfigurations::convertMatrixToInputVectors(matrix floatSet)
 	return result;
 }
 
-inputVectors SOMConfigurations::getTrainingSet()
-{
-    return trainingSet;
-}
-
 InputVector * SOMConfigurations::getTrainingVectorAt(int index)
 {
-	return trainingSet.at(index);
+	return input.at(index);
 }
 
 void SOMConfigurations::findCornerVectors()
@@ -95,19 +94,19 @@ void SOMConfigurations::findCornerVectors()
 vector<InputVector*> SOMConfigurations::findTopLeftAndBottomRightTrainingVectors()
 {
 	vector<InputVector *> result(2);
-	float maxDistance = 0;
-	const size_t trainingVectorsSize = trainingSet.size();
+	double maxDistance = 0;
+	const size_t trainingVectorsSize = input.size();
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
-		InputVector * firstSelectedTrainingVector = trainingSet.at(i);
+		InputVector * firstSelectedTrainingVector = input.at(i);
 		for (size_t j = 0; j < trainingVectorsSize; j++)
 		{
 			if (i == j)
 			{
 				continue;
 			}
-			InputVector * secondSelectedTrainingVector = trainingSet.at(j);
-			const float currentDistance = calculations->euclidianDistance(
+			InputVector * secondSelectedTrainingVector = input.at(j);
+			const double currentDistance = calculations->euclidianDistance(
 				firstSelectedTrainingVector->getInputValues(),
 				secondSelectedTrainingVector->getInputValues()
 			);
@@ -126,20 +125,20 @@ vector<InputVector*> SOMConfigurations::findTopLeftAndBottomRightTrainingVectors
 InputVector * SOMConfigurations::findBottomLeftTrainingVector(InputVector * vector1, InputVector * vector2)
 {
 	InputVector * bestVector;
-	float maxDistance = 0;
-	const size_t trainingVectorsSize = trainingSet.size();
+	double maxDistance = 0;
+	const size_t trainingVectorsSize = input.size();
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
-		InputVector * vector3 = trainingSet.at(i);
-		const float distanceBetweenVector1And3 = calculations->euclidianDistance(
+		InputVector * vector3 = input.at(i);
+		const double distanceBetweenVector1And3 = calculations->euclidianDistance(
 			vector1->getInputValues(),
 			vector3->getInputValues()
 		);
-		const float distanceBetweenVector2And3 = calculations->euclidianDistance(
+		const double distanceBetweenVector2And3 = calculations->euclidianDistance(
 			vector2->getInputValues(),
 			vector3->getInputValues()
 		);
-		const float currentDistance = distanceBetweenVector1And3 + distanceBetweenVector2And3;
+		const double currentDistance = distanceBetweenVector1And3 + distanceBetweenVector2And3;
 		if (currentDistance > maxDistance)
 		{
 			maxDistance = currentDistance;
@@ -152,24 +151,24 @@ InputVector * SOMConfigurations::findBottomLeftTrainingVector(InputVector * vect
 InputVector * SOMConfigurations::findTopRightTrainingVector(InputVector * vector1, InputVector * vector2, InputVector * vector3)
 {
 	InputVector * bestVector;
-	float maxDistance = 0;
-	const size_t trainingVectorsSize = trainingSet.size();
+	double maxDistance = 0;
+	const size_t trainingVectorsSize = input.size();
 	for (size_t i = 0; i < trainingVectorsSize; i++)
 	{
-		InputVector * vector4 = trainingSet.at(i);
-		const float distanceBetweenVector1And4 = calculations->euclidianDistance(
+		InputVector * vector4 = input.at(i);
+		const double distanceBetweenVector1And4 = calculations->euclidianDistance(
 			vector1->getInputValues(),
 			vector4->getInputValues()
 		);
-		const float distanceBetweenVector2And4 = calculations->euclidianDistance(
+		const double distanceBetweenVector2And4 = calculations->euclidianDistance(
 			vector2->getInputValues(),
 			vector4->getInputValues()
 		);
-		const float distanceBetweenVector3And4 = calculations->euclidianDistance(
+		const double distanceBetweenVector3And4 = calculations->euclidianDistance(
 			vector3->getInputValues(),
 			vector4->getInputValues()
 		);
-		const float currentDistance = distanceBetweenVector1And4 + distanceBetweenVector2And4 + distanceBetweenVector3And4;
+		const double currentDistance = distanceBetweenVector1And4 + distanceBetweenVector2And4 + distanceBetweenVector3And4;
 		if (currentDistance > maxDistance)
 		{
 			maxDistance = currentDistance;
@@ -196,7 +195,7 @@ InputVector * SOMConfigurations::getCornerVectorAt(cornerVectors cornerVector)
 	}
 }
 
-float SOMConfigurations::getStoppingCriteriaThreshhold()
+double SOMConfigurations::getStoppingCriteriaThreshhold()
 {
 	return stoppingCriteriaThreshhold;
 }
@@ -206,21 +205,18 @@ int SOMConfigurations::getSlidingWindowOffset()
 	return slidingWindowOffset;
 }
 
-InputVector * SOMConfigurations::sliceInputVectorAtIndex(int index)
-{
-	InputVector * removedInputVector = trainingSet.at(index);
-	trainingSet.at(index) = trainingSet.back();
-	trainingSet.resize(trainingSet.size() - 1);
-	return removedInputVector;
-}
-
-void SOMConfigurations::addTrainingVector(InputVector * inputVector)
-{
-	trainingSet.push_back(inputVector);
-}
-
 Writer * SOMConfigurations::getWriter()
 {
 	return writer;
+}
+
+inputVectors SOMConfigurations::getInput()
+{
+	return input;
+}
+
+int SOMConfigurations::getTrainingSetPortion()
+{
+	return trainingSetPortion;
 }
 

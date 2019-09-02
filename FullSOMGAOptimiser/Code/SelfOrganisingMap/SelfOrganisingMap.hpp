@@ -22,34 +22,41 @@ class SelfOrganisingMap
     private:
         usint rows;
         usint columns;
-        float learningRate;
-        float learningDecay;
-        float kernelWidth;
-        float kernelDecay;
+        double learningRate;
+        double learningDecay;
+        double kernelWidth;
+        double kernelDecay;
         SOMConfigurations * configurations;
 
         // important global variables
         neuronMatrix neuronMap;
+		inputVectors trainingSet;
+		inputVectors testSet;
                
         // important global variables
-        float newLearningRate;
-        float newKernelWidth;
+        double newLearningRate;
+        double newKernelWidth;
         usint iteration;
 
+		void deleteNeuronMap();
         void createNeuronMap();
+		void trainSOM();
+		void prepareTrainingSet(int offset);
         InputVector * selectTrainingVector();
-		vector<InputVector *> selectedTraningVectors;
         Neuron * getBestMatchingUnit(InputVector *);
         void updateEachNeuronWeights(InputVector *, Neuron *);
         void setNewLearningRateAndKernelWidth(int);
-        float calculateExponenialDecay(float intialValue, int iteration, float decayConstant);
+        double calculateExponenialDecay(double intialValue, int iteration, double decayConstant);
 
         void performHypercubeWeightInitialization();
-        vector<float> adjustedWeightByHypercube(vector<float>, vector<float>, int, int);
-		float calculateStandardDeviationOfQE(int slidingWindowSize, int iteration);
-		float calculateDecreaseInQE(int slidingWindowSize);
-		void addToQEHistory(float, int);
-		vector<float> quantizationErrorHistory;
+        vector<double> adjustedWeightByHypercube(vector<double>, vector<double>, int, int);
+		double getTestRunAverageQuantizationError();
+		double calculateQuantizationError();
+		double calculateStandardDeviationOfQE(int slidingWindowSize);
+		double calculateDecreaseInQE(int slidingWindowSize);
+		void addToQEHistory(double, int);
+		vector<double> quantizationErrorHistory;
+		vector<double> testSetQEHistory;
 
 		void printNeuronMap();
 		void printInitialNeuronMap();
@@ -61,15 +68,15 @@ class SelfOrganisingMap
 			SOMConfigurations*,
 			usint,
 			usint,
-			float,
-			float,
-			float, 
-			float
+			double,
+			double,
+			double, 
+			double
 		);
         ~SelfOrganisingMap();
 
         void runSelfOrganisingMap();
-        float calculateQuantizationError();
+		double calculatePerformance();
 };
 
 #endif

@@ -3,7 +3,7 @@
 GAConfigurations::GAConfigurations(
     unsigned int chromosomePopulationSize,
     unsigned int iterations,
-	vector<vector<float>>geneValueRanges,
+	vector<vector<double>>geneValueRanges,
     vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
     usint mutationProbability,
 	usint selectionCutOffPercentage,
@@ -51,7 +51,7 @@ unsigned int GAConfigurations::getIterations()
     return iterations;
 }
 
-vector<vector<float>> GAConfigurations::getGeneValueRanges()
+vector<vector<double>> GAConfigurations::getGeneValueRanges()
 {
     return geneValueRanges;
 }
@@ -85,13 +85,13 @@ void GAConfigurations::setExactRangesOnGenes()
     {
 		const bool openingInclusive = geneValueRangesInclusiveOrExclusive.at(i)[0];
         if (!openingInclusive) {
-			const float currentGeneValue = geneValueRanges.at(i)[0];
-            geneValueRanges.at(i)[0] = currentGeneValue + numeric_limits<float>::min();
+			const double currentGeneValue = geneValueRanges.at(i)[0];
+            geneValueRanges.at(i)[0] = currentGeneValue + numeric_limits<double>::min();
         }
 		const bool closingInclusive = geneValueRangesInclusiveOrExclusive.at(i)[1];
 		if (!closingInclusive) {
-			const float currentGeneValue = geneValueRanges.at(i)[1];
-            geneValueRanges.at(i)[1] = currentGeneValue - numeric_limits<float>::min();
+			const double currentGeneValue = geneValueRanges.at(i)[1];
+            geneValueRanges.at(i)[1] = currentGeneValue - numeric_limits<double>::min();
         }
     }
 }

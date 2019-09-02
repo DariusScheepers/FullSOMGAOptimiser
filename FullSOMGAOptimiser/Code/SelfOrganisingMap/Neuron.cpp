@@ -1,6 +1,6 @@
 #include "Neuron.hpp"
 
-Neuron::Neuron(vector<float> weights, float xCoordinate, float yCoordinate)
+Neuron::Neuron(vector<double> weights, double xCoordinate, double yCoordinate)
 {
     Neuron::weights = weights;
     Neuron::xCoordinate = xCoordinate;
@@ -12,32 +12,32 @@ Neuron::~Neuron()
 	weights.shrink_to_fit();
 }
 
-vector<float> Neuron::getWeights()
+vector<double> Neuron::getWeights()
 {
     return weights;
 }
 
-float Neuron::getWeightAt(int index)
+double Neuron::getWeightAt(int index)
 {
     return weights.at(index);
 }
 
-void Neuron::setWeight(int index, float weight)
+void Neuron::setWeight(int index, double weight)
 {
     weights.at(index) = weight;
 }
 
-float Neuron::getXCoordinate()
+double Neuron::getXCoordinate()
 {
     return xCoordinate;
 }
 
-float Neuron::getYCoordinate()
+double Neuron::getYCoordinate()
 {
     return yCoordinate;
 }
 
-void Neuron::setAllWeights(vector<float> weights)
+void Neuron::setAllWeights(vector<double> weights)
 {
     Neuron::weights = weights;
 }

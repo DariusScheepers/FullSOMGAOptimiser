@@ -5,26 +5,26 @@
 #include "Neuron.hpp"
 #include "math.h"
 #include "../Helpers/CalculationHelper.hpp"
+#include <iostream>
 using namespace std;
 
 class WeightCalculations
 {
     private:
-        float selectedTrainingVectorWeight;
+        double selectedTrainingVectorWeight;
         Neuron * bestMatchingUnit;
         Neuron * currentNeuron;
-        float currentWeight;
-        float newLearingRate;
-        float newKernelWidth;
-        int iterations;
+        double currentWeight;
+        double newLearingRate;
+        double newKernelWidth;
 
-        float calculateWeightDelta();
-        float neighbourhoodFunctionSmoothGaussianKernel();
+        double calculateWeightDelta();
+        double neighbourhoodFunctionSmoothGaussianKernel();
     public:
-        WeightCalculations(float selectedTrainingVectorWeight, Neuron * bestMatchingUnit, Neuron * currentNeuron, float currentWeight, float, float, int);
+        WeightCalculations(double selectedTrainingVectorWeight, Neuron * bestMatchingUnit, Neuron * currentNeuron, double currentWeight, double, double);
         ~WeightCalculations();
 
-        float returnNewNeuronWeight();
+        double returnNewNeuronWeight();
 };
 
 #endif

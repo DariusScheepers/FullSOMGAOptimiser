@@ -8,31 +8,31 @@
 #include "math.h"
 using namespace std;
 
-#define dataMatrix vector<vector<float>>
+#define dataMatrix vector<vector<double>>
 
 class CalculationHelper
 {
     private:
         /* data */
-		static float normaliseValue(float, float, float);
+		static double normaliseValue(double, double, double);
 		mt19937 generator;
     public:
         CalculationHelper(/* args */);
         ~CalculationHelper();
 
-        static vector<float> differenceBetweenVectors(vector<float>, vector<float>);
-        static float magnitudeOfVector(vector<float>);
-        static float magintudeOfDifferenceBetweenVectors(vector<float>, vector<float>);
-        static vector<float> sumOfVectors(vector<float>, vector<float>);
-        static float euclidianDistance(vector<float>, vector<float>);
-        static vector<float> scalarTimesVector(float, vector<float>);
-        static float percentageToFloat(float);
+        static vector<double> differenceBetweenVectors(vector<double>, vector<double>);
+        static double magnitudeOfVector(vector<double>);
+        static double magintudeOfDifferenceBetweenVectors(vector<double>, vector<double>);
+        static vector<double> sumOfVectors(vector<double>, vector<double>);
+        static double euclidianDistance(vector<double>, vector<double>);
+        static vector<double> scalarTimesVector(double, vector<double>);
+        static double percentageToDouble(double);
 		static dataMatrix normaliseDataSet(dataMatrix);
-		float getRandomFloat(float, float);
+		double getRandomDouble(double, double);
 		int getRandomInt(int, int);
-		float getRandomNormalDistributionFloat(float, float);
-		vector<float> randomShuffleFloat(vector<float>&);
-		vector<vector<float>> randomShuffleVectors(vector<vector<float>>&);
+		double getRandomNormalDistributionDouble(double, double);
+		vector<double> randomShuffleDouble(vector<double>&);
+		vector<vector<double>> randomShuffleVectors(vector<vector<double>>&);
 };
 
 #endif

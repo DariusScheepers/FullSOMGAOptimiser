@@ -8,7 +8,7 @@
 #include <string>
 #include "GeneRanges.h"
 
-#define dataMatrix vector<vector<float>>
+#define dataMatrix vector<vector<double>>
 
 using namespace std;
 
