@@ -34,11 +34,21 @@ GAConfigurations::GAConfigurations(
 	}
 
     setExactRangesOnGenes();
+	runExperimentSpecificPreparations();
 }
 
 GAConfigurations::~GAConfigurations()
 {
 	delete targetExperimentConfigurations;
+}
+
+void GAConfigurations::runExperimentSpecificPreparations()
+{
+	double max = targetExperimentConfigurations->getTrainingSetPortion();
+	double actualMapDimensionMax = max / 2.0;
+	int roundedValue = round(actualMapDimensionMax);
+	geneValueRanges.at(0).at(1) = roundedValue;
+	geneValueRanges.at(1).at(1) = roundedValue;
 }
 
 unsigned int GAConfigurations::getChromosomePopulationSize()

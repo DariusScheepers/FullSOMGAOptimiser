@@ -38,6 +38,7 @@ void SelfOrganisingMap::runSelfOrganisingMap() /////////////////////////////////
 		deleteNeuronMap();
 		createNeuronMap();
 		prepareTrainingSet(i);
+		cout << "Training in window " << i << endl;
 		trainSOM();
 		testSetQEHistory.push_back(getTestRunAverageQuantizationError());
 	}
@@ -95,7 +96,9 @@ void SelfOrganisingMap::trainSOM()
 	vector<string> output;
 
 	for (iteration = 0;
-		iteration < trainingSet.size() || (iteration < maxIterations && calculateStandardDeviationOfQE(slidingWindowSize) >= stoppingCriteriaThreshhold);
+		iteration < trainingSet.size()
+			|| (iteration < maxIterations 
+				&& calculateStandardDeviationOfQE(slidingWindowSize) >= stoppingCriteriaThreshhold);
 		iteration++)
 	{
 		setNewLearningRateAndKernelWidth(iteration);
@@ -130,7 +133,10 @@ void SelfOrganisingMap::createNeuronMap()
     }
 
     performHypercubeWeightInitialization();
-	// printInitialNeuronMap();
+	if (configurations->fullOutput)
+	{
+		printInitialNeuronMap();
+	}
 }
 
 InputVector * SelfOrganisingMap::selectTrainingVector()
@@ -272,48 +278,59 @@ void SelfOrganisingMap::performHypercubeWeightInitialization()
 
 void SelfOrganisingMap::printNeuronMap()
 {
-	for (size_t i = 0; i < neuronMap.size(); i++)
+	if (configurations->fullOutput)
 	{
-		cout << i << ". ";
-		vector<Neuron *> row = neuronMap.at(i);
-		for (size_t j = 0; j < row.size(); j++)
+		for (size_t i = 0; i < neuronMap.size(); i++)
 		{
-			vector<double> weights = row.at(j)->getWeights();
-			cout << "(";
-			for (size_t k = 0; k < weights.size() - 1; k++)
+			cout << i << ". ";
+			vector<Neuron *> row = neuronMap.at(i);
+			for (size_t j = 0; j < row.size(); j++)
 			{
-				cout << weights.at(k) << ", ";
+				vector<double> weights = row.at(j)->getWeights();
+				cout << "(";
+				for (size_t k = 0; k < weights.size() - 1; k++)
+				{
+					cout << weights.at(k) << ", ";
+				}
+				cout << weights.back() << ")  ";
 			}
-			cout << weights.back() << ")  ";
+			cout << endl << endl;
 		}
-		cout << endl << endl;
 	}
 }
 
 void SelfOrganisingMap::printInitialNeuronMap() {
-	cout << "Initial Neuron Map" << endl;
-	printNeuronMap();
-	cout << endl << endl;
+	if (configurations->fullOutput)
+	{
+		cout << "Initial Neuron Map" << endl;
+		printNeuronMap();
+		cout << endl << endl;
+	}
 }
 
 void SelfOrganisingMap::printQuantizationError(int slidingWindowSize)
 {
-	const double quantizationError = quantizationErrorHistory.back();
-	cout << "Quantization Error at Iteration: " << iteration << endl;
-	cout << "\t " << quantizationError << endl;
-
-	if (iteration % slidingWindowSize == 0)
+	if (configurations->fullOutput)
 	{
-		cout << "Smooth Quantization Error: " << endl;
-		cout << "\t" << calculateDecreaseInQE(slidingWindowSize) << endl;
+		const double quantizationError = quantizationErrorHistory.back();
+		cout << "Quantization Error at Iteration: " << iteration << endl;
+		cout << "\t " << quantizationError << endl;
+
+		if (iteration % slidingWindowSize == 0)
+		{
+			cout << "Smooth Quantization Error: " << endl;
+			cout << "\t" << calculateDecreaseInQE(slidingWindowSize) << endl;
+		}
 	}
 }
 
 void SelfOrganisingMap::printEndNeuronMap()
 {
-	cout << "End Neuron Map" << endl;
-	printNeuronMap();
-	cout << endl << endl;
+	if (configurations->fullOutput) {
+		cout << "End Neuron Map" << endl;
+		printNeuronMap();
+		cout << endl << endl;
+	}
 }
 
 vector<double> SelfOrganisingMap::adjustedWeightByHypercube(vector<double> vector1, vector<double> vector2, int max, int index)

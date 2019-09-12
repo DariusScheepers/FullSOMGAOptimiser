@@ -44,7 +44,7 @@ class SOMConfigurations
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
 
     public:
-        SOMConfigurations(int, int, matrix, int, double, CalculationHelper *, Writer *);
+        SOMConfigurations(int, int, matrix, int, double, CalculationHelper *, Writer *, bool);
         ~SOMConfigurations();
 
 		CalculationHelper * calculations;
@@ -58,6 +58,7 @@ class SOMConfigurations
 		InputVector * getCornerVectorAt(cornerVectors);
 		double getStoppingCriteriaThreshhold();
 		int getSlidingWindowOffset();
+		bool fullOutput;
 
 		Writer * getWriter();
 };

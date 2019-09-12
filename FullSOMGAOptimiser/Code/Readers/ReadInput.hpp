@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <string>
+#include <regex>
 #include "GeneRanges.h"
 
 #define dataMatrix vector<vector<double>>

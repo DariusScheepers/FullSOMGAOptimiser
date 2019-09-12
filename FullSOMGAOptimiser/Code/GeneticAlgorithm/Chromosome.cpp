@@ -95,6 +95,11 @@ double Chromosome::mutateGene(size_t index)
 
 void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 {
+	if (fitnessCalculated)
+	{
+		return;
+	}
+
 	if (configurations->runTest)
 	{
 		fitnessValue = computeSpherical();
@@ -106,7 +111,17 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
 	const double learningRate = genes.at(2);
 	const double learningDecay = genes.at(3);
-	const double kernelWidth = genes.at(4);
+	const double kernelWidthPortion = genes.at(4) / 100.0;
+	double kernelWidth;
+	if (rows > columns)
+	{
+		kernelWidth = rows * kernelWidthPortion;
+	}
+	else
+	{
+		kernelWidth = columns * kernelWidthPortion;
+	}
+	
 	const double kernelDecay = genes.at(5);
 
 	selfOrganisingMap = new SelfOrganisingMap(
@@ -120,6 +135,7 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
     );
     selfOrganisingMap->runSelfOrganisingMap();
     fitnessValue = selfOrganisingMap->calculatePerformance();
+	cout << "Chromosomes fitness: " << fitnessValue << endl;
 	fitnessCalculated = true;
 }
 

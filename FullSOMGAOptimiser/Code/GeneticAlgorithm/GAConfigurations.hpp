@@ -25,6 +25,7 @@ class GAConfigurations
 		SOMConfigurations * targetExperimentConfigurations;
 		Writer * writer;
         
+		void runExperimentSpecificPreparations();
         void setExactRangesOnGenes();
     public:
 		GAConfigurations(
@@ -55,7 +56,7 @@ class GAConfigurations
 		SOMConfigurations * getTargetExperimentConfig();
 		Writer * getWriter();
 
-		bool runTest = true;
+		bool runTest = false;
 };
 
 #endif

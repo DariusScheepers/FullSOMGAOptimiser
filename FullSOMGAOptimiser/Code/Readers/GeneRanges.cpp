@@ -44,7 +44,7 @@ void GeneRanges::handleValues(vector<string> values)
 			}
 			else if (character == ',')
 			{
-				valueRange.push_back(stof(valueBeingRead));
+				valueRange.push_back(stod(valueBeingRead));
 				valueBeingRead = "";
 				commaRead = true;
 			}
@@ -54,7 +54,7 @@ void GeneRanges::handleValues(vector<string> values)
 			}
 			else if (character == ']' || character == ')')
 			{
-				valueRange.push_back(stof(valueBeingRead));
+				valueRange.push_back(stod(valueBeingRead));
 				valueBeingRead = "";
 				if (character == ']')
 				{

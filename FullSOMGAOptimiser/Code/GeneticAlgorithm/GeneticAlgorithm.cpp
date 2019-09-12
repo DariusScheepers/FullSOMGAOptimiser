@@ -21,6 +21,7 @@ void GeneticAlgorithm::runGeneticAlgorithm()
 {
     initialiseChromosomes();
     const unsigned int maxIterations = configurations->getIterations(); 
+	cout << "Running GA..." << endl;
     for (size_t i = 0; i < maxIterations; i++)
     {
 		setAllChromosomesFitness();

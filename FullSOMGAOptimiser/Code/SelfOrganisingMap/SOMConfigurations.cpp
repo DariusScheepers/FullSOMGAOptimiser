@@ -6,7 +6,8 @@ SOMConfigurations::SOMConfigurations(int maxEpochs,
 	int slidingWindowOffset,
 	double stoppingCriteriaThreshhold,
 	CalculationHelper * calculations,
-	Writer * writer)
+	Writer * writer,
+	bool fullOutput)
 {
     SOMConfigurations::maxEpochs = maxEpochs;
 	SOMConfigurations::trainingSetPortion = trainingSetPortion;
@@ -15,6 +16,7 @@ SOMConfigurations::SOMConfigurations(int maxEpochs,
 	SOMConfigurations::stoppingCriteriaThreshhold = stoppingCriteriaThreshhold;
     SOMConfigurations::dataSet = dataSet;
 	SOMConfigurations::writer = writer;
+	SOMConfigurations::fullOutput = fullOutput;
 }
 
 SOMConfigurations::~SOMConfigurations()
@@ -217,6 +219,7 @@ inputVectors SOMConfigurations::getInput()
 
 int SOMConfigurations::getTrainingSetPortion()
 {
-	return trainingSetPortion;
+	const double portion = dataSet.size() - (dataSet.size() / 30.0);
+	return round(portion);
 }
 

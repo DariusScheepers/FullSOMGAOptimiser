@@ -8,6 +8,8 @@ CalculationHelper * calculations;
 ReadInput * reader;
 Writer * writer;
 
+bool useGA = false;
+
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
 	switch (somConfigValue)
@@ -90,6 +92,8 @@ bool generateSingletons(int argc, char ** argv)
 		cout << "ERROR: No path to main working directory is provided. Exiting...\n";
 		return false;
 	}
+	cout << "In 0: " << argv[0] << endl;
+	cout << "Provided route: " << argv[1] << endl;
 
 	calculations = new CalculationHelper();
 	writer = new Writer(argv[1]);
@@ -103,7 +107,8 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
 	const int slidingWindowOffset = stoi(values.at(getSOMConfigIndex(somConfigurations::slidingWindowOffset)));
-	const double stoppingCriteriaThreshhold = stof(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
+	const double stoppingCriteriaThreshhold = stod(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
+	const bool showFullOutput = !useGA;
 
 	return new SOMConfigurations(maxEpochs,
 		trainingSetPortion,
@@ -111,7 +116,8 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 		slidingWindowOffset,
 		stoppingCriteriaThreshhold,
 		calculations,
-		writer
+		writer,
+		showFullOutput
 	);
 }
 
@@ -121,10 +127,10 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 	somConfigurations->runDataPreperations();
 	const int rows = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultRows)));
 	const int columns = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultColumns)));
-	const double learningRate = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRate)));
-	const double learningDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
-	const double kernelWidth = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
-	const double kernelDecay = stof(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
+	const double learningRate = stod(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRate)));
+	const double learningDecay = stod(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
+	const double kernelWidth = stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
+	const double kernelDecay = stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
 
 	return new SelfOrganisingMap(
 		somConfigurations,
@@ -177,7 +183,11 @@ int main(int argc, char ** argv)
 
 	vector<string> somConfigurationFileValues = reader->readSOMConfig();
 	vector<string> arguments = reader->readArguments();
-	if (arguments.at(0) == "0")
+	if (arguments.at(0) != "0")
+	{
+		useGA = true;
+	}
+	if (!useGA)
 	{
 		SelfOrganisingMap * selfOrganisingMap = getSelfOrganisingMap(somConfigurationFileValues);
 		selfOrganisingMap->runSelfOrganisingMap();
