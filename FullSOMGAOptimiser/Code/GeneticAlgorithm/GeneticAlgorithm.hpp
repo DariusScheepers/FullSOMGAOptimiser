@@ -14,8 +14,12 @@ class GeneticAlgorithm
     private:
         GAConfigurations * configurations;
         vector<Chromosome *> chromosomes;
+        vector<double> fitnessHistory;
 
         void initialiseChromosomes();
+		void handleChromosomesInformation(int);
+        void addFitnessValueToFitnessHistory();
+        double calculateStandardDeviationForWindow();
 		void setAllChromosomesFitness();
         void runExperimentAndCalculateFitnessConcurrently();
 		void runExperimentAndCalculateFitnessLinear();
@@ -34,6 +38,7 @@ class GeneticAlgorithm
 		void printCurrentBestChromosome(int);
 		Chromosome * findChromosomeByIndex(int);
 		void printChromosomeGenesToFile(Chromosome *);
+        void printFitnessHistoryToFile();
 
     public:
         GeneticAlgorithm(GAConfigurations * configurations);

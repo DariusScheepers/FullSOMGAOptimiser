@@ -2,11 +2,12 @@
 
 SOMConfigurations::SOMConfigurations(int maxEpochs,
 	int trainingSetPortion,
-	matrix dataSet,
+	Matrix dataSet,
 	int slidingWindowOffset,
 	double stoppingCriteriaThreshhold,
 	CalculationHelper * calculations,
 	Writer * writer,
+	string dataSetName,
 	bool fullOutput)
 {
     SOMConfigurations::maxEpochs = maxEpochs;
@@ -16,6 +17,7 @@ SOMConfigurations::SOMConfigurations(int maxEpochs,
 	SOMConfigurations::stoppingCriteriaThreshhold = stoppingCriteriaThreshhold;
     SOMConfigurations::dataSet = dataSet;
 	SOMConfigurations::writer = writer;
+	SOMConfigurations::dataSetName = dataSetName;
 	SOMConfigurations::fullOutput = fullOutput;
 }
 
@@ -55,7 +57,7 @@ int SOMConfigurations::getMaxEpochs()
     return maxEpochs;
 }
 
-matrix SOMConfigurations::getDataSet()
+Matrix SOMConfigurations::getDataSet()
 {
     return dataSet;
 }
@@ -67,10 +69,10 @@ void SOMConfigurations::createTrainingAndTestSet()
 	input = convertMatrixToInputVectors(dataSet);
 }
 
-inputVectors SOMConfigurations::convertMatrixToInputVectors(matrix doubleSet)
+InputVectors SOMConfigurations::convertMatrixToInputVectors(Matrix doubleSet)
 {
-	inputVectors result;
-	for each (vector<double> var in doubleSet)
+	InputVectors result;
+	for (vector<double> var : doubleSet)
 	{
 		InputVector * current = new InputVector(var);
 		result.push_back(current);
@@ -212,9 +214,14 @@ Writer * SOMConfigurations::getWriter()
 	return writer;
 }
 
-inputVectors SOMConfigurations::getInput()
+InputVectors SOMConfigurations::getInput()
 {
 	return input;
+}
+
+string SOMConfigurations::getDataSetName()
+{
+	return dataSetName;
 }
 
 int SOMConfigurations::getTrainingSetPortion()

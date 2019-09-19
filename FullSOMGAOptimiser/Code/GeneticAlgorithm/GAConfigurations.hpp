@@ -13,7 +13,8 @@ class GAConfigurations
 {
     private:
         unsigned int chromosomePopulationSize;
-        unsigned int iterations;
+        unsigned int maxIterations;
+		double standardDeviationThreshold;
         unsigned int genesAmount;
         vector<vector<double>> geneValueRanges;
         vector<vector<bool>> geneValueRangesInclusiveOrExclusive;
@@ -30,7 +31,8 @@ class GAConfigurations
     public:
 		GAConfigurations(
 			unsigned int chromosomePopulationSize,
-			unsigned int iterations,
+			unsigned int maxIterations,
+			double standardDeviationThreshold,
 			vector<vector<double>>geneValueRanges,
 			vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
 			usint mutationProbability,
@@ -46,7 +48,8 @@ class GAConfigurations
 		CalculationHelper * calculations;
 
         unsigned int getChromosomePopulationSize();
-        unsigned int getIterations();
+        unsigned int getMaxIterations();
+        double getStandardDeviationThreshold();
         vector<vector<double>> getGeneValueRanges();
         usint getMutationProbability();
         usint getSelectionCutOffPercentage();
@@ -56,7 +59,7 @@ class GAConfigurations
 		SOMConfigurations * getTargetExperimentConfig();
 		Writer * getWriter();
 
-		bool runTest = false;
+		bool runTest = true;
 };
 
 #endif

@@ -5,6 +5,9 @@
 #include <ctime>
 #include <random>
 #include <cstdlib>
+#include <iostream>
+#include <chrono>
+#include <algorithm>
 #include "math.h"
 using namespace std;
 
@@ -13,7 +16,6 @@ using namespace std;
 class CalculationHelper
 {
     private:
-        /* data */
 		static double normaliseValue(double, double, double);
 		mt19937 generator;
     public:
@@ -33,6 +35,9 @@ class CalculationHelper
 		double getRandomNormalDistributionDouble(double, double);
 		vector<double> randomShuffleDouble(vector<double>&);
 		vector<vector<double>> randomShuffleVectors(vector<vector<double>>&);
+        double calculateStandardDeviation(vector<double>);
+        double calculateAverage(vector<double>);
+		string getTimeString();
 };
 
 #endif

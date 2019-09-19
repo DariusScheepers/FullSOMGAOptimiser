@@ -22,14 +22,14 @@ GeneRanges::~GeneRanges()
 
 void GeneRanges::handleValues(vector<string> values)
 {
-	for each (string value in values)
+	for (string value : values)
 	{
 		int index = 0;
 		vector<bool> valueInclusive;
 		vector<double> valueRange;
 		bool commaRead = false;
 		string valueBeingRead = "";
-		for each (char character in value)
+		for (char character : value)
 		{
 			if (character == '[' || character == '(')
 			{

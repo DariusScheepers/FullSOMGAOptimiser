@@ -15,7 +15,7 @@
 using namespace std;
 
 #define usint unsigned short int
-#define neuronMatrix vector<vector<Neuron*>>
+#define NeuronMatrix vector<vector<Neuron*>>
 
 class SelfOrganisingMap
 {
@@ -29,14 +29,15 @@ class SelfOrganisingMap
         SOMConfigurations * configurations;
 
         // important global variables
-        neuronMatrix neuronMap;
-		inputVectors trainingSet;
-		inputVectors testSet;
+        NeuronMatrix neuronMap;
+		InputVectors trainingSet;
+		InputVectors testSet;
                
         // important global variables
         double newLearningRate;
         double newKernelWidth;
         usint iteration;
+        usint trainingWindowIteration;
 
 		void deleteNeuronMap();
         void createNeuronMap();

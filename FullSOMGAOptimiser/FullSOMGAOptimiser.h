@@ -36,7 +36,8 @@ enum class somConfigurations {
 
 enum class gaConfigurations {
 	chromosomePopulationSize,
-	iterations,
+	maxIterations,
+	standardDeviationThreshold,
 	mutationProbability,
 	selectionCutOffSize,
 	crossOverSplit,

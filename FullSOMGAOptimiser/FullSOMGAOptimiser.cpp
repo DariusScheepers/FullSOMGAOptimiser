@@ -8,6 +8,8 @@ CalculationHelper * calculations;
 ReadInput * reader;
 Writer * writer;
 
+string dataSetName;
+
 bool useGA = false;
 
 int getSOMConfigIndex(somConfigurations somConfigValue)
@@ -49,16 +51,18 @@ int getGAConfigIndex(gaConfigurations gaConfigValue)
 	{
 		case gaConfigurations::chromosomePopulationSize:
 			return 0;
-		case gaConfigurations::iterations:
+		case gaConfigurations::maxIterations:
 			return 1;
-		case gaConfigurations::mutationProbability:
+		case gaConfigurations::standardDeviationThreshold:
 			return 2;
-		case gaConfigurations::selectionCutOffSize:
+		case gaConfigurations::mutationProbability:
 			return 3;
-		case gaConfigurations::crossOverSplit:
+		case gaConfigurations::selectionCutOffSize:
 			return 4;
-		case gaConfigurations::mutationStandardDeviation:
+		case gaConfigurations::crossOverSplit:
 			return 5;
+		case gaConfigurations::mutationStandardDeviation:
+			return 6;
 	default:
 		break;
 	}
@@ -82,6 +86,25 @@ int getGAGeneConfigIndex(gaGenesConfigurations gaGeneConfigValue)
 			return 5;
 	default:
 		break;
+	}
+}
+
+void setDataSetFileName(string fullFileName)
+{
+	int indexOfBeginningOfFileName = 0;
+	int index = 0;
+	for (char character : fullFileName)
+	{
+		if (character == '/')
+		{
+			indexOfBeginningOfFileName = index + 1;
+		}
+		index++;
+	}
+	dataSetName = "";
+	for (size_t i = indexOfBeginningOfFileName; i < fullFileName.length(); i++)
+	{
+		dataSetName = dataSetName + fullFileName.at(i);
 	}
 }
 
@@ -110,6 +133,8 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	const double stoppingCriteriaThreshhold = stod(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
 	const bool showFullOutput = !useGA;
 
+	setDataSetFileName(values.at(getSOMConfigIndex(somConfigurations::dataSet)));
+
 	return new SOMConfigurations(maxEpochs,
 		trainingSetPortion,
 		dataSet,
@@ -117,6 +142,7 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 		stoppingCriteriaThreshhold,
 		calculations,
 		writer,
+		dataSetName,
 		showFullOutput
 	);
 }
@@ -149,7 +175,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 	GeneRanges * gaGenesConfigurationFileValues = reader->readGAGenesConfig();
 
 	unsigned int chromosomePopulationSize = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::chromosomePopulationSize)));
-	unsigned int iterations = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::iterations)));
+	unsigned int maxIterations = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::maxIterations)));
+	double standardDeviationThreshold = stod(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::standardDeviationThreshold)));
 	vector<vector<double>> gaGeneRanges = gaGenesConfigurationFileValues->getRangesValues();
 	vector<vector<bool>> gaGeneInclusives = gaGenesConfigurationFileValues->getRangesInclusive();
 	unsigned short int mutationProbability = stoi(gaConfigurationFileValues.at(getGAConfigIndex(gaConfigurations::mutationProbability)));
@@ -162,7 +189,8 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 
 	GAConfigurations * gaConfiguration = new GAConfigurations(
 		chromosomePopulationSize,
-		iterations,
+		maxIterations,
+		standardDeviationThreshold,
 		gaGeneRanges,
 		gaGeneInclusives,
 		mutationProbability,
@@ -202,7 +230,7 @@ int main(int argc, char ** argv)
 		delete geneticAlgorithm;
 	}
 
-	cout << "Finished Project" << endl;
+	cout << "Finished Project.\nEnter any number to stop..." << endl;
 	// _CrtDumpMemoryLeaks();
 	int a;
 	cin >> a;

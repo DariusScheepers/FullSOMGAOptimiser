@@ -161,9 +161,47 @@ vector<double> CalculationHelper::randomShuffleDouble(vector<double> &randomOrde
 	return randomOrdering;
 }
 
-
 vector<vector<double>> CalculationHelper::randomShuffleVectors(vector<vector<double>> &randomOrdering)
 {
 	random_shuffle(randomOrdering.begin(), randomOrdering.end());
 	return randomOrdering;
+}
+
+double CalculationHelper::calculateStandardDeviation(vector<double> values)
+{
+	double mean = calculateAverage(values);
+	double sum = 0.0;
+	for (size_t i = 0; i < values.size(); i++)
+	{
+		double difference = values.at(0) - mean;
+		sum += pow(difference, 2);
+	}
+	double variance = sum / (double)values.size();
+
+	double standardDeviation = sqrt(variance);
+	return standardDeviation;
+}
+
+double CalculationHelper::calculateAverage(vector<double> values)
+{
+	double sum = 0;
+	for (size_t i = 0; i < values.size(); i++)
+	{
+		sum += values.at(i);
+	}
+	double mean = (double)sum / (double)values.size();
+	return mean;
+}
+
+string CalculationHelper::getTimeString()
+{
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[80];
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	strftime(buffer, sizeof(buffer), "%d-%m-%Y-%H%M%S", timeinfo);
+	string time(buffer);
+
+	return time;
 }

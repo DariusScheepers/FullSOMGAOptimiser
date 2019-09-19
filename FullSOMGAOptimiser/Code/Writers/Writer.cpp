@@ -16,7 +16,7 @@ void Writer::writeToFileWithName(string name, vector<string> lines)
 	ofstream outputFile;
 	outputFile.open (fileName, ios::out | ios::trunc);
 
-	for each (string line in lines)
+	for (string line : lines)
 	{
 		outputFile << line << endl;
 	}

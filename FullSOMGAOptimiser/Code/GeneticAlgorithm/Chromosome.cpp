@@ -141,7 +141,6 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 
 double Chromosome::computeSpherical()
 {
-	const double M_PI = 3.14159;
 	const int maxIterations = genes.size();
 	double sum = 0.0;
 	//cout << "+++++++++++++++++++++++++++++++++\n";

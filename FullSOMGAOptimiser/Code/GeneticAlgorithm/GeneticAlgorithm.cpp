@@ -19,18 +19,21 @@ GeneticAlgorithm::~GeneticAlgorithm()
 
 void GeneticAlgorithm::runGeneticAlgorithm()
 {
-    initialiseChromosomes();
-    const unsigned int maxIterations = configurations->getIterations(); 
+    const unsigned int maxIterations = configurations->getMaxIterations();
+    const double stdThreshhold = configurations->getStandardDeviationThreshold();
 	cout << "Running GA..." << endl;
-    for (size_t i = 0; i < maxIterations; i++)
+
+    initialiseChromosomes();
+	setAllChromosomesFitness();
+	handleChromosomesInformation(0);
+    for	(size_t iteration = 0;
+		stdThreshhold < calculateStandardDeviationForWindow()
+			&& iteration < maxIterations;
+		iteration++)
     {
+		generateOffSpring();
 		setAllChromosomesFitness();
-		sortChromosomesFromMostFittestToLowest();
-		printCurrentBestChromosome(i);
-		if (i < maxIterations - 1)
-		{
-			generateOffSpring();
-		}
+		handleChromosomesInformation(iteration);
     }
 	sortChromosomesFromMostFittestToLowest();
 	printCurrentBestChromosome(maxIterations);
@@ -47,10 +50,41 @@ void GeneticAlgorithm::initialiseChromosomes()
     }
 }
 
+void GeneticAlgorithm::handleChromosomesInformation(int iteration)
+{
+	sortChromosomesFromMostFittestToLowest();
+	printCurrentBestChromosome(iteration);
+	addFitnessValueToFitnessHistory();
+}
+
+void GeneticAlgorithm::addFitnessValueToFitnessHistory()
+{
+	const double bestFitness = chromosomes.at(0)->getFitnessValue();
+	fitnessHistory.push_back(bestFitness);
+}
+
+double GeneticAlgorithm::calculateStandardDeviationForWindow()
+{
+	vector<double> windowedFitnessHistroy;
+	const int window = 5;
+	if (fitnessHistory.size() < 5)
+	{
+		return numeric_limits<double>::max();
+	}
+	for (size_t i = fitnessHistory.size() - window; i < fitnessHistory.size(); i++)
+	{
+		const double currentFitness = fitnessHistory.at(i);
+		windowedFitnessHistroy.push_back(currentFitness);
+	}
+	const double std = configurations->calculations->calculateStandardDeviation(windowedFitnessHistroy);
+	cout << "Standard deviation value:\t" << to_string(std) << endl;
+	return std;
+}
+
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	runExperimentAndCalculateFitnessConcurrently();
-	//runExperimentAndCalculateFitnessLinear();
+	//runExperimentAndCalculateFitnessConcurrently();
+	runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
@@ -93,7 +127,7 @@ void GeneticAlgorithm::generateOffSpring()
 		vector<Chromosome *> parents = getBestParentsByTournamentSelectionAlgorithm();
 		vector<Chromosome *> addedOffspring = createOffspringByUniformCrossover(i, parents);
 		addedOffspring = performMutation(addedOffspring);
-		for each (Chromosome * addedChild in addedOffspring)
+		for (Chromosome * addedChild : addedOffspring)
 		{
 			offspring.push_back(addedChild);
 		}
@@ -104,7 +138,7 @@ void GeneticAlgorithm::generateOffSpring()
 		delete parent;
 	}
 	chromosomes.clear();
-	for each (Chromosome * child in offspring)
+	for (Chromosome * child : offspring)
 	{
 		chromosomes.push_back(child);
 	}
@@ -208,7 +242,7 @@ vector<Chromosome *> GeneticAlgorithm::createOffspringByUniformCrossover(int ind
 
 void GeneticAlgorithm::deleteChromosomes(vector<Chromosome *> deletingChromosomes)
 {
-	for each (Chromosome * deletingChromosome in deletingChromosomes)
+	for (Chromosome * deletingChromosome : deletingChromosomes)
 	{
 		delete deletingChromosome;
 	}
@@ -291,11 +325,11 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 {
 	Chromosome * bestChromosome = chromosomes.at(0);
 	cout << "========================\n";
-	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getIterations() << endl;
-	cout << "\t Memory Loc " << bestChromosome << endl;
-	cout << "\t Index " << bestChromosome->getIndex() << endl;
-	cout << "\t Fitness " << bestChromosome->getFitnessValue() << endl;
-	cout << "\t Genes Values" << endl;
+	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getMaxIterations() << endl;
+	cout << "\tMemory Loc " << bestChromosome << endl;
+	cout << "\tIndex " << bestChromosome->getIndex() << endl;
+	cout << "\tFitness " << bestChromosome->getFitnessValue() << endl;
+	cout << "\tGenes Values" << endl;
 	for (size_t i = 0; i < bestChromosome->getGenes().size(); i++)
 	{
 		const double geneValue = bestChromosome->getGene(i);
@@ -313,10 +347,26 @@ void GeneticAlgorithm::printChromosomeGenesToFile(Chromosome * chromosome)
 		output.push_back(line);
 	}
 
-	time_t _tm = time(NULL);
-	struct tm * curtime = localtime(&_tm);
-	string time = asctime(curtime);
+	string fileName = configurations->getTargetExperimentConfig()->getDataSetName()
+		+ "_" + configurations->calculations->getTimeString()
+		+ "_FitnessValue_"
+		+ to_string(chromosome->getFitnessValue())
+		+ "_GenesAmount_"
+		+ to_string(chromosome->getGenes().size());
+	configurations->getWriter()->writeToFileWithName(fileName, output);
+}
 
-	string fileName = time + " FitnessValue " + to_string(chromosome->getFitnessValue()) + " GenesAmount " + to_string(chromosome->getGenes().size());
+void GeneticAlgorithm::printFitnessHistoryToFile()
+{
+	vector<string> output;
+	for (double fitness : fitnessHistory)
+	{
+		string line = to_string(fitness);
+		output.push_back(line);
+	}
+
+	string fileName = configurations->getTargetExperimentConfig()->getDataSetName()
+		+ "_" + configurations->calculations->getTimeString()
+		+ "_FitnessHistory_";
 	configurations->getWriter()->writeToFileWithName(fileName, output);
 }

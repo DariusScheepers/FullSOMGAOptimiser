@@ -33,12 +33,12 @@ void SelfOrganisingMap::deleteNeuronMap()
 
 void SelfOrganisingMap::runSelfOrganisingMap() ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 {	
-	for (size_t i = 0; i < 30; i++)
+	for (trainingWindowIteration = 0; trainingWindowIteration < 30; trainingWindowIteration++)
 	{
 		deleteNeuronMap();
 		createNeuronMap();
-		prepareTrainingSet(i);
-		cout << "Training in window " << i << endl;
+		prepareTrainingSet(trainingWindowIteration);
+		cout << "Training in window " << trainingWindowIteration << endl;
 		trainSOM();
 		testSetQEHistory.push_back(getTestRunAverageQuantizationError());
 	}
@@ -48,7 +48,7 @@ void SelfOrganisingMap::prepareTrainingSet(int offset)
 {
 	trainingSet.clear();
 	testSet.clear();
-	inputVectors inputSet = configurations->getInput();
+	InputVectors inputSet = configurations->getInput();
 	int trainingSetStartIndex = 0 + offset;
 	int trainingSetPortion = static_cast<int>((double)inputSet.size() - ((double)inputSet.size() / 30.0));
 	int trainingSetEndIndex = (trainingSetPortion + offset) % inputSet.size();
@@ -114,8 +114,11 @@ void SelfOrganisingMap::trainSOM()
 
 		printQuantizationError(slidingWindowSize);
 	}
-	printEndNeuronMap();
-	configurations->getWriter()->writeToFileWithName("test", output);
+	string outputFileName = configurations->calculations->getTimeString()
+		+ "_SOMTraining_"
+		+ to_string(trainingWindowIteration);
+	configurations->getWriter()->writeToFileWithName(outputFileName, output);
+	// printEndNeuronMap();
 }
 
 void SelfOrganisingMap::createNeuronMap()
@@ -369,7 +372,7 @@ void SelfOrganisingMap::addToQEHistory(double quantizationError, int slidingWind
 double SelfOrganisingMap::calculateDecreaseInQE(int slidingWindowSize)
 {
 	double sum = 0.0;
-	for each (double qe in quantizationErrorHistory)
+	for (double qe : quantizationErrorHistory)
 	{
 		sum += qe;
 	}
@@ -387,7 +390,7 @@ double SelfOrganisingMap::calculateStandardDeviationOfQE(int slidingWindowSize)
 	double decreaseInQE = calculateDecreaseInQE(slidingWindowSize);
 	double sum = 0.0;
 
-	for each (double qe in quantizationErrorHistory)
+	for (double qe : quantizationErrorHistory)
 	{
 		const double differenceInQEAndDecreaseInQE = qe - decreaseInQE;
 		const double square = differenceInQEAndDecreaseInQE * differenceInQEAndDecreaseInQE;

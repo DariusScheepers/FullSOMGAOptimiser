@@ -2,7 +2,8 @@
 
 GAConfigurations::GAConfigurations(
     unsigned int chromosomePopulationSize,
-    unsigned int iterations,
+    unsigned int maxIterations,
+	double standardDeviationThreshold,
 	vector<vector<double>>geneValueRanges,
     vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
     usint mutationProbability,
@@ -15,7 +16,8 @@ GAConfigurations::GAConfigurations(
 )
 {
     GAConfigurations::chromosomePopulationSize = chromosomePopulationSize;
-    GAConfigurations::iterations = iterations;
+    GAConfigurations::maxIterations = maxIterations;
+    GAConfigurations::standardDeviationThreshold = standardDeviationThreshold;
     GAConfigurations::genesAmount = genesAmount;
     GAConfigurations::geneValueRanges = geneValueRanges;
     GAConfigurations::geneValueRangesInclusiveOrExclusive = geneValueRangesInclusiveOrExclusive;
@@ -56,9 +58,14 @@ unsigned int GAConfigurations::getChromosomePopulationSize()
     return chromosomePopulationSize;
 }
 
-unsigned int GAConfigurations::getIterations()
+unsigned int GAConfigurations::getMaxIterations()
 {
-    return iterations;
+    return maxIterations;
+}
+
+double GAConfigurations::getStandardDeviationThreshold()
+{
+	return standardDeviationThreshold;
 }
 
 vector<vector<double>> GAConfigurations::getGeneValueRanges()
