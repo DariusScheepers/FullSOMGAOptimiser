@@ -59,7 +59,7 @@ class GAConfigurations
 		SOMConfigurations * getTargetExperimentConfig();
 		Writer * getWriter();
 
-		bool runTest = true;
+		bool runTest = false;
 };
 
 #endif
