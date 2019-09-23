@@ -128,6 +128,7 @@ bool generateSingletons(int argc, char ** argv)
 	calculations = new CalculationHelper();
 	writer = new Writer(providedRoute);
 	reader = new ReadInput(providedRoute);
+	return true;
 }
 
 SOMConfigurations * getSOMConfigurations(vector<string> values)
