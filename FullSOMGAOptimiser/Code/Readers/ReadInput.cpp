@@ -115,6 +115,7 @@ vector<string> ReadInput::readArguments()
     const string argumentsPath = absolutePathToMain + "Configurations/Arguments.txt";
 	//cout << "Args Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
+	cout << "Arguments Length: " << to_string(lines.size()) << endl;
     return readKeysOfKeyValuePairs(lines);
 }
 

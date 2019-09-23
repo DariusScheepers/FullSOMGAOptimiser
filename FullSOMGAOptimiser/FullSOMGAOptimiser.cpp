@@ -229,6 +229,7 @@ int main(int argc, char ** argv)
 	vector<string> arguments = reader->readArguments();
 	if (arguments.at(0) != "0")
 	{
+		cout << "Using GA...\n";
 		useGA = true;
 	}
 	if (!useGA)
