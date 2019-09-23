@@ -91,6 +91,7 @@ int getGAGeneConfigIndex(gaGenesConfigurations gaGeneConfigValue)
 
 void setDataSetFileName(string fullFileName)
 {
+	cout << "Setting Data File Name...\n";
 	int indexOfBeginningOfFileName = 0;
 	int index = 0;
 	for (char character : fullFileName)
@@ -106,6 +107,7 @@ void setDataSetFileName(string fullFileName)
 	{
 		dataSetName = dataSetName + fullFileName.at(i);
 	}
+	cout << "Sette Data File Name\n";
 	writer->setDataSetName(dataSetName);
 }
 
