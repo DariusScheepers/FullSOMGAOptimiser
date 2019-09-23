@@ -55,6 +55,7 @@ dataMatrix ReadInput::readDataSet(string fileName, char seperator)
 
 vector<string> ReadInput::getFileContent(string fileName)
 {
+	cout << "ReadFile: " << fileName << endl;
 	ifstream in(fileName.c_str());
 
     vector<string> out;
@@ -111,7 +112,7 @@ vector<string> ReadInput::readKeysOfKeyValuePairs(vector<string> lines)
 vector<string> ReadInput::readArguments()
 {
     const string argumentsPath = absolutePathToMain + "/Configurations/Arguments.txt";
-	cout << "Args Full Path: " << argumentsPath << endl;
+	//cout << "Args Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
 }
@@ -119,7 +120,7 @@ vector<string> ReadInput::readArguments()
 vector<string> ReadInput::readSOMConfig()
 {
     const string argumentsPath = absolutePathToMain + "/Configurations/SelfOrganisingMap_Config.txt";
-	cout << "SOMConfig Full Path: " << argumentsPath << endl;
+	//cout << "SOMConfig Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
 }
