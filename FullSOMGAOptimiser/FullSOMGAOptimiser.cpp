@@ -117,7 +117,7 @@ bool generateSingletons(int argc, char ** argv)
 	if (argc < 2)
 	{
 		cout << "ERROR: No path to main working directory is provided. Switching to default\n";
-		providedRoute = "/home/ec2-user/Doc/FullSOMGAOptimiser/FullSOMGAOptimiser/FullSOMGAOptimiser/";
+		providedRoute = "/home/ec2-user/Doc/FullSOMGAOptimiser/FullSOMGAOptimiser/";
 		// return false;
 	}
 	else
