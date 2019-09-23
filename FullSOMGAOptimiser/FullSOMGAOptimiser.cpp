@@ -111,17 +111,23 @@ void setDataSetFileName(string fullFileName)
 
 bool generateSingletons(int argc, char ** argv)
 {
+	string providedRoute;
 	if (argc < 2)
 	{
-		cout << "ERROR: No path to main working directory is provided. Exiting...\n";
-		return false;
+		cout << "ERROR: No path to main working directory is provided. Switching to default\n";
+		string providedRoute = "/home/ec2-user/Doc/FullSOMGAOptimiser/FullSOMGAOptimiser/FullSOMGAOptimiser/";
+		// return false;
+	}
+	else
+	{
+		providedRoute = argv[1];
 	}
 	cout << "In 0: " << argv[0] << endl;
-	cout << "Provided route: " << argv[1] << endl;
+	cout << "Provided route: " << providedRoute << endl;
 
 	calculations = new CalculationHelper();
-	writer = new Writer(argv[1]);
-	reader = new ReadInput(argv[1]);
+	writer = new Writer(providedRoute);
+	reader = new ReadInput(providedRoute);
 }
 
 SOMConfigurations * getSOMConfigurations(vector<string> values)

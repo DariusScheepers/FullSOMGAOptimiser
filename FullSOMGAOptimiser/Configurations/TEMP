@@ -17,8 +17,6 @@ LEARNING RATE DECAY: (0,100]
 KERNEL WIDTH PORTION: (0,100]
 KERNEL WIDTH DECAY: (0,100]
 
-One Traning SOM window: 58 seconds
-
 max Dimensions:
 Iris:		12
 Ionosphere: 18
@@ -26,3 +24,5 @@ Monks1:		20
 Monks2:		20
 Monks3:		20
 Diabetes:	27
+
+./FullSOMGAOptimiser /home/ec2-user/Doc/FullSOMGAOptimiser/FullSOMGAOptimiser/FullSOMGAOptimiser/
