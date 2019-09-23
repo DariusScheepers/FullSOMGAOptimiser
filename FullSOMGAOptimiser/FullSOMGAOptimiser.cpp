@@ -229,6 +229,7 @@ int main(int argc, char ** argv)
 		geneticAlgorithm->runGeneticAlgorithm();
 		SelfOrganisingMap * bestSolution = geneticAlgorithm->returnBestChromsomes()->returnSolution();
 		bestSolution->printTrainingAndTestSetsQEHistories();
+		bestSolution->printFinalNeuronMap();
 		delete geneticAlgorithm;
 	}
 

@@ -110,7 +110,8 @@ void SelfOrganisingMap::trainSOM()
 		printQuantizationError(slidingWindowSize);
 	}
 
-	string outputFileName = configurations->calculations->getTimeString()
+	string outputFileName = "SOMTrainings/"
+		+ configurations->calculations->getTimeString()
 		+ "_SOMTraining_"
 		+ to_string(trainingWindowIteration);
 	configurations->getWriter()->writeToFileWithName(outputFileName, output);
@@ -122,7 +123,7 @@ void SelfOrganisingMap::handleCurrentQEInfo(double qe, vector<string>& output)
 {
 	quantizationErrorHistory.push_back(qe);
 	string line = to_string(iteration) + ",\t" + to_string(qe);
-	if (!configurations->fullOutput) {
+	if (configurations->fullOutput) {
 		cout << line << endl;
 	}
 	output.push_back(line);
@@ -158,13 +159,19 @@ void SelfOrganisingMap::addToTrainingSetsQEHistory()
 InputVector * SelfOrganisingMap::selectTrainingVector()
 {
 	int traingSetSize = trainingSet.size();
-	if (iteration >= traingSetSize)
+	if (iteration >= traingSetSize && traingSetSize % iteration == 0)
 	{
-		// TODO, randomShuffle TrainingSet
+		shuffleTrainingSet();
 	}
 	int index = iteration % traingSetSize;
 	InputVector * chosenInputVector = trainingSet.at(index);
 	return chosenInputVector;
+}
+
+void SelfOrganisingMap::shuffleTrainingSet()
+{
+	srand(time(NULL));
+	random_shuffle(trainingSet.begin(), trainingSet.end());
 }
 
 Neuron * SelfOrganisingMap::getBestMatchingUnit(InputVector* selectedTrainingVector)
@@ -298,27 +305,31 @@ void SelfOrganisingMap::performHypercubeWeightInitialization()
     }
 }
 
-void SelfOrganisingMap::printNeuronMap()
+string SelfOrganisingMap::printNeuronMap()
 {
+	string map;
+	for (size_t i = 0; i < neuronMap.size(); i++)
+	{
+		map = map + to_string(i) + ". ";
+		vector<Neuron *> row = neuronMap.at(i);
+		for (size_t j = 0; j < row.size(); j++)
+		{
+			vector<double> weights = row.at(j)->getWeights();
+			map = map + "(";
+			for (size_t k = 0; k < weights.size() - 1; k++)
+			{
+				map = map + to_string(weights.at(k)) + ", ";
+			}
+			map = map + to_string(weights.back()) + ")  ";
+		}
+		map = map + "\n\n";
+	}
+
 	if (configurations->fullOutput)
 	{
-		for (size_t i = 0; i < neuronMap.size(); i++)
-		{
-			cout << i << ". ";
-			vector<Neuron *> row = neuronMap.at(i);
-			for (size_t j = 0; j < row.size(); j++)
-			{
-				vector<double> weights = row.at(j)->getWeights();
-				cout << "(";
-				for (size_t k = 0; k < weights.size() - 1; k++)
-				{
-					cout << weights.at(k) << ", ";
-				}
-				cout << weights.back() << ")  ";
-			}
-			cout << endl << endl;
-		}
+		cout << map;
 	}
+	return map;
 }
 
 void SelfOrganisingMap::printInitialNeuronMap() {
@@ -473,4 +484,24 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 	}
 	
 	configurations->getWriter()->writeToFileWithName(fileName, output);
+}
+
+string SelfOrganisingMap::parametersToString()
+{
+	string output;
+	output = "Self Organising Map Parameters:\n\tRows:\t\t\t" + to_string(rows)
+		+ "\n\tColumns:\t\t" + to_string(columns)
+		+ "\n\tLearning Rate:\t\t" + to_string(learningRate)
+		+ "\n\tLearning Rate Decay:\t" + to_string(learningDecay)
+		+ "\n\tKernel Width:\t\t" + to_string(kernelWidth)
+		+ "\n\tKernel Width Decay:\t" + to_string(kernelDecay);
+	return output;
+}
+
+void SelfOrganisingMap::printFinalNeuronMap()
+{
+	string output = printNeuronMap();
+	string fileName = configurations->calculations->getTimeString()
+		+ "_NeuronMap";
+	configurations->getWriter()->writeToFileWithNameUsingOneLine(fileName, output);
 }

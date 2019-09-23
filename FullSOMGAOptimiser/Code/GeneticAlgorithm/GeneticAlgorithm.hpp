@@ -15,9 +15,11 @@ class GeneticAlgorithm
         GAConfigurations * configurations;
         vector<Chromosome *> chromosomes;
         vector<double> fitnessHistory;
+		unsigned int iteration;
+		double standardDeviation;
 
         void initialiseChromosomes();
-		void handleChromosomesInformation(int);
+		void handleChromosomesInformation();
         void addFitnessValueToFitnessHistory();
         double calculateStandardDeviationForWindow();
 		void setAllChromosomesFitness();

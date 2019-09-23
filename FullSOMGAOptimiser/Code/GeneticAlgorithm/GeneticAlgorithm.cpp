@@ -23,21 +23,25 @@ void GeneticAlgorithm::runGeneticAlgorithm()
     const double stdThreshhold = configurations->getStandardDeviationThreshold();
 	cout << "Running GA..." << endl;
 
+	standardDeviation = numeric_limits<double>::max();
+	iteration = 0;
+
     initialiseChromosomes();
 	setAllChromosomesFitness();
-	handleChromosomesInformation(0);
-    for	(size_t iteration = 0;
-		stdThreshhold < calculateStandardDeviationForWindow()
+	handleChromosomesInformation();
+    for	(iteration = 1;
+		stdThreshhold < standardDeviation
 			&& iteration < maxIterations;
 		iteration++)
     {
 		generateOffSpring();
 		setAllChromosomesFitness();
-		handleChromosomesInformation(iteration);
+		standardDeviation = calculateStandardDeviationForWindow();
+		handleChromosomesInformation();
     }
 	sortChromosomesFromMostFittestToLowest();
 	printCurrentBestChromosome(maxIterations);
-	printChromosomeGenesToFile(chromosomes.at(0));	
+	printChromosomeGenesToFile(returnBestChromsomes());
 }
 
 void GeneticAlgorithm::initialiseChromosomes()
@@ -50,7 +54,7 @@ void GeneticAlgorithm::initialiseChromosomes()
     }
 }
 
-void GeneticAlgorithm::handleChromosomesInformation(int iteration)
+void GeneticAlgorithm::handleChromosomesInformation()
 {
 	sortChromosomesFromMostFittestToLowest();
 	printCurrentBestChromosome(iteration);
@@ -59,7 +63,7 @@ void GeneticAlgorithm::handleChromosomesInformation(int iteration)
 
 void GeneticAlgorithm::addFitnessValueToFitnessHistory()
 {
-	const double bestFitness = chromosomes.at(0)->getFitnessValue();
+	const double bestFitness = returnBestChromsomes()->getFitnessValue();
 	fitnessHistory.push_back(bestFitness);
 }
 
@@ -323,9 +327,10 @@ Chromosome * GeneticAlgorithm::findChromosomeByIndex(int index)
 
 void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 {
-	Chromosome * bestChromosome = chromosomes.at(0);
+	Chromosome * bestChromosome = returnBestChromsomes();
 	cout << "========================\n";
-	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getMaxIterations() << endl;
+	cout << "Best Chromosome at iteration " << iteration + 1 << "/" << configurations->getMaxIterations() 
+		<< " With STD: " << to_string(standardDeviation) << " > " << to_string(configurations->getStandardDeviationThreshold()) << endl;
 	cout << "\tMemory Loc " << bestChromosome << endl;
 	cout << "\tIndex " << bestChromosome->getIndex() << endl;
 	cout << "\tFitness " << bestChromosome->getFitnessValue() << endl;
@@ -336,6 +341,12 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 		cout << "\t\t" << geneValue << endl;
 	}
 	cout << "========================\n";
+	
+	string fileName = configurations->calculations->getTimeString()
+		+ "_Best_Solution_Parameters_Iteration_"
+		+ to_string(iteration);
+	string output = bestChromosome->returnSolution()->parametersToString();
+	configurations->getWriter()->writeToFileWithNameUsingOneLine(fileName, output);
 }
 
 void GeneticAlgorithm::printChromosomeGenesToFile(Chromosome * chromosome)

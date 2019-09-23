@@ -46,6 +46,7 @@ class SelfOrganisingMap
         void addToTrainingSetsQEHistory();
 		void prepareTrainingSet(int offset);
         InputVector * selectTrainingVector();
+		void shuffleTrainingSet();
         Neuron * getBestMatchingUnit(InputVector *);
         void updateEachNeuronWeights(InputVector *, Neuron *);
         void setNewLearningRateAndKernelWidth();
@@ -61,7 +62,7 @@ class SelfOrganisingMap
         vector<double> getLastWindowedQEHistory(int);
 		vector<double> testSetQEHistory;
 
-		void printNeuronMap();
+		string printNeuronMap();
 		void printInitialNeuronMap();
 		void printQuantizationError(int);
 		void printEndNeuronMap();
@@ -81,6 +82,8 @@ class SelfOrganisingMap
         void runSelfOrganisingMap();
 		double calculatePerformance();
         void printTrainingAndTestSetsQEHistories();
+		void printFinalNeuronMap();
+		string parametersToString();
 };
 
 #endif

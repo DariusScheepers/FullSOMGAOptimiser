@@ -23,3 +23,14 @@ void Writer::writeToFileWithName(string name, vector<string> lines)
 
 	outputFile.close();
 }
+
+void Writer::writeToFileWithNameUsingOneLine(string name, string line)
+{
+	string fileName = absolutePathToMain + name + ".txt";
+	ofstream outputFile;
+	outputFile.open(fileName, ios::out | ios::trunc);
+
+	outputFile << line << endl;
+
+	outputFile.close();
+}
