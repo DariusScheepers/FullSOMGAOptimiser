@@ -346,6 +346,7 @@ void GeneticAlgorithm::printCurrentBestChromosome(int iteration)
 		+ "_Best_Solution_Parameters_Iteration_"
 		+ to_string(iteration);
 	string output = bestChromosome->returnSolution()->parametersToString();
+	output = output + "\nFitness:\t" + to_string(bestChromosome->getFitnessValue());
 	configurations->getWriter()->writeToFileWithNameUsingOneLine(fileName, output);
 }
 
