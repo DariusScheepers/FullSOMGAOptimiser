@@ -10,7 +10,7 @@ Writer * writer;
 
 string dataSetName;
 
-bool useGA = false;
+bool useGA = true;
 
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
@@ -227,10 +227,14 @@ int main(int argc, char ** argv)
 
 	vector<string> somConfigurationFileValues = reader->readSOMConfig();
 	vector<string> arguments = reader->readArguments();
-	if (arguments.at(0) != "0")
+	if (arguments.size() > 0 && arguments.at(0) != "1")
+	{
+		cout << "Not Using GA...\n";
+		useGA = false;
+	}
+	else
 	{
 		cout << "Using GA...\n";
-		useGA = true;
 	}
 	if (!useGA)
 	{
