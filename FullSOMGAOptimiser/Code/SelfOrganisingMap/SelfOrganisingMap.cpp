@@ -35,10 +35,10 @@ void SelfOrganisingMap::runSelfOrganisingMap() /////////////////////////////////
 {	
 	for (trainingWindowIteration = 0; trainingWindowIteration < 30; trainingWindowIteration++)
 	{
+		cout << "Training in window " << trainingWindowIteration << endl;
 		deleteNeuronMap();
 		createNeuronMap();
 		prepareTrainingSet(trainingWindowIteration);
-		cout << "Training in window " << trainingWindowIteration << endl;
 		trainSOM();
 		testSetQEHistory.push_back(getTestRunAverageQuantizationError());
 	}
@@ -96,29 +96,36 @@ void SelfOrganisingMap::trainSOM()
 	vector<string> output;
 
 	for (iteration = 0;
-		iteration < trainingSet.size()
-			|| (iteration < maxIterations 
-				&& calculateStandardDeviationOfQE(slidingWindowSize) >= stoppingCriteriaThreshhold);
+		iteration < maxIterations 
+			&& stoppingCriteriaThreshhold < calculateStandardDeviationOfQE(slidingWindowSize);
 		iteration++)
 	{
-		setNewLearningRateAndKernelWidth(iteration);
+		setNewLearningRateAndKernelWidth();
 		InputVector * selectedVector = selectTrainingVector();
 		Neuron * bestMatchingUnit = getBestMatchingUnit(selectedVector);
 		updateEachNeuronWeights(selectedVector, bestMatchingUnit);
 
-		double qe = calculateQuantizationError();
-		addToQEHistory(qe, slidingWindowSize);
-		string line = to_string(iteration) + "," + to_string(qe);
-		// cout << line << endl;
-		output.push_back(line);
-
+		const double qe = calculateQuantizationError();
+		handleCurrentQEInfo(qe, output);
 		printQuantizationError(slidingWindowSize);
 	}
+
 	string outputFileName = configurations->calculations->getTimeString()
 		+ "_SOMTraining_"
 		+ to_string(trainingWindowIteration);
 	configurations->getWriter()->writeToFileWithName(outputFileName, output);
 	// printEndNeuronMap();
+	addToTrainingSetsQEHistory();
+}
+
+void SelfOrganisingMap::handleCurrentQEInfo(double qe, vector<string>& output)
+{
+	quantizationErrorHistory.push_back(qe);
+	string line = to_string(iteration) + ",\t" + to_string(qe);
+	if (!configurations->fullOutput) {
+		cout << line << endl;
+	}
+	output.push_back(line);
 }
 
 void SelfOrganisingMap::createNeuronMap()
@@ -142,9 +149,20 @@ void SelfOrganisingMap::createNeuronMap()
 	}
 }
 
+void SelfOrganisingMap::addToTrainingSetsQEHistory()
+{
+	trainingSetsQEHistory.push_back(quantizationErrorHistory);
+	quantizationErrorHistory.clear();
+}
+
 InputVector * SelfOrganisingMap::selectTrainingVector()
 {
-	int index = iteration % trainingSet.size();
+	int traingSetSize = trainingSet.size();
+	if (iteration >= traingSetSize)
+	{
+		// TODO, randomShuffle TrainingSet
+	}
+	int index = iteration % traingSetSize;
 	InputVector * chosenInputVector = trainingSet.at(index);
 	return chosenInputVector;
 }
@@ -186,7 +204,8 @@ void SelfOrganisingMap::updateEachNeuronWeights(InputVector * selectedTrainingVe
 			{
 				const double currentWeight = currentNeuron->getWeightAt(k);
 				const double selectedTrainingVectorWeight = selectedTrainingVector->getInputValueAt(k);
-				WeightCalculations * weightCalculations = new WeightCalculations(selectedTrainingVectorWeight,
+				WeightCalculations * weightCalculations = new WeightCalculations(
+					selectedTrainingVectorWeight,
 					bestMatchingUnit,
 					currentNeuron,
 					currentWeight,
@@ -210,7 +229,7 @@ double SelfOrganisingMap::calculateExponenialDecay(double intialValue, int itera
     return intialValue * exponentialValue;
 }
 
-void SelfOrganisingMap::setNewLearningRateAndKernelWidth(int iteration)
+void SelfOrganisingMap::setNewLearningRateAndKernelWidth()
 {
     newLearningRate = calculateExponenialDecay(learningRate, iteration, learningDecay);
 	// cout << "NewLearningRate: " << newLearningRate << endl;
@@ -317,7 +336,7 @@ void SelfOrganisingMap::printQuantizationError(int slidingWindowSize)
 	{
 		const double quantizationError = quantizationErrorHistory.back();
 		cout << "Quantization Error at Iteration: " << iteration << endl;
-		cout << "\t " << quantizationError << endl;
+		cout << "\t" << quantizationError << endl;
 
 		if (iteration % slidingWindowSize == 0)
 		{
@@ -349,36 +368,39 @@ double SelfOrganisingMap::calculateQuantizationError()
 {
     double sum = 0.0;
     const size_t trainingVectorsSizeForTrainingVectorsLeft = trainingSet.size();
+	vector<double> bmuDistances;
 	for (size_t i = 0; i < trainingVectorsSizeForTrainingVectorsLeft; i++)
     {
         InputVector * currentTrainingVector = trainingSet.at(i);
         Neuron * bmu = getBestMatchingUnit(currentTrainingVector);
-        sum += configurations->calculations->euclidianDistance(currentTrainingVector->getInputValues(), bmu->getWeights());
+        double bmuDistance = configurations->calculations->euclidianDistance(currentTrainingVector->getInputValues(), bmu->getWeights());
+		bmuDistances.push_back(bmuDistance);
     }
-	const double result = sum / static_cast<double>(trainingVectorsSizeForTrainingVectorsLeft);
+	const double result = configurations->calculations->calculateAverage(bmuDistances);
 	return result;
 }
 
-void SelfOrganisingMap::addToQEHistory(double quantizationError, int slidingWindowSize)
+vector<double> SelfOrganisingMap::getLastWindowedQEHistory(int slidingWindowSize)
 {
-	quantizationErrorHistory.push_back(quantizationError);
-	if (quantizationErrorHistory.size() > slidingWindowSize)
+	vector<double> windowedQEHistory;
+	int startingPosition = quantizationErrorHistory.size() - slidingWindowSize;
+	if (startingPosition < 0)
 	{
-		rotate(quantizationErrorHistory.begin(), quantizationErrorHistory.begin() + 1, quantizationErrorHistory.end());
-		quantizationErrorHistory.resize(slidingWindowSize);
+		startingPosition = 0;
 	}
+	for (size_t i = startingPosition; i < quantizationErrorHistory.size(); i++)
+	{
+		const double quantizationError = quantizationErrorHistory.at(i);
+		windowedQEHistory.push_back(quantizationError);
+	}
+	return windowedQEHistory;
 }
 
 double SelfOrganisingMap::calculateDecreaseInQE(int slidingWindowSize)
 {
-	double sum = 0.0;
-	for (double qe : quantizationErrorHistory)
-	{
-		sum += qe;
-	}
-	const double result = sum / (double) slidingWindowSize;
+	vector<double> windowedQEHistory = getLastWindowedQEHistory(slidingWindowSize);
+	const double result = configurations->calculations->calculateAverage(windowedQEHistory);
 	return result;
-
 }
 
 double SelfOrganisingMap::calculateStandardDeviationOfQE(int slidingWindowSize)
@@ -387,10 +409,10 @@ double SelfOrganisingMap::calculateStandardDeviationOfQE(int slidingWindowSize)
 	{
 		return numeric_limits<double>::max();
 	}
-	double decreaseInQE = calculateDecreaseInQE(slidingWindowSize);
+	const double decreaseInQE = calculateDecreaseInQE(slidingWindowSize);
 	double sum = 0.0;
-
-	for (double qe : quantizationErrorHistory)
+	vector<double> windowedQEHistory = getLastWindowedQEHistory(slidingWindowSize);
+	for (double qe : windowedQEHistory)
 	{
 		const double differenceInQEAndDecreaseInQE = qe - decreaseInQE;
 		const double square = differenceInQEAndDecreaseInQE * differenceInQEAndDecreaseInQE;
@@ -403,24 +425,52 @@ double SelfOrganisingMap::calculateStandardDeviationOfQE(int slidingWindowSize)
 
 double SelfOrganisingMap::getTestRunAverageQuantizationError()
 {
-	double sum = 0.0;
-	for (InputVector * testCandidate: testSet)
+	vector<double> bmuDistances;
+	for (InputVector * testCandidate : testSet)
 	{
 		Neuron * bmu = getBestMatchingUnit(testCandidate);
-		sum += configurations->calculations->euclidianDistance(testCandidate->getInputValues(), bmu->getWeights());
+		const double bmuDistance = configurations->calculations->euclidianDistance(testCandidate->getInputValues(), bmu->getWeights());
+		bmuDistances.push_back(bmuDistance);
 	}
 
-	const double result = sum / testSet.size();
+	testSetsQEHistory.push_back(bmuDistances);
+	const double result = configurations->calculations->calculateAverage(bmuDistances);
+	cout << "Test Run Average,\t" << to_string(result) << endl;
 	return result;
 }
 
 double SelfOrganisingMap::calculatePerformance()
 {
-	double sum = 0.0;
-	for (double qe : testSetQEHistory)
-	{
-		sum += qe;
-	}
-	double result = sum / (double)testSetQEHistory.size();
+	const double result = configurations->calculations->calculateAverage(testSetQEHistory);
 	return result;
+}
+
+void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
+{
+	string fileName = configurations->calculations->getTimeString() + "_TestAndTrainingSetQEHistories";
+	vector<string> output;
+	int index = 0;
+	for (vector<double> qeRow : trainingSetsQEHistory)
+	{
+		string outLine = "Training " + to_string(index++);
+		for (double qe : qeRow)
+		{
+			outLine = outLine + " " + to_string(qe);
+		}
+		outLine = outLine + "\n";
+		output.push_back(outLine);
+	}
+	index = 0;
+	for (vector<double> qeRow : testSetsQEHistory)
+	{
+		string outLine = "Test " + to_string(index++);
+		for (double qe : qeRow)
+		{
+			outLine = outLine + " " + to_string(qe);
+		}
+		outLine = outLine + "\n";
+		output.push_back(outLine);
+	}
+	
+	configurations->getWriter()->writeToFileWithName(fileName, output);
 }

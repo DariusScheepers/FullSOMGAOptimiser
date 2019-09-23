@@ -155,3 +155,8 @@ double Chromosome::computeSpherical()
 	//cout << "+++++++++++++++++++++++++++++++++\n";
 	return sum;
 }
+
+SelfOrganisingMap * Chromosome::returnSolution()
+{
+	return selfOrganisingMap;
+}

@@ -227,6 +227,8 @@ int main(int argc, char ** argv)
 	{
 		GeneticAlgorithm * geneticAlgorithm = getGeneticAlgorithm(somConfigurationFileValues);
 		geneticAlgorithm->runGeneticAlgorithm();
+		SelfOrganisingMap * bestSolution = geneticAlgorithm->returnBestChromsomes()->returnSolution();
+		bestSolution->printTrainingAndTestSetsQEHistories();
 		delete geneticAlgorithm;
 	}
 

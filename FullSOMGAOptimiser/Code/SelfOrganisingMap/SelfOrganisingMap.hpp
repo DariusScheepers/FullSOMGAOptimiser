@@ -28,12 +28,12 @@ class SelfOrganisingMap
         double kernelDecay;
         SOMConfigurations * configurations;
 
-        // important global variables
         NeuronMatrix neuronMap;
 		InputVectors trainingSet;
 		InputVectors testSet;
+        dataMatrix trainingSetsQEHistory;
+        dataMatrix testSetsQEHistory;
                
-        // important global variables
         double newLearningRate;
         double newKernelWidth;
         usint iteration;
@@ -42,11 +42,13 @@ class SelfOrganisingMap
 		void deleteNeuronMap();
         void createNeuronMap();
 		void trainSOM();
+		void handleCurrentQEInfo(double, vector<string>&);
+        void addToTrainingSetsQEHistory();
 		void prepareTrainingSet(int offset);
         InputVector * selectTrainingVector();
         Neuron * getBestMatchingUnit(InputVector *);
         void updateEachNeuronWeights(InputVector *, Neuron *);
-        void setNewLearningRateAndKernelWidth(int);
+        void setNewLearningRateAndKernelWidth();
         double calculateExponenialDecay(double intialValue, int iteration, double decayConstant);
 
         void performHypercubeWeightInitialization();
@@ -55,8 +57,8 @@ class SelfOrganisingMap
 		double calculateQuantizationError();
 		double calculateStandardDeviationOfQE(int slidingWindowSize);
 		double calculateDecreaseInQE(int slidingWindowSize);
-		void addToQEHistory(double, int);
 		vector<double> quantizationErrorHistory;
+        vector<double> getLastWindowedQEHistory(int);
 		vector<double> testSetQEHistory;
 
 		void printNeuronMap();
@@ -78,6 +80,7 @@ class SelfOrganisingMap
 
         void runSelfOrganisingMap();
 		double calculatePerformance();
+        void printTrainingAndTestSetsQEHistories();
 };
 
 #endif

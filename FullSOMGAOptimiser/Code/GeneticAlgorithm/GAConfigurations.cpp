@@ -46,6 +46,11 @@ GAConfigurations::~GAConfigurations()
 
 void GAConfigurations::runExperimentSpecificPreparations()
 {
+	// perpareDimensionsAs50PersentOfTrainingSetSize();
+}
+
+void GAConfigurations::perpareDimensionsAs50PersentOfTrainingSetSize()
+{
 	double max = targetExperimentConfigurations->getTrainingSetPortion();
 	double actualMapDimensionMax = max / 2.0;
 	int roundedValue = round(actualMapDimensionMax);

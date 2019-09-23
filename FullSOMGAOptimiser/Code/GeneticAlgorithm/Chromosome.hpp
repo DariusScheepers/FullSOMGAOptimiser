@@ -40,6 +40,7 @@ class Chromosome
 		int getIndex();
 
         void runAlgorithm(SOMConfigurations *);
+        SelfOrganisingMap * returnSolution();
 
 		double computeSpherical();
 
