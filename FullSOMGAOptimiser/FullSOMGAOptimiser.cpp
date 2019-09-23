@@ -135,6 +135,7 @@ bool generateSingletons(int argc, char ** argv)
 
 SOMConfigurations * getSOMConfigurations(vector<string> values)
 {
+	cout << "Getting SOMConfig...\n";
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
 	vector<vector<double>> dataSet = reader->readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
@@ -145,6 +146,7 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 
 	setDataSetFileName(values.at(getSOMConfigIndex(somConfigurations::dataSet)));
 
+	cout << "Got SOMConfig...\n";
 	return new SOMConfigurations(maxEpochs,
 		trainingSetPortion,
 		dataSet,
@@ -159,6 +161,7 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 
 SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 {
+	cout << "Getting SOM...\n";
 	SOMConfigurations * somConfigurations = getSOMConfigurations(values);
 	somConfigurations->runDataPreperations();
 	const int rows = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultRows)));
@@ -167,7 +170,8 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 	const double learningDecay = stod(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
 	const double kernelWidth = stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
 	const double kernelDecay = stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
-
+	
+	cout << "Got SOM...\n";
 	return new SelfOrganisingMap(
 		somConfigurations,
 		rows,
@@ -181,6 +185,7 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 
 GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 {
+	cout << "Getting GA...\n";
 	vector<string> gaConfigurationFileValues = reader->readGAConfig();
 	GeneRanges * gaGenesConfigurationFileValues = reader->readGAGenesConfig();
 
@@ -212,6 +217,7 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 		writer
 	);
 
+	cout << "Got GA...\n";
 	return new GeneticAlgorithm(gaConfiguration);
 }
 
