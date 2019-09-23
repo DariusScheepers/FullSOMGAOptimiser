@@ -71,6 +71,7 @@ vector<string> ReadInput::getFileContent(string fileName)
 	//Close The File
 	in.close();
     out.shrink_to_fit();
+	cout << "Shap" << endl;
 	return out;
 }
 
@@ -111,7 +112,7 @@ vector<string> ReadInput::readKeysOfKeyValuePairs(vector<string> lines)
 
 vector<string> ReadInput::readArguments()
 {
-    const string argumentsPath = absolutePathToMain + "/Configurations/Arguments.txt";
+    const string argumentsPath = absolutePathToMain + "Configurations/Arguments.txt";
 	//cout << "Args Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
@@ -119,7 +120,7 @@ vector<string> ReadInput::readArguments()
 
 vector<string> ReadInput::readSOMConfig()
 {
-    const string argumentsPath = absolutePathToMain + "/Configurations/SelfOrganisingMap_Config.txt";
+    const string argumentsPath = absolutePathToMain + "Configurations/SelfOrganisingMap_Config.txt";
 	//cout << "SOMConfig Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
@@ -127,14 +128,14 @@ vector<string> ReadInput::readSOMConfig()
 
 vector<string> ReadInput::readGAConfig()
 {
-	const string argumentsPath = absolutePathToMain + "/Configurations/GeneticAlgorithm_Config.txt";
+	const string argumentsPath = absolutePathToMain + "Configurations/GeneticAlgorithm_Config.txt";
 	vector<string> lines = getFileContent(argumentsPath);
 	return readKeysOfKeyValuePairs(lines);
 }
 
 GeneRanges * ReadInput::readGAGenesConfig()
 {
-	const string argumentsPath = absolutePathToMain + "/Configurations/GeneticAlgorithmGenes_Config.txt";
+	const string argumentsPath = absolutePathToMain + "Configurations/GeneticAlgorithmGenes_Config.txt";
 	vector<string> lines = getFileContent(argumentsPath);
 	vector<string> values = readKeysOfKeyValuePairs(lines);
 	return new GeneRanges(values);
