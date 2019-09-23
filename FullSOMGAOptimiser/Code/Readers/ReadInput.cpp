@@ -111,6 +111,7 @@ vector<string> ReadInput::readKeysOfKeyValuePairs(vector<string> lines)
 vector<string> ReadInput::readArguments()
 {
     const string argumentsPath = absolutePathToMain + "/Configurations/Arguments.txt";
+	cout << "Args Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
 }
@@ -118,6 +119,7 @@ vector<string> ReadInput::readArguments()
 vector<string> ReadInput::readSOMConfig()
 {
     const string argumentsPath = absolutePathToMain + "/Configurations/SelfOrganisingMap_Config.txt";
+	cout << "SOMConfig Full Path: " << argumentsPath << endl;
     vector<string> lines = getFileContent(argumentsPath);
     return readKeysOfKeyValuePairs(lines);
 }
