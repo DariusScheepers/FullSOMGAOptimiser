@@ -106,6 +106,7 @@ void setDataSetFileName(string fullFileName)
 	{
 		dataSetName = dataSetName + fullFileName.at(i);
 	}
+	writer->setDataSetName(dataSetName);
 }
 
 bool generateSingletons(int argc, char ** argv)

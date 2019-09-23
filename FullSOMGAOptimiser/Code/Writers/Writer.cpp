@@ -10,9 +10,14 @@ Writer::~Writer()
 
 }
 
+void Writer::setDataSetName(string dataSetName)
+{
+	Writer::dataSetName = "_" + dataSetName;
+}
+
 void Writer::writeToFileWithName(string name, vector<string> lines)
 {
-	string fileName = absolutePathToMain + name + ".txt";
+	string fileName = absolutePathToMain + name + dataSetName + ".txt";
 	ofstream outputFile;
 	outputFile.open (fileName, ios::out | ios::trunc);
 
@@ -26,7 +31,7 @@ void Writer::writeToFileWithName(string name, vector<string> lines)
 
 void Writer::writeToFileWithNameUsingOneLine(string name, string line)
 {
-	string fileName = absolutePathToMain + name + ".txt";
+	string fileName = absolutePathToMain + name + dataSetName + ".txt";
 	ofstream outputFile;
 	outputFile.open(fileName, ios::out | ios::trunc);
 
