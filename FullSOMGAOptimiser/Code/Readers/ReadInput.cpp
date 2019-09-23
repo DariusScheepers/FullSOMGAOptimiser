@@ -13,6 +13,7 @@ ReadInput::~ReadInput()
 dataMatrix ReadInput::readDataSet(string fileName, char seperator)
 {
 	const string filePath = absolutePathToMain + "Data/" + fileName;
+	cout << "Reading file path: " << filePath << endl;
     vector<string> lines = getFileContent(filePath);
 
 	dataMatrix data;
