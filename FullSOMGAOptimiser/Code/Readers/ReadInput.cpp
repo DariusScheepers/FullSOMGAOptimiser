@@ -71,7 +71,7 @@ vector<string> ReadInput::getFileContent(string fileName)
 	//Close The File
 	in.close();
     out.shrink_to_fit();
-	cout << "Shap" << endl;
+	cout << "Shap... Out Amount: " << to_string(out.size()) << endl;
 	return out;
 }
 
