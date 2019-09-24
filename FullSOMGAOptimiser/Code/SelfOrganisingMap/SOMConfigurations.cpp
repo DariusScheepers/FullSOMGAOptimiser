@@ -92,8 +92,8 @@ void SOMConfigurations::findCornerVectors()
 	bottomRightTrainingVector = topLeftBottomRightTrainingVectors.back();
 	bottomLeftTrainingVector = findBottomLeftTrainingVector(topLeftTrainingVector, bottomRightTrainingVector);
 	topRightTrainingVector = findTopRightTrainingVector(topLeftTrainingVector, bottomRightTrainingVector, bottomLeftTrainingVector);
+	findMaxDistanceBetweenCornerVectors();
 }
-
 
 vector<InputVector*> SOMConfigurations::findTopLeftAndBottomRightTrainingVectors()
 {
@@ -182,17 +182,17 @@ InputVector * SOMConfigurations::findTopRightTrainingVector(InputVector * vector
 	return bestVector;
 }
 
-InputVector * SOMConfigurations::getCornerVectorAt(cornerVectors cornerVector)
+InputVector * SOMConfigurations::getCornerVectorAt(CornerVectors cornerVector)
 {
 	switch (cornerVector)
 	{
-		case cornerVectors::topLeft:
+		case CornerVectors::topLeft:
 			return topLeftTrainingVector;
-		case cornerVectors::bottomRight:
+		case CornerVectors::bottomRight:
 			return bottomRightTrainingVector;
-		case cornerVectors::bottomLeft:
+		case CornerVectors::bottomLeft:
 			return bottomLeftTrainingVector;
-		case cornerVectors::topRight:
+		case CornerVectors::topRight:
 			return topRightTrainingVector;
 		default:
 			break;
@@ -228,5 +228,43 @@ int SOMConfigurations::getTrainingSetPortion()
 {
 	const double portion = dataSet.size() - (dataSet.size() / 30.0);
 	return round(portion);
+}
+
+void SOMConfigurations::findMaxDistanceBetweenCornerVectors()
+{
+	const double topLeftBottmRightDistance = calculations->euclidianDistance(
+		topLeftTrainingVector->getInputValues(),
+		bottomRightTrainingVector->getInputValues()
+	);
+	const double topRightBottomLeftDistance = calculations->euclidianDistance(
+		topRightTrainingVector->getInputValues(),
+		bottomLeftTrainingVector->getInputValues()
+	);
+	const double bottomLeftBottomRightDistance = calculations->euclidianDistance(
+		bottomLeftTrainingVector->getInputValues(),
+		bottomRightTrainingVector->getInputValues()
+	);
+	const double topLeftTopRightDistance = calculations->euclidianDistance(
+		topLeftTrainingVector->getInputValues(),
+		topRightTrainingVector->getInputValues()
+	);
+	maxDistanceBetweenCorners = topLeftBottmRightDistance;
+	if (topRightBottomLeftDistance > maxDistanceBetweenCorners)
+	{
+		maxDistanceBetweenCorners = topRightBottomLeftDistance;
+	}
+	if (bottomLeftBottomRightDistance > maxDistanceBetweenCorners)
+	{
+		maxDistanceBetweenCorners = bottomLeftBottomRightDistance;
+	}
+	if (topLeftTopRightDistance > maxDistanceBetweenCorners)
+	{
+		maxDistanceBetweenCorners = topLeftTopRightDistance;
+	}
+}
+
+double SOMConfigurations::getMaxDistanceBetweenCornerVectors()
+{
+	return maxDistanceBetweenCorners;
 }
 

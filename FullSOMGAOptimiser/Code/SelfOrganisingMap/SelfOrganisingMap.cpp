@@ -246,10 +246,10 @@ void SelfOrganisingMap::setNewLearningRateAndKernelWidth()
 
 void SelfOrganisingMap::performHypercubeWeightInitialization()
 {
-	const vector<double> bottomLeftTrainingVector = configurations->getCornerVectorAt(cornerVectors::bottomLeft)->getInputValues();
-	const vector<double> topLeftTrainingVector = configurations->getCornerVectorAt(cornerVectors::topLeft)->getInputValues();
-	const vector<double> bottomRightTrainingVector = configurations->getCornerVectorAt(cornerVectors::bottomRight)->getInputValues();
-	const vector<double> topRightTrainingVector = configurations->getCornerVectorAt(cornerVectors::topRight)->getInputValues();
+	const vector<double> bottomLeftTrainingVector = configurations->getCornerVectorAt(CornerVectors::bottomLeft)->getInputValues();
+	const vector<double> topLeftTrainingVector = configurations->getCornerVectorAt(CornerVectors::topLeft)->getInputValues();
+	const vector<double> bottomRightTrainingVector = configurations->getCornerVectorAt(CornerVectors::bottomRight)->getInputValues();
+	const vector<double> topRightTrainingVector = configurations->getCornerVectorAt(CornerVectors::topRight)->getInputValues();
 
     neuronMap.at(0).at(0)->setAllWeights(bottomLeftTrainingVector);
     neuronMap.at(rows - 1).at(0)->setAllWeights(topLeftTrainingVector);

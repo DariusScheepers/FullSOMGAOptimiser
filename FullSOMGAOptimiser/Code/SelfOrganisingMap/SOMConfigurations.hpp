@@ -12,7 +12,7 @@
 #include "InputVector.hpp"
 using namespace std;
 
-enum class cornerVectors {
+enum class CornerVectors {
 	topLeft,
 	bottomRight,
 	bottomLeft,
@@ -36,6 +36,7 @@ class SOMConfigurations
 		InputVector * bottomRightTrainingVector;
 		InputVector * bottomLeftTrainingVector;
 		InputVector * topRightTrainingVector;
+		double maxDistanceBetweenCorners;
 
 		InputVectors convertMatrixToInputVectors(Matrix);
         void createTrainingAndTestSet();
@@ -43,6 +44,7 @@ class SOMConfigurations
 		vector<InputVector*> findTopLeftAndBottomRightTrainingVectors();
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
 		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
+		void findMaxDistanceBetweenCornerVectors();
 
     public:
         SOMConfigurations(
@@ -66,11 +68,12 @@ class SOMConfigurations
         Matrix getDataSet();
 		InputVectors getInput();
 		InputVector * getTrainingVectorAt(int);
-		InputVector * getCornerVectorAt(cornerVectors);
+		InputVector * getCornerVectorAt(CornerVectors);
 		double getStoppingCriteriaThreshhold();
 		int getSlidingWindowOffset();
 		string getDataSetName();
 		bool fullOutput;
+		double getMaxDistanceBetweenCornerVectors();
 
 		Writer * getWriter();
 };

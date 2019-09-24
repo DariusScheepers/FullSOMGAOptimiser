@@ -111,16 +111,9 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
 	const double learningRate = genes.at(2);
 	const double learningDecay = genes.at(3);
-	const double kernelWidthPortion = genes.at(4) / 100.0;
-	double kernelWidth;
-	if (rows > columns)
-	{
-		kernelWidth = rows * kernelWidthPortion;
-	}
-	else
-	{
-		kernelWidth = columns * kernelWidthPortion;
-	}
+	
+	const double kernelWidthPortion = configurations->calculations->percentageToDouble(genes.at(4));
+	const double kernelWidth = kernelWidthPortion * somConfiguration->getMaxDistanceBetweenCornerVectors();
 	
 	const double kernelDecay = genes.at(5);
 
