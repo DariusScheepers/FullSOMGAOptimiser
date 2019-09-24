@@ -468,7 +468,9 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 		{
 			outLine = outLine + " " + to_string(qe);
 		}
-		outLine = outLine + "\n";
+		const double average = configurations->calculations->calculateAverage(qeRow);
+		const double std = configurations->calculations->calculateStandardDeviation(qeRow);
+		outLine = outLine + " Avg: " + to_string(average) + " Std: " + to_string(std) + "\n";
 		output.push_back(outLine);
 	}
 	index = 0;
@@ -479,7 +481,9 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 		{
 			outLine = outLine + " " + to_string(qe);
 		}
-		outLine = outLine + "\n";
+		const double average = configurations->calculations->calculateAverage(qeRow);
+		const double std = configurations->calculations->calculateStandardDeviation(qeRow);
+		outLine = outLine + " Avg: " + to_string(average) + " Std: " + to_string(std) + "\n";
 		output.push_back(outLine);
 	}
 	
