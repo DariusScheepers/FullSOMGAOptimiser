@@ -11,14 +11,6 @@
 #include "../Writers/Writer.h"
 #include "InputVector.hpp"
 using namespace std;
-
-enum class CornerVectors {
-	topLeft,
-	bottomRight,
-	bottomLeft,
-	topRight
-};
-
 class SOMConfigurations
 {
     private:
@@ -32,19 +24,8 @@ class SOMConfigurations
 		double stoppingCriteriaThreshhold;
 		Writer * writer;
 
-		InputVector * topLeftTrainingVector;
-		InputVector * bottomRightTrainingVector;
-		InputVector * bottomLeftTrainingVector;
-		InputVector * topRightTrainingVector;
-		double maxDistanceBetweenCorners;
-
 		InputVectors convertMatrixToInputVectors(Matrix);
-        void createTrainingAndTestSet();
-		void findCornerVectors();
-		vector<InputVector*> findTopLeftAndBottomRightTrainingVectors();
-		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
-		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
-		void findMaxDistanceBetweenCornerVectors();
+        void shuffleAndFormatData();
 
     public:
         SOMConfigurations(
@@ -68,12 +49,10 @@ class SOMConfigurations
         Matrix getDataSet();
 		InputVectors getInput();
 		InputVector * getTrainingVectorAt(int);
-		InputVector * getCornerVectorAt(CornerVectors);
 		double getStoppingCriteriaThreshhold();
 		int getSlidingWindowOffset();
 		string getDataSetName();
 		bool fullOutput;
-		double getMaxDistanceBetweenCornerVectors();
 
 		Writer * getWriter();
 };

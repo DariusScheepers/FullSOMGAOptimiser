@@ -107,14 +107,11 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
 		return;
 	}
 
-	const unsigned short int rows = static_cast<unsigned short int>(genes.at(0));
-	const unsigned short int columns = static_cast<unsigned short int>(genes.at(1));
+	const unsigned short int rows = round(genes.at(0));
+	const unsigned short int columns = round(genes.at(1));
 	const double learningRate = genes.at(2);
 	const double learningDecay = genes.at(3);
-	
-	const double kernelWidthPortion = configurations->calculations->percentageToDouble(genes.at(4));
-	const double kernelWidth = kernelWidthPortion * somConfiguration->getMaxDistanceBetweenCornerVectors();
-	
+	const double kernelWidth = genes.at(4);	
 	const double kernelDecay = genes.at(5);
 
 	selfOrganisingMap = new SelfOrganisingMap(

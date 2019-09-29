@@ -86,6 +86,7 @@ void SelfOrganisingMap::prepareTrainingSet(int offset)
 			}
 		}
 	}
+	performHypercubeWeightInitialization();
 }
 
 void SelfOrganisingMap::trainSOM()
@@ -119,6 +120,108 @@ void SelfOrganisingMap::trainSOM()
 	addToTrainingSetsQEHistory();
 }
 
+void SelfOrganisingMap::findCornerVectors()
+{
+	vector<InputVector *> topLeftBottomRightTrainingVectors = findTopLeftAndBottomRightTrainingVectors();
+	topLeftTrainingVector = topLeftBottomRightTrainingVectors.front();
+	bottomRightTrainingVector = topLeftBottomRightTrainingVectors.back();
+	bottomLeftTrainingVector = findBottomLeftTrainingVector(topLeftTrainingVector, bottomRightTrainingVector);
+	topRightTrainingVector = findTopRightTrainingVector(topLeftTrainingVector, bottomRightTrainingVector, bottomLeftTrainingVector);
+}
+
+vector<InputVector*> SelfOrganisingMap::findTopLeftAndBottomRightTrainingVectors()
+{
+	vector<InputVector *> result(2);
+	double maxDistance = 0;
+	const size_t trainingVectorsSize = trainingSet.size();
+	for (size_t i = 0; i < trainingVectorsSize; i++)
+	{
+		InputVector * firstSelectedTrainingVector = trainingSet.at(i);
+		for (size_t j = 0; j < trainingVectorsSize; j++)
+		{
+			if (i == j)
+			{
+				continue;
+			}
+			InputVector * secondSelectedTrainingVector = trainingSet.at(j);
+			const double currentDistance = configurations->calculations->euclidianDistance(
+				firstSelectedTrainingVector->getInputValues(),
+				secondSelectedTrainingVector->getInputValues()
+			);
+			if (currentDistance > maxDistance)
+			{
+				maxDistance = currentDistance;
+				result.at(0) = firstSelectedTrainingVector;
+				result.at(1) = secondSelectedTrainingVector;
+			}
+		}
+	}
+
+	maxDistanceBetweenCorners = maxDistance;
+	return result;
+}
+
+InputVector * SelfOrganisingMap::findBottomLeftTrainingVector(InputVector * vector1, InputVector * vector2)
+{
+	InputVector * bestVector;
+	double maxDistance = 0;
+	const size_t trainingVectorsSize = trainingSet.size();
+	for (size_t i = 0; i < trainingVectorsSize; i++)
+	{
+		InputVector * vector3 = trainingSet.at(i);
+		const double distanceBetweenVector1And3 = configurations->calculations->euclidianDistance(
+			vector1->getInputValues(),
+			vector3->getInputValues()
+		);
+		const double distanceBetweenVector2And3 = configurations->calculations->euclidianDistance(
+			vector2->getInputValues(),
+			vector3->getInputValues()
+		);
+		const double currentDistance = distanceBetweenVector1And3 + distanceBetweenVector2And3;
+		if (currentDistance > maxDistance)
+		{
+			maxDistance = currentDistance;
+			bestVector = vector3;
+		}
+	}
+	return bestVector;
+}
+
+InputVector * SelfOrganisingMap::findTopRightTrainingVector(InputVector * vector1, InputVector * vector2, InputVector * vector3)
+{
+	InputVector * bestVector;
+	double maxDistance = 0;
+	const size_t trainingVectorsSize = trainingSet.size();
+	for (size_t i = 0; i < trainingVectorsSize; i++)
+	{
+		InputVector * vector4 = trainingSet.at(i);
+		const double distanceBetweenVector1And4 = configurations->calculations->euclidianDistance(
+			vector1->getInputValues(),
+			vector4->getInputValues()
+		);
+		const double distanceBetweenVector2And4 = configurations->calculations->euclidianDistance(
+			vector2->getInputValues(),
+			vector4->getInputValues()
+		);
+		const double distanceBetweenVector3And4 = configurations->calculations->euclidianDistance(
+			vector3->getInputValues(),
+			vector4->getInputValues()
+		);
+		const double currentDistance = distanceBetweenVector1And4 + distanceBetweenVector2And4 + distanceBetweenVector3And4;
+		if (currentDistance > maxDistance)
+		{
+			maxDistance = currentDistance;
+			bestVector = vector4;
+		}
+	}
+	return bestVector;
+}
+
+void SelfOrganisingMap::setKernelWidth()
+{
+	kernelWidth = configurations->calculations->percentageToDouble(kernelWidth) * maxDistanceBetweenCorners;
+}
+
 void SelfOrganisingMap::handleCurrentQEInfo(double qe, vector<string>& output)
 {
 	quantizationErrorHistory.push_back(qe);
@@ -143,7 +246,6 @@ void SelfOrganisingMap::createNeuronMap()
 		neuronMap.push_back(columnNeurons);
     }
 
-    performHypercubeWeightInitialization();
 	if (configurations->fullOutput)
 	{
 		printInitialNeuronMap();
@@ -246,10 +348,13 @@ void SelfOrganisingMap::setNewLearningRateAndKernelWidth()
 
 void SelfOrganisingMap::performHypercubeWeightInitialization()
 {
-	const vector<double> bottomLeftTrainingVector = configurations->getCornerVectorAt(CornerVectors::bottomLeft)->getInputValues();
-	const vector<double> topLeftTrainingVector = configurations->getCornerVectorAt(CornerVectors::topLeft)->getInputValues();
-	const vector<double> bottomRightTrainingVector = configurations->getCornerVectorAt(CornerVectors::bottomRight)->getInputValues();
-	const vector<double> topRightTrainingVector = configurations->getCornerVectorAt(CornerVectors::topRight)->getInputValues();
+	findCornerVectors();
+	setKernelWidth();
+
+	const vector<double> bottomLeftTrainingVector = this->bottomLeftTrainingVector->getInputValues();
+	const vector<double> topLeftTrainingVector = this->topLeftTrainingVector->getInputValues();
+	const vector<double> bottomRightTrainingVector = this->bottomRightTrainingVector->getInputValues();
+	const vector<double> topRightTrainingVector = this->topRightTrainingVector->getInputValues();
 
     neuronMap.at(0).at(0)->setAllWeights(bottomLeftTrainingVector);
     neuronMap.at(rows - 1).at(0)->setAllWeights(topLeftTrainingVector);

@@ -17,6 +17,13 @@ using namespace std;
 #define usint unsigned short int
 #define NeuronMatrix vector<vector<Neuron*>>
 
+enum class CornerVectors {
+	topLeft,
+	bottomRight,
+	bottomLeft,
+	topRight
+};
+
 class SelfOrganisingMap
 {
     private:
@@ -38,6 +45,17 @@ class SelfOrganisingMap
         double newKernelWidth;
         usint iteration;
         usint trainingWindowIteration;
+
+		InputVector * topLeftTrainingVector;
+		InputVector * bottomRightTrainingVector;
+		InputVector * bottomLeftTrainingVector;
+		InputVector * topRightTrainingVector;
+		double maxDistanceBetweenCorners;
+		void findCornerVectors();
+		vector<InputVector*> findTopLeftAndBottomRightTrainingVectors();
+		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
+		InputVector * findTopRightTrainingVector(InputVector *, InputVector *, InputVector *);
+		void setKernelWidth();
 
 		void deleteNeuronMap();
         void createNeuronMap();

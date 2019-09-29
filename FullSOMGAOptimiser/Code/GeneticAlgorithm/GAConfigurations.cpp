@@ -46,16 +46,24 @@ GAConfigurations::~GAConfigurations()
 
 void GAConfigurations::runExperimentSpecificPreparations()
 {
-	// perpareDimensionsAs50PersentOfTrainingSetSize();
+	perpareDimensionsAsSqrtOfInputDataSize();
 }
 
-void GAConfigurations::perpareDimensionsAs50PersentOfTrainingSetSize()
+void GAConfigurations::perpareDimensionsAsSqrtOfInputDataSize()
 {
-	double max = targetExperimentConfigurations->getTrainingSetPortion();
-	double actualMapDimensionMax = max / 2.0;
-	int roundedValue = round(actualMapDimensionMax);
-	geneValueRanges.at(0).at(1) = roundedValue;
-	geneValueRanges.at(1).at(1) = roundedValue;
+	const double max = sqrt(targetExperimentConfigurations->getInput().size());
+	const int maxTrunc = trunc(max);
+	const double addedToMaxForRounding = 0.5 - numeric_limits<double>::min(); // 0.000001
+	const double addedToMinForRounding = 0.5;
+
+	const double fullMax = maxTrunc + addedToMaxForRounding;
+	const double fullMin = geneValueRanges.at(0).at(0) - addedToMinForRounding;
+	vector<double> dimension;
+	dimension.push_back(fullMin);
+	dimension.push_back(fullMax);
+
+	geneValueRanges.at(0) = dimension;
+	geneValueRanges.at(1) = dimension;
 }
 
 unsigned int GAConfigurations::getChromosomePopulationSize()

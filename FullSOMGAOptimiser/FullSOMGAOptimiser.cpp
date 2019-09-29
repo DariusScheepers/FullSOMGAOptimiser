@@ -168,8 +168,7 @@ SelfOrganisingMap * getSelfOrganisingMap(vector<string> values)
 	const int columns = stoi(values.at(getSOMConfigIndex(somConfigurations::defaultColumns)));
 	const double learningRate = stod(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRate)));
 	const double learningDecay = stod(values.at(getSOMConfigIndex(somConfigurations::defaultLearningRateDecay)));
-	const double kernelWidthPortion = calculations->percentageToDouble(stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth))));
-	const double kernelWidth = kernelWidthPortion * somConfigurations->getMaxDistanceBetweenCornerVectors();
+	const double kernelWidth = stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidth)));
 	const double kernelDecay = stod(values.at(getSOMConfigIndex(somConfigurations::defaultKernelWidthDecay)));
 	
 	cout << "Got SOM...\n";
