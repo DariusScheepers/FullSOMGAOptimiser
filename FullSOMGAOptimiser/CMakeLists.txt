@@ -18,6 +18,7 @@ add_executable (FullSOMGAOptimiser "FullSOMGAOptimiser.cpp" "FullSOMGAOptimiser.
 	"./Code/GeneticAlgorithm/Chromosome.cpp"
 	"./Code/GeneticAlgorithm/GAConfigurations.cpp"
 	"./Code/GeneticAlgorithm/GeneticAlgorithm.cpp"
+	"./Code/SobolNumbers/SobolNumbers.cpp"
 )
 
 # TODO: Add tests and install targets if needed.

@@ -79,6 +79,10 @@ class SelfOrganisingMap
 		vector<double> quantizationErrorHistory;
         vector<double> getLastWindowedQEHistory(int);
 		vector<double> testSetQEHistory;
+		vector<double> lineariseDataMatrix(dataMatrix);
+		double overAllQEHistoryAverage(dataMatrix);
+		double overAllQEHistoryStandardDevaition(dataMatrix);
+		int overAllQEHistoryIterations(dataMatrix);
 
 		string printNeuronMap();
 		void printInitialNeuronMap();
@@ -98,6 +102,7 @@ class SelfOrganisingMap
         ~SelfOrganisingMap();
 
         void runSelfOrganisingMap();
+        void run30FoldCrossValidation();
 		double calculatePerformance();
         void printTrainingAndTestSetsQEHistories();
 		void printFinalNeuronMap();

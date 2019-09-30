@@ -6,6 +6,8 @@
         "vector": "cpp",
         "istream": "cpp",
         "memory": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "iostream": "cpp",
+        "string": "cpp"
     }
 }

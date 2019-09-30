@@ -4,8 +4,8 @@ GAConfigurations::GAConfigurations(
     unsigned int chromosomePopulationSize,
     unsigned int maxIterations,
 	double standardDeviationThreshold,
-	vector<vector<double>>geneValueRanges,
-    vector<vector<bool>>geneValueRangesInclusiveOrExclusive,
+	vector<vector<double>> geneValueRanges,
+    vector<vector<bool>> geneValueRangesInclusiveOrExclusive,
     usint mutationProbability,
 	usint selectionCutOffPercentage,
 	usint crossOverSplit,
@@ -53,7 +53,8 @@ void GAConfigurations::perpareDimensionsAsSqrtOfInputDataSize()
 {
 	const double max = sqrt(targetExperimentConfigurations->getInput().size());
 	const int maxTrunc = trunc(max);
-	const double addedToMaxForRounding = 0.5 - numeric_limits<double>::min(); // 0.000001
+	const double addedToMaxForRounding = 0.5 - 0.0000000001; // numeric_limits<double>::min(); // 0.0000000001
+	cout << "try " << to_string(round(addedToMaxForRounding)) << endl;
 	const double addedToMinForRounding = 0.5;
 
 	const double fullMax = maxTrunc + addedToMaxForRounding;

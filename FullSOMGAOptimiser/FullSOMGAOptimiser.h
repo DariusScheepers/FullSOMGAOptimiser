@@ -12,6 +12,7 @@
 #include "./Code/Readers/GeneRanges.h"
 #include "./Code/GeneticAlgorithm/GAConfigurations.hpp"
 #include "./Code/GeneticAlgorithm/GeneticAlgorithm.hpp"
+#include "./Code/SobolNumbers/SobolNumbers.h"
 
 // #define _CRTDBG_MAP_ALLOC
 // #include <stdlib.h>

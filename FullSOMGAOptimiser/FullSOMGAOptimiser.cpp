@@ -10,7 +10,22 @@ Writer * writer;
 
 string dataSetName;
 
-bool useGA = true;
+bool useGA = false;
+bool useSobolNumbers = false;
+bool runThroughAllDataSets = false;
+string currentDataSet;
+
+vector<string> dataSets;
+
+void populateDataSets()
+{
+	dataSets.push_back("iris/iris.data");
+	dataSets.push_back("ionosphere/ionosphere.data");
+	dataSets.push_back("monks/monks1.data");
+	dataSets.push_back("monks/monks2.data");
+	dataSets.push_back("monks/monks3.data");
+	dataSets.push_back("diabetes/pima.data");
+}
 
 int getSOMConfigIndex(somConfigurations somConfigValue)
 {
@@ -92,6 +107,7 @@ int getGAGeneConfigIndex(gaGenesConfigurations gaGeneConfigValue)
 void setDataSetFileName(string fullFileName)
 {
 	cout << "Setting Data File Name...\n";
+	currentDataSet = fullFileName;
 	int indexOfBeginningOfFileName = 0;
 	int index = 0;
 	for (char character : fullFileName)
@@ -137,14 +153,21 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 {
 	cout << "Getting SOMConfig...\n";
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
-	vector<vector<double>> dataSet = reader->readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
 	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
 	const int slidingWindowOffset = stoi(values.at(getSOMConfigIndex(somConfigurations::slidingWindowOffset)));
 	const double stoppingCriteriaThreshhold = stod(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
-	const bool showFullOutput = !useGA;
-
-	setDataSetFileName(values.at(getSOMConfigIndex(somConfigurations::dataSet)));
+	const bool showFullOutput = !useGA && !useSobolNumbers;
+	vector<vector<double>> dataSet;
+	if (!runThroughAllDataSets)
+	{
+		dataSet = reader->readDataSet(values.at(getSOMConfigIndex(somConfigurations::dataSet)), seperator);
+		setDataSetFileName(values.at(getSOMConfigIndex(somConfigurations::dataSet)));
+	}
+	else
+	{
+		dataSet = reader->readDataSet(currentDataSet, seperator);
+	}
 
 	cout << "Got SOMConfig...\n";
 	return new SOMConfigurations(maxEpochs,
@@ -221,22 +244,119 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 	return new GeneticAlgorithm(gaConfiguration);
 }
 
+void handleBestSOM(SelfOrganisingMap * bestSolution)
+{
+	bestSolution->run30FoldCrossValidation();
+
+	bestSolution->printTrainingAndTestSetsQEHistories();
+	string fileName = calculations->getTimeString() + "_BestSolutionParameters_";
+	string output = bestSolution->parametersToString();
+	output = output + "\nFitness:\t" + to_string(bestSolution->calculatePerformance());
+	writer->writeToFileWithNameUsingOneLine(fileName, output);
+	bestSolution->printFinalNeuronMap();
+}
+
+void runGA(vector<string> somConfigurationFileValues)
+{
+	GeneticAlgorithm * geneticAlgorithm = getGeneticAlgorithm(somConfigurationFileValues);
+	geneticAlgorithm->runGeneticAlgorithm();
+	SelfOrganisingMap * bestSolution = geneticAlgorithm->returnBestChromsomes()->returnSolution();
+	handleBestSOM(bestSolution);
+	delete geneticAlgorithm;
+}
+
+SobolNumbers * getSobolNumbers(vector<string> somConfigurationFileValues)
+{	
+	SOMConfigurations * somConfigurations = getSOMConfigurations(somConfigurationFileValues);
+	somConfigurations->runDataPreperations();
+	const char sobolSeperator = ' ';
+	const string sobolInputFile = "sobolNumbers/512 6 new-joe-kuo-6.21201.txt";
+	vector<vector<double>> sobolNumbers = reader->readDataSet(sobolInputFile, sobolSeperator);
+	GeneRanges * gaGenesConfigurationFileValues = reader->readGAGenesConfig();
+	vector<vector<double>> parameterRanges = gaGenesConfigurationFileValues->getRangesValues();
+	vector<vector<bool>> parameterInclusives = gaGenesConfigurationFileValues->getRangesInclusive();
+
+	SobolNumbers * sn = new SobolNumbers(
+		somConfigurations,
+		sobolNumbers,
+		parameterRanges,
+		parameterInclusives
+	);
+
+	return sn;
+}
+
+void runSobolNumbers(vector<string> somConfigurationFileValues)
+{
+	SobolNumbers * sobolNumbers = getSobolNumbers(somConfigurationFileValues);
+	sobolNumbers->runSobolNumberSequence();
+	SelfOrganisingMap * bestSOM = sobolNumbers->returnBestSOM();
+	handleBestSOM(bestSOM);
+}
+
 int main(int argc, char ** argv)
 {
 	generateSingletons(argc, argv);
 
 	vector<string> somConfigurationFileValues = reader->readSOMConfig();
 	vector<string> arguments = reader->readArguments();
-	if (arguments.size() > 0 && arguments.at(0) != "1")
+	if (arguments.size() > 0)
 	{
-		cout << "Not Using GA...\n";
-		useGA = false;
+		if (arguments.at(0) == "1")
+		{
+			cout << "Using GA...\n";
+			useGA = true;
+		}
+		else if (arguments.at(0) == "2")
+		{
+			cout << "Using Sobol Numbers...\n";
+			useSobolNumbers = true;
+		}
+
+		if (arguments.size() > 1 && arguments.at(1) == "1")
+		{
+			cout << "Run Through All Data Sets...\n";
+			runThroughAllDataSets = true;
+		}		
 	}
 	else
 	{
-		cout << "Using GA...\n";
+		cout << "No Args";
 	}
-	if (!useGA)
+	if (useGA)
+	{
+		if (runThroughAllDataSets)
+		{
+			populateDataSets();
+			for (string dataSet : dataSets)
+			{
+				setDataSetFileName(dataSet);
+				runGA(somConfigurationFileValues);
+			}
+		}
+		else
+		{
+			runGA(somConfigurationFileValues);
+		}
+		
+	}
+	else if (useSobolNumbers)
+	{
+		if (runThroughAllDataSets)
+		{
+			populateDataSets();
+			for (string dataSet : dataSets)
+			{
+				setDataSetFileName(dataSet);
+				runSobolNumbers(somConfigurationFileValues);
+			}
+		}
+		else
+		{
+			runSobolNumbers(somConfigurationFileValues);
+		}
+	}
+	else
 	{
 		SelfOrganisingMap * selfOrganisingMap = getSelfOrganisingMap(somConfigurationFileValues);
 		selfOrganisingMap->runSelfOrganisingMap();
@@ -244,15 +364,7 @@ int main(int argc, char ** argv)
 		cout << "Overall fitness: " << fitnessValue << endl;
 		delete selfOrganisingMap;
 	}
-	else
-	{
-		GeneticAlgorithm * geneticAlgorithm = getGeneticAlgorithm(somConfigurationFileValues);
-		geneticAlgorithm->runGeneticAlgorithm();
-		SelfOrganisingMap * bestSolution = geneticAlgorithm->returnBestChromsomes()->returnSolution();
-		bestSolution->printTrainingAndTestSetsQEHistories();
-		bestSolution->printFinalNeuronMap();
-		delete geneticAlgorithm;
-	}
+	
 
 	cout << "Finished Project.\nEnter any number to stop..." << endl;
 	// _CrtDumpMemoryLeaks();

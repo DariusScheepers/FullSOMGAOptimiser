@@ -205,3 +205,11 @@ string CalculationHelper::getTimeString()
 
 	return time;
 }
+
+double CalculationHelper::minMaxNormalise(double incomingValue, double incomingPossibleMin, double incomingPossibleMax, double expectedMin, double expectedMax)
+{
+	const double normalNormalise = (incomingValue - incomingPossibleMin) / (incomingPossibleMax - incomingPossibleMin);
+	const double expectedOut = normalNormalise * (expectedMax - expectedMin);
+	const double expectedAdjustment = expectedOut + expectedMin;
+	return expectedAdjustment;
+}

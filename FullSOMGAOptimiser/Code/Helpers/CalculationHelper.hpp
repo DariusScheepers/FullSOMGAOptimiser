@@ -38,6 +38,7 @@ class CalculationHelper
         double calculateStandardDeviation(vector<double>);
         double calculateAverage(vector<double>);
 		string getTimeString();
+        double minMaxNormalise(double, double, double, double, double);
 };
 
 #endif

@@ -64,7 +64,6 @@ Matrix SOMConfigurations::getDataSet()
 void SOMConfigurations::shuffleAndFormatData()
 {
 	shuffleDataSet();
-	trainingSetPortion = static_cast<int>(dataSet.size() * calculations->percentageToDouble(trainingSetPortion));
 	input = convertMatrixToInputVectors(dataSet);
 }
 
@@ -107,10 +106,4 @@ InputVectors SOMConfigurations::getInput()
 string SOMConfigurations::getDataSetName()
 {
 	return dataSetName;
-}
-
-int SOMConfigurations::getTrainingSetPortion()
-{
-	const double portion = dataSet.size() - (dataSet.size() / 30.0);
-	return round(portion);
 }

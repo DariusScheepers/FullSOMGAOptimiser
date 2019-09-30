@@ -31,8 +31,10 @@ void SelfOrganisingMap::deleteNeuronMap()
 	neuronMap.clear();
 }
 
-void SelfOrganisingMap::runSelfOrganisingMap() ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-{	
+void SelfOrganisingMap::run30FoldCrossValidation()
+{
+	cout << "Running 30 Fold Cross Validation..." << endl;
+	testSetQEHistory.clear();
 	for (trainingWindowIteration = 0; trainingWindowIteration < 30; trainingWindowIteration++)
 	{
 		cout << "Training in window " << trainingWindowIteration << endl;
@@ -44,13 +46,23 @@ void SelfOrganisingMap::runSelfOrganisingMap() /////////////////////////////////
 	}
 }
 
+void SelfOrganisingMap::runSelfOrganisingMap() ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+{	
+	cout << "Starting normal Training..." << endl;
+	deleteNeuronMap();
+	createNeuronMap();
+	prepareTrainingSet(0);
+	trainSOM();
+	testSetQEHistory.push_back(getTestRunAverageQuantizationError());
+}
+
 void SelfOrganisingMap::prepareTrainingSet(int offset)
 {
 	trainingSet.clear();
 	testSet.clear();
 	InputVectors inputSet = configurations->getInput();
 	int trainingSetStartIndex = 0 + offset;
-	int trainingSetPortion = static_cast<int>((double)inputSet.size() - ((double)inputSet.size() / 30.0));
+	int trainingSetPortion = round((double)inputSet.size() - ((double)inputSet.size() / 30.0));
 	int trainingSetEndIndex = (trainingSetPortion + offset) % inputSet.size();
 	for (size_t i = 0; i < inputSet.size(); i++)
 	{
@@ -94,13 +106,14 @@ void SelfOrganisingMap::trainSOM()
 	const double stoppingCriteriaThreshhold = configurations->getStoppingCriteriaThreshhold();
 	const double slidingWindowSize = configurations->getSlidingWindowOffset();
 	const int maxIterations = configurations->getMaxEpochs();
+	double std = numeric_limits<double>::max();
 	vector<string> output;
 
 	for (iteration = 0;
 		iteration < maxIterations 
-			&& stoppingCriteriaThreshhold < calculateStandardDeviationOfQE(slidingWindowSize);
+			&& stoppingCriteriaThreshhold < std;
 		iteration++)
-	{
+	{ 
 		setNewLearningRateAndKernelWidth();
 		InputVector * selectedVector = selectTrainingVector();
 		Neuron * bestMatchingUnit = getBestMatchingUnit(selectedVector);
@@ -109,6 +122,7 @@ void SelfOrganisingMap::trainSOM()
 		const double qe = calculateQuantizationError();
 		handleCurrentQEInfo(qe, output);
 		printQuantizationError(slidingWindowSize);
+		std = calculateStandardDeviationOfQE(slidingWindowSize);
 	}
 
 	string outputFileName = "SOMTrainings/"
@@ -566,6 +580,7 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 	string fileName = configurations->calculations->getTimeString() + "_TestAndTrainingSetQEHistories";
 	vector<string> output;
 	int index = 0;
+	dataMatrix allQEs;
 	for (vector<double> qeRow : trainingSetsQEHistory)
 	{
 		string outLine = "Training " + to_string(index++);
@@ -577,6 +592,8 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 		const double std = configurations->calculations->calculateStandardDeviation(qeRow);
 		outLine = outLine + " Avg: " + to_string(average) + " Std: " + to_string(std) + "\n";
 		output.push_back(outLine);
+		
+		allQEs.push_back(qeRow);
 	}
 	index = 0;
 	for (vector<double> qeRow : testSetsQEHistory)
@@ -590,9 +607,64 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 		const double std = configurations->calculations->calculateStandardDeviation(qeRow);
 		outLine = outLine + " Avg: " + to_string(average) + " Std: " + to_string(std) + "\n";
 		output.push_back(outLine);
+		
+		allQEs.push_back(qeRow);
 	}
+	string outLine = "Cross Fold Out Quantization Error:\t" + to_string(calculatePerformance()) + "\n";
+	output.push_back(outLine);
+	outLine = "TraingSet QE Avg:\t" + to_string(overAllQEHistoryAverage(trainingSetsQEHistory)) + "\n";
+	output.push_back(outLine);
+	outLine = "TestSet QE Avg:\t" + to_string(overAllQEHistoryAverage(testSetsQEHistory)) + "\n";
+	output.push_back(outLine);
+	outLine = "ALL QEs Avg:\t" + to_string(overAllQEHistoryAverage(allQEs)) + "\n";
+	output.push_back(outLine);
+	outLine = "TraingSet QE STD:\t" + to_string(overAllQEHistoryStandardDevaition(trainingSetsQEHistory)) + "\n";
+	output.push_back(outLine);
+	outLine = "TestSet QE STD:\t" + to_string(overAllQEHistoryStandardDevaition(testSetsQEHistory)) + "\n";
+	output.push_back(outLine);
+	outLine = "ALL QEs STD:\t" + to_string(overAllQEHistoryStandardDevaition(allQEs)) + "\n";
+	output.push_back(outLine);
+	outLine = "TraingSet QE Iterations:\t" + to_string(overAllQEHistoryIterations(trainingSetsQEHistory)) + "\n";
+	output.push_back(outLine);
+	outLine = "TestSet QE Iterations:\t" + to_string(overAllQEHistoryIterations(testSetsQEHistory)) + "\n";
+	output.push_back(outLine);
+	outLine = "ALL QEs Iterations:\t" + to_string(overAllQEHistoryIterations(allQEs)) + "\n";
+	output.push_back(outLine);
 	
 	configurations->getWriter()->writeToFileWithName(fileName, output);
+}
+vector<double> SelfOrganisingMap::lineariseDataMatrix(dataMatrix qeHistory)
+{
+	vector<double> overAllQEHistory;
+	for (vector<double> qeRow : qeHistory)
+	{
+		for (double qe : qeRow)
+		{
+			overAllQEHistory.push_back(qe);
+		}
+	}
+	return overAllQEHistory;
+}
+
+double SelfOrganisingMap::overAllQEHistoryAverage(dataMatrix qeHistory)
+{
+	vector<double> overAllQEHistory = lineariseDataMatrix(qeHistory);
+	const double result = configurations->calculations->calculateAverage(overAllQEHistory);
+	return result;
+}
+
+double SelfOrganisingMap::overAllQEHistoryStandardDevaition(dataMatrix qeHistory)
+{
+	vector<double> overAllQEHistory = lineariseDataMatrix(qeHistory);
+	const double result = configurations->calculations->calculateStandardDeviation(overAllQEHistory);
+	return result;
+}
+
+int SelfOrganisingMap::overAllQEHistoryIterations(dataMatrix qeHistory)
+{
+	vector<double> overAllQEHistory = lineariseDataMatrix(qeHistory);
+	const int result = overAllQEHistory.size();
+	return result;
 }
 
 string SelfOrganisingMap::parametersToString()

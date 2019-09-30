@@ -45,7 +45,6 @@ class SOMConfigurations
 		void runDataPreperations();
 		void shuffleDataSet();
         int getMaxEpochs();
-		int getTrainingSetPortion();
         Matrix getDataSet();
 		InputVectors getInput();
 		InputVector * getTrainingVectorAt(int);
