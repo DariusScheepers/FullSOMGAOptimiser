@@ -24,6 +24,7 @@ void SobolNumbers::runSobolNumberSequence()
 {
     bestSOMFitness = numeric_limits<double>::max();
 	iteration = 0;
+	bestSOM = NULL;
     for (vector<double> sobolNumberSequence : sobolNumberSequences)
     {
 		cout << "At iteration: " << iteration++ << " with best " << to_string(bestSOMFitness) << endl;
@@ -35,6 +36,10 @@ void SobolNumbers::runSobolNumberSequence()
         if (fitnessValue < bestSOMFitness)
         {
             bestSOMFitness = fitnessValue;
+			if (bestSOM != NULL)
+			{
+				delete bestSOM;
+			}
             bestSOM = selfOrganisingMap;
         }
         else 

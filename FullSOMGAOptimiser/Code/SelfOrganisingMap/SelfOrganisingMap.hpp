@@ -31,7 +31,8 @@ class SelfOrganisingMap
         usint columns;
         double learningRate;
         double learningDecay;
-        double kernelWidth;
+		double kernelWidth;
+		double kernelWidthPortion;
         double kernelDecay;
         SOMConfigurations * configurations;
 

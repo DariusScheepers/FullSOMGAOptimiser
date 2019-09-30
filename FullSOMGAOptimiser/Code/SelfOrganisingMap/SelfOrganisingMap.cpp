@@ -1,13 +1,13 @@
 #include "SelfOrganisingMap.hpp"
 
-SelfOrganisingMap::SelfOrganisingMap(SOMConfigurations * configurations, usint rows, usint columns, double learningRate, double learningDecay, double kernelWidth, double kernelDecay)
+SelfOrganisingMap::SelfOrganisingMap(SOMConfigurations * configurations, usint rows, usint columns, double learningRate, double learningDecay, double kernelWidthPortion, double kernelDecay)
 {
     SelfOrganisingMap::configurations = configurations;
     SelfOrganisingMap::rows = rows;
     SelfOrganisingMap::columns = columns;
     SelfOrganisingMap::learningRate = learningRate;
     SelfOrganisingMap::learningDecay = learningDecay;
-    SelfOrganisingMap::kernelWidth = kernelWidth;
+    SelfOrganisingMap::kernelWidthPortion = kernelWidthPortion;
     SelfOrganisingMap::kernelDecay = kernelDecay;
 }
 
@@ -233,7 +233,7 @@ InputVector * SelfOrganisingMap::findTopRightTrainingVector(InputVector * vector
 
 void SelfOrganisingMap::setKernelWidth()
 {
-	kernelWidth = configurations->calculations->percentageToDouble(kernelWidth) * maxDistanceBetweenCorners;
+	kernelWidth = configurations->calculations->percentageToDouble(kernelWidthPortion) * maxDistanceBetweenCorners;
 }
 
 void SelfOrganisingMap::handleCurrentQEInfo(double qe, vector<string>& output)
@@ -674,7 +674,7 @@ string SelfOrganisingMap::parametersToString()
 		+ "\n\tColumns:\t\t" + to_string(columns)
 		+ "\n\tLearning Rate:\t\t" + to_string(learningRate)
 		+ "\n\tLearning Rate Decay:\t" + to_string(learningDecay)
-		+ "\n\tKernel Width:\t\t" + to_string(kernelWidth)
+		+ "\n\tKernel Width Portion:\t\t" + to_string(kernelWidthPortion)
 		+ "\n\tKernel Width Decay:\t" + to_string(kernelDecay);
 	return output;
 }
