@@ -19,12 +19,12 @@ vector<string> dataSets;
 
 void populateDataSets()
 {
-	dataSets.push_back("iris/iris.data");
-	dataSets.push_back("ionosphere/ionosphere.data");
-	dataSets.push_back("monks/monks1.data");
-	dataSets.push_back("monks/monks2.data");
-	dataSets.push_back("monks/monks3.data");
 	dataSets.push_back("diabetes/pima.data");
+	dataSets.push_back("monks/monks3.data");
+	dataSets.push_back("monks/monks2.data");
+	dataSets.push_back("monks/monks1.data");
+	dataSets.push_back("ionosphere/ionosphere.data");
+	dataSets.push_back("iris/iris.data");
 }
 
 int getSOMConfigIndex(somConfigurations somConfigValue)
