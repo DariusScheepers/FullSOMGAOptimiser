@@ -5,6 +5,9 @@ Neuron::Neuron(vector<double> weights, double xCoordinate, double yCoordinate)
     Neuron::weights = weights;
     Neuron::xCoordinate = xCoordinate;
     Neuron::yCoordinate = yCoordinate;
+
+    coordinatesVector.push_back(xCoordinate);
+    coordinatesVector.push_back(yCoordinate);
 }
 Neuron::~Neuron()
 {
@@ -40,4 +43,9 @@ double Neuron::getYCoordinate()
 void Neuron::setAllWeights(vector<double> weights)
 {
     Neuron::weights = weights;
+}
+
+vector<double> Neuron::getCoordinatesVector()
+{
+    return coordinatesVector;
 }

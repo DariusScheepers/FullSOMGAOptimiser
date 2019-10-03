@@ -10,6 +10,7 @@ class Neuron
         vector<double> weights;
         double xCoordinate;
         double yCoordinate;
+        vector<double> coordinatesVector;
     public:
         Neuron(vector<double>, double, double);
         ~Neuron();
@@ -20,6 +21,7 @@ class Neuron
         double getXCoordinate();
         double getYCoordinate();
         void setAllWeights(vector<double>);
+        vector<double> getCoordinatesVector();
 };
 
 #endif

@@ -46,18 +46,17 @@ GAConfigurations::~GAConfigurations()
 
 void GAConfigurations::runExperimentSpecificPreparations()
 {
-	perpareDimensionsAsSqrtOfInputDataSize();
+	perpareDimensionsAsSqrtOfTrainingSetSize();
 }
 
-void GAConfigurations::perpareDimensionsAsSqrtOfInputDataSize()
+void GAConfigurations::perpareDimensionsAsSqrtOfTrainingSetSize()
 {
-	const double max = sqrt(targetExperimentConfigurations->getInput().size());
-	const int maxTrunc = trunc(max);
+	const int inputSetSize = targetExperimentConfigurations->getInput().size();
+	const double maxTrainingSetSize = round((double)inputSetSize - ((double)inputSetSize / targetExperimentConfigurations->getCrossValidationNumber()));
 	const double addedToMaxForRounding = 0.5 - 0.0000000001; // numeric_limits<double>::min(); // 0.0000000001
-	cout << "try " << to_string(round(addedToMaxForRounding)) << endl;
 	const double addedToMinForRounding = 0.5;
 
-	const double fullMax = maxTrunc + addedToMaxForRounding;
+	const double fullMax = maxTrainingSetSize + addedToMaxForRounding;
 	const double fullMin = geneValueRanges.at(0).at(0) - addedToMinForRounding;
 	vector<double> dimension;
 	dimension.push_back(fullMin);

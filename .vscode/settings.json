@@ -8,6 +8,11 @@
         "memory": "cpp",
         "type_traits": "cpp",
         "iostream": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "cmath": "cpp",
+        "algorithm": "cpp",
+        "chrono": "cpp",
+        "limits": "cpp",
+        "random": "cpp"
     }
 }

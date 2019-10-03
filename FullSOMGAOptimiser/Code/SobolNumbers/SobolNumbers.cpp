@@ -30,7 +30,7 @@ void SobolNumbers::runSobolNumberSequence()
 		cout << "At iteration: " << iteration++ << " with best " << to_string(bestSOMFitness) << endl;
         vector<double> parameters = normaliseParameters(sobolNumberSequence);
         SelfOrganisingMap * selfOrganisingMap = createSOM(parameters);
-        selfOrganisingMap->runSelfOrganisingMap();
+        selfOrganisingMap->runNFoldCrossValidation(targetExperimentConfigurations->getCrossValidationNumber());
 
         const double fitnessValue = selfOrganisingMap->calculatePerformance();
         if (fitnessValue < bestSOMFitness)

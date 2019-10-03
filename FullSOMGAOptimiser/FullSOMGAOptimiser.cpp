@@ -37,24 +37,26 @@ int getSOMConfigIndex(somConfigurations somConfigValue)
 			return 1;
 		case somConfigurations::maximumTrainingIterations:
 			return 2;
-		case somConfigurations::traningSetPortion:
+		case somConfigurations::trainingSetPortion:
 			return 3;
 		case somConfigurations::slidingWindowOffset:
 			return 4;
-		case somConfigurations::stoppingCriteriaThreshhold:
+		case somConfigurations::crossValidationNumber:
 			return 5;
-		case somConfigurations::defaultRows:
+		case somConfigurations::stoppingCriteriaThreshhold:
 			return 6;
-		case somConfigurations::defaultColumns:
+		case somConfigurations::defaultRows:
 			return 7;
-		case somConfigurations::defaultLearningRate:
+		case somConfigurations::defaultColumns:
 			return 8;
-		case somConfigurations::defaultKernelWidth:
+		case somConfigurations::defaultLearningRate:
 			return 9;
-		case somConfigurations::defaultLearningRateDecay:
+		case somConfigurations::defaultKernelWidth:
 			return 10;
-		case somConfigurations::defaultKernelWidthDecay:
+		case somConfigurations::defaultLearningRateDecay:
 			return 11;
+		case somConfigurations::defaultKernelWidthDecay:
+			return 12;
 	default:
 		break;
 	}
@@ -123,7 +125,7 @@ void setDataSetFileName(string fullFileName)
 	{
 		dataSetName = dataSetName + fullFileName.at(i);
 	}
-	cout << "Sette Data File Name\n";
+	cout << "Set Data File Name\n";
 	writer->setDataSetName(dataSetName);
 }
 
@@ -154,8 +156,9 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	cout << "Getting SOMConfig...\n";
 	const char seperator = values.at(getSOMConfigIndex(somConfigurations::dataSeperator)).at(0);
 	const int maxEpochs = stoi(values.at(getSOMConfigIndex(somConfigurations::maximumTrainingIterations)));
-	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::traningSetPortion)));
+	const int trainingSetPortion = stoi(values.at(getSOMConfigIndex(somConfigurations::trainingSetPortion)));
 	const int slidingWindowOffset = stoi(values.at(getSOMConfigIndex(somConfigurations::slidingWindowOffset)));
+	const int crossValidationNumber = stoi(values.at(getSOMConfigIndex(somConfigurations::crossValidationNumber)));
 	const double stoppingCriteriaThreshhold = stod(values.at(getSOMConfigIndex(somConfigurations::stoppingCriteriaThreshhold)));
 	const bool showFullOutput = !useGA && !useSobolNumbers;
 	vector<vector<double>> dataSet;
@@ -170,10 +173,12 @@ SOMConfigurations * getSOMConfigurations(vector<string> values)
 	}
 
 	cout << "Got SOMConfig...\n";
-	return new SOMConfigurations(maxEpochs,
+	return new SOMConfigurations(
+		maxEpochs,
 		trainingSetPortion,
 		dataSet,
 		slidingWindowOffset,
+		crossValidationNumber,
 		stoppingCriteriaThreshhold,
 		calculations,
 		writer,
@@ -246,7 +251,7 @@ GeneticAlgorithm * getGeneticAlgorithm(vector<string> somConfigValues)
 
 void handleBestSOM(SelfOrganisingMap * bestSolution)
 {
-	bestSolution->run30FoldCrossValidation();
+	bestSolution->runNFoldCrossValidation(30);
 
 	bestSolution->printTrainingAndTestSetsQEHistories();
 	string fileName = calculations->getTimeString() + "_BestSolutionParameters_";
@@ -270,7 +275,7 @@ SobolNumbers * getSobolNumbers(vector<string> somConfigurationFileValues)
 	SOMConfigurations * somConfigurations = getSOMConfigurations(somConfigurationFileValues);
 	somConfigurations->runDataPreperations();
 	const char sobolSeperator = ' ';
-	const string sobolInputFile = "sobolNumbers/512 6 new-joe-kuo-6.21201.txt";
+	const string sobolInputFile = "sobolNumbers/master_Sobol_numbers.txt";
 	vector<vector<double>> sobolNumbers = reader->readDataSet(sobolInputFile, sobolSeperator);
 	GeneRanges * gaGenesConfigurationFileValues = reader->readGAGenesConfig();
 	vector<vector<double>> parameterRanges = gaGenesConfigurationFileValues->getRangesValues();
@@ -364,7 +369,6 @@ int main(int argc, char ** argv)
 		cout << "Overall fitness: " << fitnessValue << endl;
 		delete selfOrganisingMap;
 	}
-	
 
 	cout << "Finished Project.\nEnter any number to stop..." << endl;
 	// _CrtDumpMemoryLeaks();

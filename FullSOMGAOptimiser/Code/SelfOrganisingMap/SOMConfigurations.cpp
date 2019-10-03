@@ -1,9 +1,10 @@
 #include "SOMConfigurations.hpp"
 
 SOMConfigurations::SOMConfigurations(int maxEpochs,
-	int trainingSetPortion,
+	int trainingSetSize,
 	Matrix dataSet,
 	int slidingWindowOffset,
+	int crossValidationNumber,
 	double stoppingCriteriaThreshhold,
 	CalculationHelper * calculations,
 	Writer * writer,
@@ -11,14 +12,16 @@ SOMConfigurations::SOMConfigurations(int maxEpochs,
 	bool fullOutput)
 {
     SOMConfigurations::maxEpochs = maxEpochs;
-	SOMConfigurations::trainingSetPortion = trainingSetPortion;
 	SOMConfigurations::calculations = calculations;
 	SOMConfigurations::slidingWindowOffset = slidingWindowOffset;
 	SOMConfigurations::stoppingCriteriaThreshhold = stoppingCriteriaThreshhold;
+	SOMConfigurations::crossValidationNumber = crossValidationNumber;
     SOMConfigurations::dataSet = dataSet;
 	SOMConfigurations::writer = writer;
 	SOMConfigurations::dataSetName = dataSetName;
 	SOMConfigurations::fullOutput = fullOutput;
+
+	SOMConfigurations::trainingSetSize = trainingSetSize;
 }
 
 SOMConfigurations::~SOMConfigurations()
@@ -106,4 +109,14 @@ InputVectors SOMConfigurations::getInput()
 string SOMConfigurations::getDataSetName()
 {
 	return dataSetName;
+}
+
+int SOMConfigurations::getCrossValidationNumber()
+{
+	return crossValidationNumber;
+}
+
+int SOMConfigurations::getTrainingSetSize()
+{
+	return 0; // TODO
 }

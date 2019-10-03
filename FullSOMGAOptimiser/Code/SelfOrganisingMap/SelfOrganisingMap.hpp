@@ -51,7 +51,6 @@ class SelfOrganisingMap
 		InputVector * bottomRightTrainingVector;
 		InputVector * bottomLeftTrainingVector;
 		InputVector * topRightTrainingVector;
-		double maxDistanceBetweenCorners;
 		void findCornerVectors();
 		vector<InputVector*> findTopLeftAndBottomRightTrainingVectors();
 		InputVector * findBottomLeftTrainingVector(InputVector *, InputVector *);
@@ -63,13 +62,13 @@ class SelfOrganisingMap
 		void trainSOM();
 		void handleCurrentQEInfo(double, vector<string>&);
         void addToTrainingSetsQEHistory();
-		void prepareTrainingSet(int offset);
+		void prepareTrainingSet(int offset, int crossFoldValidationNumber);
         InputVector * selectTrainingVector();
 		void shuffleTrainingSet();
         Neuron * getBestMatchingUnit(InputVector *);
         void updateEachNeuronWeights(InputVector *, Neuron *);
         void setNewLearningRateAndKernelWidth();
-        double calculateExponenialDecay(double intialValue, int iteration, double decayConstant);
+        double calculateExponentialDecay(double intialValue, int iteration, double decayConstant);
 
         void performHypercubeWeightInitialization();
         vector<double> adjustedWeightByHypercube(vector<double>, vector<double>, int, int);
@@ -82,7 +81,7 @@ class SelfOrganisingMap
 		vector<double> testSetQEHistory;
 		vector<double> lineariseDataMatrix(dataMatrix);
 		double overAllQEHistoryAverage(dataMatrix);
-		double overAllQEHistoryStandardDevaition(dataMatrix);
+		double overAllQEHistoryStandardDeviation(dataMatrix);
 		int overAllQEHistoryIterations(dataMatrix);
 
 		string printNeuronMap();
@@ -103,7 +102,7 @@ class SelfOrganisingMap
         ~SelfOrganisingMap();
 
         void runSelfOrganisingMap();
-        void run30FoldCrossValidation();
+        void runNFoldCrossValidation(int);
 		double calculatePerformance();
         void printTrainingAndTestSetsQEHistories();
 		void printFinalNeuronMap();

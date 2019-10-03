@@ -15,10 +15,11 @@ class SOMConfigurations
 {
     private:
         int maxEpochs;
-        int trainingSetPortion;
+        int trainingSetSize;
         Matrix dataSet;
 		InputVectors input;
 		string dataSetName;
+		int crossValidationNumber;
 
 		int slidingWindowOffset;
 		double stoppingCriteriaThreshhold;
@@ -30,15 +31,16 @@ class SOMConfigurations
     public:
         SOMConfigurations(
 			int maxEpochs,
-			int trainingSetPortion,
+			int trainingSetSize,
 			Matrix dataSet,
 			int slidingWindowOffset,
+			int crossValidationNumber,
 			double stoppingCriteriaThreshhold,
 			CalculationHelper * calculations,
 			Writer * writer,
 			string dataSetName,
 			bool fullOutput
-			);
+		);
         ~SOMConfigurations();
 
 		CalculationHelper * calculations;
@@ -50,6 +52,8 @@ class SOMConfigurations
 		InputVector * getTrainingVectorAt(int);
 		double getStoppingCriteriaThreshhold();
 		int getSlidingWindowOffset();
+		int getTrainingSetSize();
+		int getCrossValidationNumber();
 		string getDataSetName();
 		bool fullOutput;
 

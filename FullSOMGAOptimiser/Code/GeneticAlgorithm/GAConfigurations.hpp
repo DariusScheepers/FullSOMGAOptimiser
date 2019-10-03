@@ -27,7 +27,7 @@ class GAConfigurations
 		Writer * writer;
         
 		void runExperimentSpecificPreparations();
-		void perpareDimensionsAsSqrtOfInputDataSize();
+		void perpareDimensionsAsSqrtOfTrainingSetSize();
         void setExactRangesOnGenes();
     public:
 		GAConfigurations(

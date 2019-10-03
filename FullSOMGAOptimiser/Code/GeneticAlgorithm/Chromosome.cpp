@@ -123,7 +123,7 @@ void Chromosome::runAlgorithm(SOMConfigurations * somConfiguration)
         kernelWidth,
         kernelDecay
     );
-    selfOrganisingMap->runSelfOrganisingMap();
+    selfOrganisingMap->runNFoldCrossValidation(somConfiguration->getCrossValidationNumber());
     fitnessValue = selfOrganisingMap->calculatePerformance();
 	cout << "Chromosomes fitness: " << fitnessValue << endl;
 	fitnessCalculated = true;

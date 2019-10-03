@@ -31,16 +31,15 @@ void SelfOrganisingMap::deleteNeuronMap()
 	neuronMap.clear();
 }
 
-void SelfOrganisingMap::run30FoldCrossValidation()
+void SelfOrganisingMap::runNFoldCrossValidation(int crossValidationNumber)
 {
-	cout << "Running 30 Fold Cross Validation..." << endl;
-	testSetQEHistory.clear();
-	for (trainingWindowIteration = 0; trainingWindowIteration < 30; trainingWindowIteration++)
+	cout << "Running " << to_string(crossValidationNumber) << "-Fold Cross Validation..." << endl;
+	for (trainingWindowIteration = 0; trainingWindowIteration < crossValidationNumber; trainingWindowIteration++)
 	{
 		cout << "Training in window " << trainingWindowIteration << endl;
 		deleteNeuronMap();
 		createNeuronMap();
-		prepareTrainingSet(trainingWindowIteration);
+		prepareTrainingSet(trainingWindowIteration, crossValidationNumber);
 		trainSOM();
 		testSetQEHistory.push_back(getTestRunAverageQuantizationError());
 	}
@@ -51,18 +50,18 @@ void SelfOrganisingMap::runSelfOrganisingMap() /////////////////////////////////
 	cout << "Starting normal Training..." << endl;
 	deleteNeuronMap();
 	createNeuronMap();
-	prepareTrainingSet(0);
+	prepareTrainingSet(0, 5);
 	trainSOM();
 	testSetQEHistory.push_back(getTestRunAverageQuantizationError());
 }
 
-void SelfOrganisingMap::prepareTrainingSet(int offset)
+void SelfOrganisingMap::prepareTrainingSet(int offset, int crossFoldValidationNumber)
 {
 	trainingSet.clear();
 	testSet.clear();
 	InputVectors inputSet = configurations->getInput();
 	int trainingSetStartIndex = 0 + offset;
-	int trainingSetPortion = round((double)inputSet.size() - ((double)inputSet.size() / 30.0));
+	int trainingSetPortion = round((double)inputSet.size() - ((double)inputSet.size() / crossFoldValidationNumber));
 	int trainingSetEndIndex = (trainingSetPortion + offset) % inputSet.size();
 	for (size_t i = 0; i < inputSet.size(); i++)
 	{
@@ -99,6 +98,7 @@ void SelfOrganisingMap::prepareTrainingSet(int offset)
 		}
 	}
 	performHypercubeWeightInitialization();
+	setKernelWidth();
 }
 
 void SelfOrganisingMap::trainSOM()
@@ -171,7 +171,6 @@ vector<InputVector*> SelfOrganisingMap::findTopLeftAndBottomRightTrainingVectors
 		}
 	}
 
-	maxDistanceBetweenCorners = maxDistance;
 	return result;
 }
 
@@ -233,7 +232,10 @@ InputVector * SelfOrganisingMap::findTopRightTrainingVector(InputVector * vector
 
 void SelfOrganisingMap::setKernelWidth()
 {
-	kernelWidth = configurations->calculations->percentageToDouble(kernelWidthPortion) * maxDistanceBetweenCorners;
+	vector<double> topLeftCoordinates = neuronMap.at(0).at(0)->getCoordinatesVector();
+	vector<double> bottomRightCoordinates = neuronMap.at(rows - 1).at(columns - 1)->getCoordinatesVector();
+	double diagonalDistanceOfMapCoordinates = configurations->calculations->euclidianDistance(topLeftCoordinates, bottomRightCoordinates);
+	kernelWidth = configurations->calculations->percentageToDouble(kernelWidthPortion) * diagonalDistanceOfMapCoordinates;
 }
 
 void SelfOrganisingMap::handleCurrentQEInfo(double qe, vector<string>& output)
@@ -345,7 +347,7 @@ void SelfOrganisingMap::updateEachNeuronWeights(InputVector * selectedTrainingVe
 	}
 }
 
-double SelfOrganisingMap::calculateExponenialDecay(double intialValue, int iteration, double decayConstant)
+double SelfOrganisingMap::calculateExponentialDecay(double intialValue, int iteration, double decayConstant)
 {
     const double exponent = (double)(-1 * iteration) / decayConstant;
     const double exponentialValue = exp(exponent);
@@ -354,16 +356,15 @@ double SelfOrganisingMap::calculateExponenialDecay(double intialValue, int itera
 
 void SelfOrganisingMap::setNewLearningRateAndKernelWidth()
 {
-    newLearningRate = calculateExponenialDecay(learningRate, iteration, learningDecay);
+    newLearningRate = calculateExponentialDecay(learningRate, iteration, learningDecay);
 	// cout << "NewLearningRate: " << newLearningRate << endl;
-    newKernelWidth = calculateExponenialDecay(kernelWidth, iteration, kernelDecay);
+    newKernelWidth = calculateExponentialDecay(kernelWidth, iteration, kernelDecay);
 	// cout << "NewKernelWidth: " << newKernelWidth << endl;
 }
 
 void SelfOrganisingMap::performHypercubeWeightInitialization()
 {
 	findCornerVectors();
-	setKernelWidth();
 
 	const vector<double> bottomLeftTrainingVector = this->bottomLeftTrainingVector->getInputValues();
 	const vector<double> topLeftTrainingVector = this->topLeftTrainingVector->getInputValues();
@@ -618,11 +619,11 @@ void SelfOrganisingMap::printTrainingAndTestSetsQEHistories()
 	output.push_back(outLine);
 	outLine = "ALL QEs Avg:\t" + to_string(overAllQEHistoryAverage(allQEs)) + "\n";
 	output.push_back(outLine);
-	outLine = "TraingSet QE STD:\t" + to_string(overAllQEHistoryStandardDevaition(trainingSetsQEHistory)) + "\n";
+	outLine = "TraingSet QE STD:\t" + to_string(overAllQEHistoryStandardDeviation(trainingSetsQEHistory)) + "\n";
 	output.push_back(outLine);
-	outLine = "TestSet QE STD:\t" + to_string(overAllQEHistoryStandardDevaition(testSetsQEHistory)) + "\n";
+	outLine = "TestSet QE STD:\t" + to_string(overAllQEHistoryStandardDeviation(testSetsQEHistory)) + "\n";
 	output.push_back(outLine);
-	outLine = "ALL QEs STD:\t" + to_string(overAllQEHistoryStandardDevaition(allQEs)) + "\n";
+	outLine = "ALL QEs STD:\t" + to_string(overAllQEHistoryStandardDeviation(allQEs)) + "\n";
 	output.push_back(outLine);
 	outLine = "TraingSet QE Iterations:\t" + to_string(overAllQEHistoryIterations(trainingSetsQEHistory)) + "\n";
 	output.push_back(outLine);
@@ -653,7 +654,7 @@ double SelfOrganisingMap::overAllQEHistoryAverage(dataMatrix qeHistory)
 	return result;
 }
 
-double SelfOrganisingMap::overAllQEHistoryStandardDevaition(dataMatrix qeHistory)
+double SelfOrganisingMap::overAllQEHistoryStandardDeviation(dataMatrix qeHistory)
 {
 	vector<double> overAllQEHistory = lineariseDataMatrix(qeHistory);
 	const double result = configurations->calculations->calculateStandardDeviation(overAllQEHistory);
