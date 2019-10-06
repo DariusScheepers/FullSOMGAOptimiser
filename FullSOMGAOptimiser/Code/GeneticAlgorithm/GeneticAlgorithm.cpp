@@ -87,8 +87,8 @@ double GeneticAlgorithm::calculateStandardDeviationForWindow()
 
 void GeneticAlgorithm::setAllChromosomesFitness()
 {
-	//runExperimentAndCalculateFitnessConcurrently();
-	runExperimentAndCalculateFitnessLinear();
+	runExperimentAndCalculateFitnessConcurrently();
+	//runExperimentAndCalculateFitnessLinear();
 }
 
 void GeneticAlgorithm::runExperimentAndCalculateFitnessLinear()
