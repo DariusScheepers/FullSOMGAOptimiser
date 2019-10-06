@@ -1,0 +1,8 @@
+Self Organising Map Parameters:
+	Rows:			10
+	Columns:		10
+	Learning Rate:		0.751207
+	Learning Rate Decay:	28.275869
+	Kernel Width:		0.196572
+	Kernel Width Decay:	36.297442
+Fitness:	0.102517
