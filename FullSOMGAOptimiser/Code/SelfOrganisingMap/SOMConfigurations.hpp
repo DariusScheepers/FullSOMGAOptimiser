@@ -58,6 +58,8 @@ class SOMConfigurations
 		bool fullOutput;
 
 		Writer * getWriter();
+
+		vector<double> getMinMaxDimensions();
 };
 
 #endif

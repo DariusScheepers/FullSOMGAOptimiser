@@ -120,3 +120,19 @@ int SOMConfigurations::getTrainingSetSize()
 {
 	return 0; // TODO
 }
+
+vector<double> SOMConfigurations::getMinMaxDimensions()
+{
+	const double max = sqrt(input.size());
+	const int maxTrunc = trunc(max);
+	const double addedToMaxForRounding = 0.5 - 0.0000000001; // numeric_limits<double>::min(); // 0.0000000001
+	const double addedToMinForRounding = 0.5;
+
+	const double fullMax = maxTrunc + addedToMaxForRounding;
+	const double fullMin = 2 - addedToMinForRounding;
+	vector<double> dimension;
+	dimension.push_back(fullMin);
+	dimension.push_back(fullMax);
+
+	return dimension;
+}

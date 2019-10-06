@@ -79,16 +79,7 @@ void SobolNumbers::setExactRangesOnParameters()
 
 void SobolNumbers::perpareDimensionsAsSqrtOfInputDataSize()
 {
-	const double max = sqrt(targetExperimentConfigurations->getInput().size());
-	const int maxTrunc = trunc(max);
-	const double addedToMaxForRounding = 0.5 - 0.0000000001; // numeric_limits<double>::min(); // 0.0000000001
-	const double addedToMinForRounding = 0.5;
-
-	const double fullMax = maxTrunc + addedToMaxForRounding;
-	const double fullMin = parameterValueRanges.at(0).at(0) - addedToMinForRounding;
-	vector<double> dimension;
-	dimension.push_back(fullMin);
-	dimension.push_back(fullMax);
+	vector<double> dimension = targetExperimentConfigurations->getMinMaxDimensions();
 
 	parameterValueRanges.at(0) = dimension;
 	parameterValueRanges.at(1) = dimension;

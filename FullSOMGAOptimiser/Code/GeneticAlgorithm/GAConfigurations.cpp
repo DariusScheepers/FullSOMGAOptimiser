@@ -51,16 +51,7 @@ void GAConfigurations::runExperimentSpecificPreparations()
 
 void GAConfigurations::perpareDimensionsAsSqrtOfTrainingSetSize()
 {
-	const int inputSetSize = targetExperimentConfigurations->getInput().size();
-	const double maxTrainingSetSize = round((double)inputSetSize - ((double)inputSetSize / targetExperimentConfigurations->getCrossValidationNumber()));
-	const double addedToMaxForRounding = 0.5 - 0.0000000001; // numeric_limits<double>::min(); // 0.0000000001
-	const double addedToMinForRounding = 0.5;
-
-	const double fullMax = maxTrainingSetSize + addedToMaxForRounding;
-	const double fullMin = geneValueRanges.at(0).at(0) - addedToMinForRounding;
-	vector<double> dimension;
-	dimension.push_back(fullMin);
-	dimension.push_back(fullMax);
+	vector<double> dimension = targetExperimentConfigurations->getMinMaxDimensions();
 
 	geneValueRanges.at(0) = dimension;
 	geneValueRanges.at(1) = dimension;
