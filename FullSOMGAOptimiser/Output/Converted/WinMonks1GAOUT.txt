@@ -1,0 +1,5 @@
+
+WinMonks1GA Training Average: 1.47097062
+WinMonks1GA Training Std: 0.00811193
+WinMonks1GA Test Average: 1.36212436
+WinMonks1GA Test Std: 0.02544683

@@ -1,0 +1,5 @@
+
+WinIrisGA2 Training Average: 0.10807836
+WinIrisGA2 Training Std: 0.00236889
+WinIrisGA2 Test Average: 0.09000339
+WinIrisGA2 Test Std: 0.01999838

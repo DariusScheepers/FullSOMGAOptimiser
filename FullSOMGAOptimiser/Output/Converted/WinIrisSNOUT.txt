@@ -1,0 +1,5 @@
+
+WinIrisSN Training Average: 0.15364516
+WinIrisSN Training Std: 0.00468372
+WinIrisSN Test Average: 0.0906912
+WinIrisSN Test Std: 0.01664581

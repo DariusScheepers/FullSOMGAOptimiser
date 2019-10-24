@@ -1,0 +1,5 @@
+
+WinIonosphereSN Training Average: 0.86803922
+WinIonosphereSN Training Std: 0.0123518
+WinIonosphereSN Test Average: 0.71042618
+WinIonosphereSN Test Std: 0.20381411

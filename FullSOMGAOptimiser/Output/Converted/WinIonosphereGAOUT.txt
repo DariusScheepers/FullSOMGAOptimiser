@@ -1,0 +1,5 @@
+
+WinIonosphereGA Training Average: 0.8974605
+WinIonosphereGA Training Std: 0.02698778
+WinIonosphereGA Test Average: 0.86737422
+WinIonosphereGA Test Std: 0.17843959

@@ -1,0 +1,5 @@
+
+WinMonks2SN Training Average: 1.50397737
+WinMonks2SN Training Std: 0.00642673
+WinMonks2SN Test Average: 1.35869347
+WinMonks2SN Test Std: 0.03864804

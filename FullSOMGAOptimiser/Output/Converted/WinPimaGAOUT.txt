@@ -1,0 +1,5 @@
+
+WinPimaGA Training Average: 0.29149166
+WinPimaGA Training Std: 0.00397351
+WinPimaGA Test Average: 0.25272168
+WinPimaGA Test Std: 0.01417595
